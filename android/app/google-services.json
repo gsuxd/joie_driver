@@ -1,0 +1,155 @@
+{
+  "project_info": {
+    "project_number": "331133342890",
+    "firebase_url": "https://joie-driver-fb-default-rtdb.firebaseio.com",
+    "project_id": "joie-driver-fb",
+    "storage_bucket": "joie-driver-fb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331133342890:android:b7c0e1ea9dc4586ec3acd3",
+        "android_client_info": {
+          "package_name": "com.ciddras.joiedriver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331133342890-q0ldg2fnn9etp27gvo1655q9qnj7r4lq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAl5RZMSeQEBYHhpH2tbM05-TkPH2Sj18E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331133342890-q0ldg2fnn9etp27gvo1655q9qnj7r4lq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "331133342890-61jdltrpuio7i2tdsc69vunf53bhsgp0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.joieDriver"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331133342890:android:44378e7ec3a92025c3acd3",
+        "android_client_info": {
+          "package_name": "com.example.conductores"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331133342890-q0ldg2fnn9etp27gvo1655q9qnj7r4lq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAl5RZMSeQEBYHhpH2tbM05-TkPH2Sj18E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331133342890-q0ldg2fnn9etp27gvo1655q9qnj7r4lq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "331133342890-61jdltrpuio7i2tdsc69vunf53bhsgp0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.joieDriver"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331133342890:android:86ac49f85337256bc3acd3",
+        "android_client_info": {
+          "package_name": "com.joie.driver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331133342890-q0ldg2fnn9etp27gvo1655q9qnj7r4lq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAl5RZMSeQEBYHhpH2tbM05-TkPH2Sj18E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331133342890-q0ldg2fnn9etp27gvo1655q9qnj7r4lq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "331133342890-61jdltrpuio7i2tdsc69vunf53bhsgp0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.joieDriver"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331133342890:android:46d7f41ac7b5b77cc3acd3",
+        "android_client_info": {
+          "package_name": "com.joieweb.joiedriverweb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331133342890-q0ldg2fnn9etp27gvo1655q9qnj7r4lq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAl5RZMSeQEBYHhpH2tbM05-TkPH2Sj18E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331133342890-q0ldg2fnn9etp27gvo1655q9qnj7r4lq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "331133342890-61jdltrpuio7i2tdsc69vunf53bhsgp0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.joieDriver"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
