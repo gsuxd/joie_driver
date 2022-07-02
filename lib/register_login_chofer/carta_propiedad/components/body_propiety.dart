@@ -1,12 +1,12 @@
 import 'package:joiedriver/register_login_chofer/registro/user_data_register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import '../../../components/default_button_chofer.dart';
 import '../../../components/states/states.dart';
 import '../../../home/home.dart';
 import '../../conts.dart';
 import '../../error/error_screen.dart';
 import '../../size_config.dart';
-import '/components/default_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -107,7 +107,7 @@ class Body extends ConsumerWidget {
                 const Spacer(),
                 SizedBox(
                     width: SizeConfig.screenWidth * 0.6,
-                    child: ButtonDef(
+                    child: ButtonDefChofer(
                         text: 'Registrar',
                         press:  () async {
                           //lleva al Home
@@ -239,12 +239,15 @@ class Body extends ConsumerWidget {
       try{
         Reference img = FirebaseStorage.instance.ref().child(user.email).child('/Vehicle.jpg');
         Reference img2 = FirebaseStorage.instance.ref().child(user.email).child('/TarjetaPropiedad.jpg');
+        Reference img3 = FirebaseStorage.instance.ref().child(user.email).child('/ProfilePhoto.jpg');
         Reference doc1 = FirebaseStorage.instance.ref().child(user.email).child('/Antecent.pdf');
         UploadTask uploadTaskCartaPropiedad = img.putFile(user.documentVehicle!);
         UploadTask uploadTaskTarjetaPropiedad = img2.putFile(user.documentTarjetaPropiedad!);
+        UploadTask uploadTaskProfilePhoto = img3.putFile(user.photoPerfil!);
         UploadTask uploadTaskAntecedent = doc1.putFile(user.documentAntecedentes!);
         await uploadTaskCartaPropiedad.whenComplete((){ });
         await uploadTaskTarjetaPropiedad.whenComplete((){ });
+        await uploadTaskProfilePhoto.whenComplete((){ });
         await uploadTaskAntecedent.whenComplete((){ });
         // String url = imgUrl.ref.getDownloadURL().toString();
         return true;

@@ -100,7 +100,7 @@ const String emailNull = "Por favor ingrese su correo";
 const String emailError = "Ingrese un correo válido";
 //password
 const String passNull = "Por favor ingrese su contraseña";
-const String passError = "Contraseña inválida";
+const String passError = "La Contraseña debe tener al\nal menos 8 caracteres";
 //repeticiones y coincidencias
 const String machError = "Su contraseña no coincide";
 const String reNull = "Re-ingrese su contraseña";
@@ -110,6 +110,7 @@ const String nameNull = "Por favor ingresa tu nombre";
 const String apeNull = "Por favor ingresa tu apellido";
 const String phoneError = "Por favor ingresa tu número de teléfono";
 const String addressError = "Por favor ingresa tu dirección";
+const String codeError = "Por favor ingresa el Código de quien te refirío\nSi no tienes pon JoieDriver";
 const String carMarkError = "Por favor ingresa la Marca de tu vehículo";
 const String carModelError = "Por favor ingresa el modelo de tu vehículo";
 const String carPlacaError = "Por favor ingresa la placa de tu vehículo";

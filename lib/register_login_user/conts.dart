@@ -65,6 +65,7 @@ const String camara = 'assets/icons/camara.svg';
 const String fotoAutmovil = 'assets/icons/fotoAutomovil.svg';
 const String asistencaTec = 'assets/icons/asistencia_tecnica.svg';
 const String fotoCarnet = 'assets/icons/fotoCarnet.svg';
+const String document_id = 'assets/icons/document_id.svg';
 const String perfilPrincipal = 'assets/icons/perfil_principal.svg';
 const String exito = 'assets/icons/queexito.svg';
 const String error = 'assets/icons/error.svg';

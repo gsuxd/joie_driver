@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../conts.dart';
 import '../../size_config.dart';
 import '../../tarjeta_propiedad/card_propierty.dart';
-import '/components/default_button.dart';
+import '/components/default_button_chofer.dart';
 import 'dart:io';
 class Body extends StatefulWidget {
   RegisterUser user;
@@ -58,7 +58,7 @@ class _Body extends State<Body> {
           const Spacer(),
           SizedBox(
               width: SizeConfig.screenWidth * 0.6,
-              child: ButtonDef(
+              child: ButtonDefChofer(
                   text: 'Siguiente',
                   press: () {
                     //Navigator.pushNamed(context, CardPropierty.routeName);

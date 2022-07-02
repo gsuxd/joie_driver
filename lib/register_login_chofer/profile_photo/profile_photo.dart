@@ -8,7 +8,6 @@ import '/register_login_chofer/profile_photo/components/body_cardP.dart';
 class ProfilePhoto extends StatelessWidget {
   RegisterUser user;
   ProfilePhoto(this.user);
-  static String routeName = '/card_propierty';
 
   @override
   Widget build(BuildContext context) {

@@ -2,7 +2,7 @@ import 'package:joiedriver/register_login_user/registro/user_data_register.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../components/states/states.dart';
-import '../../../home/home.dart';
+import '../../../home_user/home.dart';
 import '../../conts.dart';
 import '../../error/error_screen.dart';
 import '../../size_config.dart';
@@ -15,7 +15,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ImageNotify extends ChangeNotifier {
-  Widget _image = SvgPicture.asset(fotoCarnet, height: SizeConfig.screenHeight * 0.50);
+  Widget _image = SvgPicture.asset(document_id, height: SizeConfig.screenHeight * 0.50);
 
   Widget get widget => _image;
 
@@ -154,7 +154,7 @@ class Body extends ConsumerWidget {
           print(snapshot.data);
           if(snapshot.data){
 
-            return HomeScreen();
+            return HomeScreenUser();
           }else{
             return OpError(stackTrace: null,);
           }
@@ -220,13 +220,13 @@ class Body extends ConsumerWidget {
       try{
         Reference img = FirebaseStorage.instance.ref().child(user.email).child('/DocumentId.jpg');
         Reference img2 = FirebaseStorage.instance.ref().child(user.email).child('/ProfilePhoto.jpg');
-        Reference doc1 = FirebaseStorage.instance.ref().child(user.email).child('/Antecent.pdf');
+        // Reference doc1 = FirebaseStorage.instance.ref().child(user.email).child('/Antecent.pdf');
         UploadTask uploadDocumentId = img.putFile(user.documentId!);
         UploadTask uploadPhotoProfile = img2.putFile(user.photoPerfil!);
-        UploadTask uploadTaskAntecedent = doc1.putFile(user.documentAntecedentes!);
+        // UploadTask uploadTaskAntecedent = doc1.putFile(user.documentAntecedentes!);
         await uploadDocumentId.whenComplete((){ });
         await uploadPhotoProfile.whenComplete((){ });
-        await uploadTaskAntecedent.whenComplete((){ });
+        // await uploadTaskAntecedent.whenComplete((){ });
         // String url = imgUrl.ref.getDownloadURL().toString();
         return true;
       }on FirebaseAuthException catch(error){
@@ -249,7 +249,7 @@ class Body extends ConsumerWidget {
       return  Image.file(documentId!, height: SizeConfig.screenHeight * 0.50);
     }else{
       user.documentId = null;
-      return SvgPicture.asset(fotoCarnet, height: SizeConfig.screenHeight * 0.50);
+      return SvgPicture.asset(document_id, height: SizeConfig.screenHeight * 0.50);
     }
   }
 }

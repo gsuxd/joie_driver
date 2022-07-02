@@ -4,7 +4,7 @@ import 'package:joiedriver/register_login_user/registro/user_data_register.dart'
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import '../../Antecedents/antecedentes.dart';
+import '../../../register_login_user/profile_photo/profile_photo.dart';
 import '../../conts.dart';
 import '../../size_config.dart';
 import '../../../components/default_button.dart';
@@ -127,7 +127,7 @@ class _RegistroFormState extends State<RegistroForm> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => AntecedentsScreen(user)));
+                                builder: (context) => ProfilePhoto(user)));
                       } else if (e.code == 'wrong-password') {
                         print('El usuario ya esta Registrado');
                         showToast("El Email Ya Esta Registrado.\nIntente Iniciar Sesion o \nRecuperar la Contraseña");

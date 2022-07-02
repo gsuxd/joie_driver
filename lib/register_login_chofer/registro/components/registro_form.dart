@@ -497,6 +497,21 @@ class _RegistroFormState extends State<RegistroForm> {
       controller: _controllerTextReferenceCode,
       onSaved: (newValue) => codeRef = newValue,
       autocorrect: true,
+      onChanged: (value) {
+        if (value.isNotEmpty && errors.contains(codeError)) {
+          removeError(error: codeError);
+          return;
+        }
+        return;
+      },
+      validator: (value) {
+        if (value!.isEmpty && !errors.contains(codeError)) {
+          addError(error: codeError);
+          return;
+        }
+
+        return null;
+      },
       decoration: InputDecoration(
           hintText: "Ingresa el código de Lider",
           labelText: "Código de Lider",

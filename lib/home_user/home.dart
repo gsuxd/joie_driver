@@ -1,4 +1,4 @@
-import 'package:joiedriver/register_login_chofer/share/comparte.dart';
+import 'package:joiedriver/register_login_user/share/comparte.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import '../mapa_principal.dart';
@@ -6,14 +6,14 @@ import '/components/navigation_drawer.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 
-class HomeScreen extends StatefulWidget {
+class HomeScreenUser extends StatefulWidget {
   static String routeName = '/home';
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomeScreenUser> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreenUser> {
 
   @override
   Widget build(BuildContext context) {

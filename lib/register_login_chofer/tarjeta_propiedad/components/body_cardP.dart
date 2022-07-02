@@ -1,10 +1,10 @@
 import 'package:joiedriver/register_login_chofer/registro/user_data_register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import '../../../components/default_button_chofer.dart';
 import '../../carta_propiedad/propiedad.dart';
 import '../../conts.dart';
 import '../../size_config.dart';
-import '/components/default_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 class Body extends StatefulWidget {
@@ -55,7 +55,7 @@ class _Body extends State<Body> {
           const Spacer(),
           SizedBox(
               width: SizeConfig.screenWidth * 0.6,
-              child: ButtonDef(
+              child: ButtonDefChofer(
                   text: 'Siguiente',
                   press: () {
                     if(user.documentTarjetaPropiedad != null){
