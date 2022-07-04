@@ -2,7 +2,6 @@ import 'package:joiedriver/pedidos.dart';
 import 'package:joiedriver/perfil_usuario.dart';
 import 'package:joiedriver/reporte.dart';
 import 'package:joiedriver/reporte_dao.dart';
-import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
 
@@ -11,6 +10,8 @@ import 'main.dart';
 import 'mapa_principal_usuario.dart';
 
 class AsistenciaTecnicaUsuario extends StatefulWidget {
+  const AsistenciaTecnicaUsuario({Key? key}) : super(key: key);
+
 
   @override
   createState() =>  _PedidosState();
@@ -23,7 +24,7 @@ class _PedidosState extends State<AsistenciaTecnicaUsuario> {
   Color color_icon_perfil = blue;
   Color color_icon_ingresos = blue_dark;
   String state = "Asistencia";
-  TextEditingController _controllerText = TextEditingController();
+  final TextEditingController _controllerText = TextEditingController();
   int solicitudPedido = 0;
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class _PedidosState extends State<AsistenciaTecnicaUsuario> {
           backgroundColor: blue,
           leading:
           Container(
-            padding: EdgeInsets.all(5.0),
+            padding: const EdgeInsets.all(5.0),
             child: GestureDetector(
                 onTap: (){
                     Navigator.pop(context);

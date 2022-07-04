@@ -153,12 +153,12 @@ final heading2 = TextStyle(
   color: jSec,
 );
 
-final listStyle =
+const listStyle =
 TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0, color: blue);
 
 final shareDecoration = BoxDecoration(
   color: Colors.grey[100],
-  borderRadius: BorderRadius.only(
+  borderRadius: const BorderRadius.only(
     topLeft: Radius.circular(24),
     topRight: Radius.circular(24),
   ),

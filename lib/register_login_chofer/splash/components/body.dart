@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../conts.dart';
 import '../../size_config.dart';
-
 import '../../termin_y_condiciones/terminos_y_condiciones.dart';
 import 'default_button.dart';
 import 'splash_components.dart';
@@ -76,7 +75,7 @@ class _BodyState extends State<Body> {
   AnimatedContainer buildDot({required int index}) {
     return AnimatedContainer(
       duration: jDuration,
-      margin: EdgeInsets.only(
+      margin: const EdgeInsets.only(
         right: 6,
       ),
       height: 6,

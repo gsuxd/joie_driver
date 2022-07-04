@@ -1,9 +1,7 @@
-//import 'package:joiedriver/register_login_chofer/splash/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_player/video_player.dart';
@@ -21,7 +19,7 @@ Future <void>  main() async {
       AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
     }
 
-    runApp(ProviderScope( child: MyApp(),));
+    runApp(const ProviderScope( child: MyApp(),));
   });
 
   //runApp(const MyApp());
@@ -35,14 +33,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
           supportedLocales: S.delegate.supportedLocales,
-          localizationsDelegates: [
+          localizationsDelegates: const [
             S.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
           ],
       title: 'Conductores',
 
-      home: MyHomePage(title: 'JoieDriver',),
+      home: const MyHomePage(title: 'JoieDriver',),
     );
   }
 }
@@ -64,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    goPrincipalMenu(context);
+    //goPrincipalMenu(context);
     // Pointing the video controller to our local asset.
     _controller = VideoPlayerController.asset("assets/videos/video.mp4")
       ..initialize().then((_) {
@@ -72,7 +70,6 @@ class _MyHomePageState extends State<MyHomePage> {
         _controller.play();
         _controller.setLooping(true);
         // Ensure the first frame is shown after the video is initialized.
-        setState(() {});
       });
     fetchUserOrder(context, 0.0, 0.0);
   }
@@ -94,12 +91,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 
-  goPrincipalMenu (BuildContext context) async {
-    Future<Position> coord =  _determinePosition();
-    double longitude = await coord.then((value) => value.longitude);
-    double latitude = await coord.then((value) => value.latitude);
-    fetchUserOrder(context, longitude, latitude);
-  }
+  // goPrincipalMenu (BuildContext context) async {
+  //   Future<Position> coord =  _determinePosition();
+  //   double longitude = await coord.then((value) => value.longitude);
+  //   double latitude = await coord.then((value) => value.latitude);
+  //   //fetchUserOrder(context, longitude, latitude);
+  // }
 
   Future<void> permiso() async {
     if (await Permission.location.request().isGranted) {
@@ -107,30 +104,30 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
-  }
+  // Future<Position> _determinePosition() async {
+  //   bool serviceEnabled;
+  //   LocationPermission permission;
+  //
+  //   // Test if location services are enabled.
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     return Future.error('Location services are disabled.');
+  //   }
+  //
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       return Future.error('Location permissions are denied');
+  //     }
+  //   }
+  //
+  //   if (permission == LocationPermission.deniedForever) {
+  //     return Future.error(
+  //         'Location permissions are permanently denied, we cannot request permissions.');
+  //   }
+  //   return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
+  // }
 
   @override
   void dispose() {
@@ -150,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   MaterialPageRoute(
                     //builder: (context) => MapaMenu(longitude: longitude, latitude: latitude,))));
                       //builder: (context) => SplashScreen()
-                      builder: (context) =>  ChooseScreen()
+                      builder: (context) =>  const ChooseScreen()
                   )
               );
             }

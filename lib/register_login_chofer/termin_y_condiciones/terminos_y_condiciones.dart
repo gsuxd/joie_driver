@@ -1,6 +1,6 @@
 //Importamos las librerias y archivos necesarios
 import 'package:flutter/material.dart';
-import '../sign_in/log_in.dart';
+import '../registro/registro.dart';
 import 'components/body_terminos.dart';
 
 
@@ -21,7 +21,7 @@ class _TerminosCondicionesState extends State<TerminosCondiciones> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Terminos y Condiciones"),
+        title: const Text("Terminos y Condiciones"),
         leading:
         Container(
           padding: EdgeInsets.all(5.0),
@@ -29,7 +29,7 @@ class _TerminosCondicionesState extends State<TerminosCondiciones> {
               onTap: (){
                 Navigator.pop(context);
               },
-              child: Icon(Icons.arrow_back_ios, color: Colors.white, size: 24,)
+              child: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 18,)
           ),
         ),
       ),
@@ -40,7 +40,7 @@ class _TerminosCondicionesState extends State<TerminosCondiciones> {
             texto(),
             //Creamos un Checkbox que indica que el usuario ha aceptado los terminos y condiciones
             Container(
-              margin: EdgeInsets.only(top: 5),
+              margin: const EdgeInsets.only(top: 5),
               height: 70,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -56,23 +56,23 @@ class _TerminosCondicionesState extends State<TerminosCondiciones> {
                     },
                   ),
                   //Texto de complemento
-                  Text("He leido y aceptado los terminos y condiciones"),
+                  const Text("He leido y aceptado los terminos y condiciones"),
                 ],
               ),
             ),
             //Aca contendremos el boton de continuar que solo funcionara si el usuario le da al checkbox
             Container(
               width: 150,
-              margin: EdgeInsets.only(bottom: 20),
+              margin: const EdgeInsets.only(bottom: 20),
               child: ElevatedButton(
                 //Esta linea es importante: si checked es cierto (si el usuario a presionado el checkbox), entonces el boton tendrá funcionalidad, si no, el boton no servirá
                 onPressed: (checked == true ? () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => LognInScreen()));
+                          builder: (context) => Registro()));
                 } : null),
-                child: Text("continuar"),
+                child: const Text("continuar"),
               ),
             )
           ],

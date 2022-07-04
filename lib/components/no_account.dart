@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../register_login_user/conts.dart';
-import '../register_login_user/registro/registro.dart';
+import '../register_login_user/termin_y_condiciones/terminos_y_condiciones.dart';
 
 
 class NoAccount extends StatelessWidget {
@@ -13,14 +13,14 @@ class NoAccount extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
+        const Text(
           '¿No tienes cuenta Joie Driver?',
           style: TextStyle(
             fontSize: 16,
             color: jtextColorSec,
           ),
         ),
-        SizedBox(
+        const SizedBox(
           width: 10,
         ),
         GestureDetector(
@@ -28,9 +28,9 @@ class NoAccount extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => RegistroUser()));
+                    builder: (context) => const TerminosCondicionesUser()));
           },
-          child: Text(
+          child: const Text(
             'Registrate',
             style: TextStyle(fontSize: 16),
           ),

@@ -9,7 +9,7 @@ import '/components/default_button_chofer.dart';
 import 'dart:io';
 class Body extends StatefulWidget {
   RegisterUser user;
-  Body( RegisterUser this.user);
+  Body( this.user, {Key? key}) : super(key: key);
   @override
   createState() =>  _Body(this.user);
 }
@@ -17,7 +17,7 @@ class Body extends StatefulWidget {
 
 class _Body extends State<Body> {
   RegisterUser user;
-  _Body( RegisterUser this.user);
+  _Body( this.user);
   File? FileAntecedentes;
   late Widget imageWiew ;
   bool varInit = true;
@@ -97,7 +97,7 @@ class _Body extends State<Body> {
     if(FileAntecedentes != null ){
       user.documentAntecedentes = FileAntecedentes;
       return  Center(
-          child: Text(FileAntecedentes!.path.split('/').last, style: TextStyle(fontWeight: FontWeight.bold, color: blue), textAlign: TextAlign.center,)
+          child: Text(FileAntecedentes!.path.split('/').last, style: const TextStyle(fontWeight: FontWeight.bold, color: blue), textAlign: TextAlign.center,)
       );
     }else{
       user.documentAntecedentes = null;

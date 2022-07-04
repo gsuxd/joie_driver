@@ -22,7 +22,7 @@ class LognInScreen extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: BodySign(),
+      body: const BodySign(),
     );
   }
 }
