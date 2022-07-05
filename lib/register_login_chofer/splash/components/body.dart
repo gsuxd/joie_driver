@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../../choose/choose.dart';
 import '../../conts.dart';
 import '../../size_config.dart';
-import '../../termin_y_condiciones/terminos_y_condiciones.dart';
 import 'default_button.dart';
 import 'splash_components.dart';
 
@@ -56,7 +56,7 @@ class _BodyState extends State<Body> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => TerminosCondiciones()));
+                                builder: (context) => const ChooseScreen()));
                       },
                       text: "Empieza",
                     ),

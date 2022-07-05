@@ -5,15 +5,14 @@ import 'components/body_propiety.dart';
 
 
 class DocumentId extends StatelessWidget {
-  static String routeName = '/propiety';
   RegisterUser user;
-  DocumentId(this.user);
+  DocumentId(this.user, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Scaffold(
-      body: Body(user),
+      body: Body(user:user),
     );
   }
 }

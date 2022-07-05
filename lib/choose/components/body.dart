@@ -45,7 +45,7 @@ class _BodyState extends State<Body> {
               ),
               //Usuario o conductor (texto)
               Container(
-                margin: EdgeInsets.only(top: 10, bottom: 42),
+                margin: const EdgeInsets.only(top: 10, bottom: 42),
                 child: const Text(
                   "¿Eres usuario o conductor?",
                   textAlign: TextAlign.center,
@@ -76,16 +76,16 @@ GestureDetector selectType(Function() action, String src, String text) {
     onTap: action, //action es la funcion que se realizara al presionar en el widget
     child: Column(
       children: [
-        Container(
+        SizedBox(
           width: 100,
           height: 100,
           child: SvgPicture.asset(src),//src es la URL del archivo SVG
         ),
         Container(
-          margin: EdgeInsets.only(top: 25, bottom: 45),
+          margin: const EdgeInsets.only(top: 25, bottom: 45),
           child: Text(
             text, //text es el texto que tendra el container
-            style: TextStyle(
+            style: const TextStyle(
               fontFamily: "Montserrat black",
               color: Colors.white,
               fontWeight: FontWeight.bold,

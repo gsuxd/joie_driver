@@ -46,26 +46,39 @@ class ScreenNotify extends ChangeNotifier {
 final screenProvider = ChangeNotifierProvider((ref) => ScreenNotify());
 final imageProvider = ChangeNotifierProvider((ref) => ImageNotify());
 
-class Body extends ConsumerWidget {
-
-  Widget cargando = Text("");
+class Body extends ConsumerStatefulWidget {
   RegisterUser user;
-  Body(this.user);
+
+  Body({required this.user});
+  @override
+  _Body createState() => _Body(this.user);
+}
+
+
+class _Body extends ConsumerState<Body> {
+
+
+  @override
+  void initState() {
+    super.initState();
+    final value = ref.read(screenProvider);
+    value.setScreen(false, 200, 200);
+  }
+  Widget cargando = const Text("");
+  RegisterUser user;
+  _Body(this.user);
   File? documentId;
   late ImageNotify imageView;
-  @override
-  Widget build(BuildContext context, watch) {
-    EmailNotify  email = watch.watch(emailProvider);
-    ScreenNotify  screen = watch.watch(screenProvider);
-    imageView = watch.watch(imageProvider);
-    CodeNotify  code = watch.watch(codeProvider);
-    email.setEmail(user.email);
-    print(code.value);
-    code.setCode(user.code);
-    print(code.value);
-    return
-      Stack(
 
+  @override
+  Widget build(BuildContext context) {
+    EmailNotify  email = ref.watch(emailProvider);
+    ScreenNotify  screen = ref.watch(screenProvider);
+    imageView = ref.watch(imageProvider);
+    CodeNotify  code = ref.watch(codeProvider);
+    email.setEmail(user.email);
+    code.setCode(user.code);
+    return  Stack(
         children: [
           SizedBox(
             width: double.infinity,
@@ -112,24 +125,22 @@ class Body extends ConsumerWidget {
               ],
             ),
           ),
-                 Visibility(
-                     visible: screen.view,
-                     child: Container(
-                   width: MediaQuery.of(context).size.width,
-                   height: MediaQuery.of(context).size.height,
-                   color: const  Color(0x80000000),
-                 )),
-
-                 Center(
-                  child:
-                    Container(
-                      width: screen.width,
-                      height: screen.height,
-                      child: cargando
-                    ))
+          Visibility(
+              visible: screen.view,
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                color: const  Color(0x80000000),
+              )),
+          Center(
+              child:
+              SizedBox(
+                  width: screen.width,
+                  height: screen.height,
+                  child: cargando
+              ))
         ],
-      )
-      ;
+      );
   }
 
   Future fases() async {
@@ -156,11 +167,11 @@ class Body extends ConsumerWidget {
 
             return HomeScreenUser();
           }else{
-            return OpError(stackTrace: null,);
+            return const OpError(stackTrace: null,);
           }
 
         } else if (snapshot.hasError) {
-           return OpError(stackTrace: null,);
+           return const OpError(stackTrace: null,);
         } else {
             return Container (
               height: 200.0,
@@ -171,7 +182,7 @@ class Body extends ConsumerWidget {
                   top: MediaQuery.of(context).size.height*.25,
                   bottom: MediaQuery.of(context).size.height*.25,
               ),
-              child: CircularProgressIndicator(
+              child: const CircularProgressIndicator(
                 strokeWidth: 8,
               ),
             );
@@ -188,13 +199,12 @@ class Body extends ConsumerWidget {
       return true;
     }on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
+
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+
       }
       return false;
     } catch (e) {
-      print(e);
       return false;
     }
   }
@@ -226,8 +236,7 @@ class Body extends ConsumerWidget {
         // UploadTask uploadTaskAntecedent = doc1.putFile(user.documentAntecedentes!);
         await uploadDocumentId.whenComplete((){ });
         await uploadPhotoProfile.whenComplete((){ });
-        // await uploadTaskAntecedent.whenComplete((){ });
-        // String url = imgUrl.ref.getDownloadURL().toString();
+
         return true;
       }on FirebaseAuthException catch(error){
         print(error.code);

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import '../conts.dart';
 import '../share/components/body.dart';
 import '../size_config.dart';
@@ -20,8 +19,6 @@ class _ComparteYGanaState extends State<ComparteYGana> {
       type: MaterialType.transparency,
       child: Scaffold(
         //Este sccafoldKey en el const.dart
-//late GlobalKey<ScaffoldState>? scaffoldKey;
-
         key: scaffoldKey,
         body: Body(),
       ),

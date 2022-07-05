@@ -17,8 +17,7 @@ Expanded texto() {
       "Condiciones de acceso y uso:",
     ),
     parrafo(
-      "Mediante su acceso y uso de los Servicios usted acuerda vincularse jurídicamente por estas Condiciones, que establecen una relación contractual entre usted y Joie Driver. Si usted no acepta estas Condiciones, no podrá acceder o usar los Servicios. Estas Condiciones sustituyen expresamente los acuerdos o compromisos previos con usted. Joie Driver podrá poner fin de inmediato a estas Condiciones o cualquiera de los Servicios respecto de usted o, en general, dejar de ofrecer o denegar el acceso a los Servicios o cualquier parte de ellos, en cualquier momento y por cualquier motivo.",
-    ),
+      'Mediante su acceso y uso de los Servicios usted acuerda vincularse jurídicamente por estas Condiciones, que establecen una relación contractual entre usted y Joie Driver. Si usted no acepta estas Condiciones, no podrá acceder o usar los Servicios. Estas Condiciones sustituyen expresamente los acuerdos o compromisos previos con usted. Joie Driver podrá poner fin de inmediato a estas Condiciones o cualquiera de los Servicios respecto de usted o, en general, dejar de ofrecer o denegar el acceso a los Servicios o cualquier parte de ellos, en cualquier momento y por cualquier motivo.'    ),
     parrafo(
       "Se podrán aplicar condiciones suplementarias a determinados Servicios, como políticas para un evento, una actividad o una promoción particular, y dichas condiciones suplementarias se le comunicarán en relación con los Servicios aplicables. Las condiciones suplementarias se establecen además de las Condiciones, y se considerarán una parte de estas, para los fines de los Servicios aplicables. Las condiciones suplementarias prevalecerán sobre las Condiciones en el caso de conflicto con respecto a los Servicios aplicables.",
     ),

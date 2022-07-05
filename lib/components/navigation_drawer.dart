@@ -15,11 +15,11 @@ class NavigationDrawer extends StatelessWidget {
           SizedBox(
             height: getPropertieScreenHeight(12),
           ),
-          ProfileCard(),
+          const ProfileCard(),
           SizedBox(
             height: getPropertieScreenHeight(12),
           ),
-          Divider(),
+          const Divider(),
           SizedBox(
             height: getPropertieScreenHeight(12),
           ),

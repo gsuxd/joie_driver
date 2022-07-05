@@ -3,9 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:joiedriver/register_login_chofer/splash/splash_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_player/video_player.dart';
-import 'choose/choose.dart';
 import 'colors.dart';
 import 'generated/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -71,6 +71,9 @@ class _MyHomePageState extends State<MyHomePage> {
         _controller.setLooping(true);
         // Ensure the first frame is shown after the video is initialized.
       });
+    setState(() {
+
+    });
     fetchUserOrder(context, 0.0, 0.0);
   }
   @override
@@ -147,7 +150,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   MaterialPageRoute(
                     //builder: (context) => MapaMenu(longitude: longitude, latitude: latitude,))));
                       //builder: (context) => SplashScreen()
-                      builder: (context) =>  const ChooseScreen()
+                      builder: (context) =>  const SplashScreen()
                   )
               );
             }

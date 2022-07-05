@@ -9,6 +9,8 @@ import 'package:permission_handler/permission_handler.dart';
 class HomeScreenUser extends StatefulWidget {
   static String routeName = '/home';
 
+  HomeScreenUser({Key? key}) : super(key: key);
+
   @override
   State<HomeScreenUser> createState() => _HomeScreenState();
 }
@@ -24,7 +26,7 @@ class _HomeScreenState extends State<HomeScreenUser> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('En Desarrollo'),
+        title: const Text('En Desarrollo'),
       ),
       drawer: const NavigationDrawer(),
       body: ComparteYGana(),

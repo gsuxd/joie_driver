@@ -9,7 +9,6 @@ class EmailNotify extends ChangeNotifier {
 
   void setEmail(String email) {
     _email = email;
-    print("$_email");
     notifyListeners();
   }
 }
@@ -21,7 +20,6 @@ class CodeNotify extends ChangeNotifier {
 
   void setCode(String code) {
     _code = code;
-    print("$_code");
     notifyListeners();
   }
 }
