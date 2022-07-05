@@ -72,7 +72,9 @@ const String error = 'assets/icons/error.svg';
 const String recargar = 'assets/icons/recargar.svg';
 const String share = 'assets/icons/refiere-y-gana.svg';
 const String edad = 'assets/icons/edad.svg';
-
+const String profilePhoto = 'assets/icons/profile_photo.svg';
+const String cedularImg = 'assets/icons/cedulaR.svg';
+const String cedulaImg = 'assets/icons/cedula.svg';
 //Imagenes de prueba
 const String chica2 = 'assets/images/girld2.jpg';
 const String estrella3 = 'assets/images/estrella3.png';

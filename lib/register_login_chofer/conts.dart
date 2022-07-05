@@ -71,6 +71,11 @@ const String error = 'assets/icons/error.svg';
 const String recargar = 'assets/icons/recargar.svg';
 const String share = 'assets/icons/refiere-y-gana.svg';
 const String edad = 'assets/icons/edad.svg';
+const String profilePhoto = 'assets/icons/profile_photo.svg';
+const String document_id = 'assets/icons/document_id.svg';
+const String cedulaImg = 'assets/icons/cedula.svg';
+const String cedularImg = 'assets/icons/cedulaR.svg';
+const String licenciaImg = 'assets/icons/licencia.svg';
 
 //Imagenes de prueba
 const String chica2 = 'assets/images/girld2.jpg';
@@ -88,9 +93,47 @@ List splashD = [
   {"text": "Llega a todas partes con nosotros", "image": ilus3},
 ];
 
-//Desplegable del Genero
-List<String> generoList = ['Hombre', 'Mujer'];
+//datos de banco
+const String cedulaNull = "Por favor ingresa tu número de cédula";
+const String cedulaError = "Por favor ingresa un número de cédula correcto";
+const String cuentaNull = "Por favor ingresa tu número de cuenta";
+const String cuentaError = "Por favor ingresa un número de cuenta válido";
+String? cedula;
+String? numberAccount;
+const String bancoIcon = 'assets/icons/banco.svg';
+const String cedulaIcon = 'assets/icons/ceduladeidentidad.svg';
+const String tipodeCuenta = 'assets/icons/tipodecuenta.svg';
+late final String controllerTextDate;
 String vista = 'Selecciona tu genero';
+String vistaCuenta = 'Selecciona tu banco';
+String vistaTipo = 'Selecciona el tipo';
+late String bancoFinal;
+late String tipoCuentaValor;
+List<String> generoList = ['Hombre', 'Mujer'];
+List<String> tipoCuenta = ['Corriente', 'Ahorro'];
+const String bogotaBank = 'assets/images/bogotabank.svg';
+const String bancolombia = 'assets/images/bancolombia.svg';
+const String bbva = 'assets/images/bbva.svg';
+const String colpatria = 'assets/images/colpatria.svg';
+const String davivienda = 'assets/images/Davivienda.svg';
+const String nequi = 'assets/images/nequi.svg';
+const String cash = 'assets/images/cash.png';
+List<String> banco = [
+  bancolombia,
+  bogotaBank,
+  bbva,
+  colpatria,
+  davivienda,
+  nequi,
+];
+List bancos = [
+  {"id": 0, "image": bancolombia},
+  {"id": 1, "image": bogotaBank},
+  {"id": 2, "image": bbva},
+  {"id": 3, "image": colpatria},
+  {"id": 4, "image": davivienda},
+  {"id": 5, "image": nequi}
+];
 const String genero = 'assets/icons/genero.svg';
 //Mensajes de error de login
 final RegExp emailValidator =
@@ -196,6 +239,9 @@ final List<String> errors = [];
 final formKey = GlobalKey<FormState>();
 final emailController = TextEditingController();
 final passwordController = TextEditingController();
+final TextEditingController controllerTextCedula = TextEditingController();
+final TextEditingController controllerTextName = TextEditingController();
+final TextEditingController controllerTextNumber = TextEditingController();
 final codeProvider = ChangeNotifierProvider((ref) => CodeNotify());
 final emailProvider = ChangeNotifierProvider((ref) => EmailNotify());
 bool mensajeRequest = false;

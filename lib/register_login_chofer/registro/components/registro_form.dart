@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import '../../../components/default_button_chofer.dart';
 import '../../../register_login_chofer/profile_photo/profile_photo.dart';
 import '../../conts.dart';
+import '../../datos_bancos/datos_banco.dart';
 import '../../size_config.dart';
 import '../../../components/error_form.dart';
 import 'package:date_field/date_field.dart';
@@ -129,12 +130,17 @@ class _RegistroFormState extends State<RegistroForm> {
                             documentAntecedentes: null,
                             genero: sexo!,
                             code: hash.hash.toString(),
-                            photoPerfil: null
+                            photoPerfil: null,
+                            cedula: null,
+                            cedulaR: null,
+                            licencia: null,
+                            licenciaR: null,
                         );
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ProfilePhoto(user)));
+                                //builder: (context) => ProfilePhoto(user)));
+                                builder: (context) => const DatosBanco()));
                       } else if (e.code == 'wrong-password') {
                         showToast("El Email Ya Esta Registrado.\nIntente Iniciar Sesion o \nRecuperar la Contraseña");
                       }

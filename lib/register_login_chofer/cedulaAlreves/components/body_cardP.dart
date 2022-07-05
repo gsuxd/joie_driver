@@ -2,8 +2,8 @@ import 'package:joiedriver/register_login_chofer/registro/user_data_register.dar
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../components/default_button_chofer.dart';
-import '../../cedula/cedula.dart';
 import '../../conts.dart';
+import '../../licencia/licencia.dart';
 import '../../size_config.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -17,7 +17,7 @@ class Body extends StatefulWidget {
 class _Body extends State<Body> {
   RegisterUser user;
   _Body(this.user);
-  File? phofilePhoto;
+  File? cedulaR;
   late Widget imageWiew ;
   @override
   void initState() {
@@ -48,7 +48,7 @@ class _Body extends State<Body> {
             ),
           ),
           Text(
-            'Fotografía de tu rostro',
+            'Fotografía Trasera de tu Cédula',
             style: heading2,
             textAlign: TextAlign.center,
           ),
@@ -58,14 +58,12 @@ class _Body extends State<Body> {
               child: ButtonDefChofer(
                   text: 'Siguiente',
                   press: () {
-                    if(user.photoPerfil != null){
+                    if(user.cedulaR != null){
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Cedula(user)));
+                              builder: (context) => Licencia(user)));
                     }
-
-                    //Navigator.pushNamed(context, PropiedadScreen.routeName);
                   })),
           const Spacer(),
         ],
@@ -76,7 +74,7 @@ class _Body extends State<Body> {
   Future getImage () async {
     ImagePicker imegaTemp = ImagePicker();
     var tempImage = await imegaTemp.pickImage(source: ImageSource.camera);
-    phofilePhoto =  File(tempImage!.path);
+    cedulaR =  File(tempImage!.path);
     setState(()  {
 
       imageWiew = cambiarmage();
@@ -86,12 +84,12 @@ class _Body extends State<Body> {
 
   Widget cambiarmage(){
 
-    if(phofilePhoto != null){
-      user.photoPerfil = phofilePhoto;
-      return  Image.file(phofilePhoto!, height: SizeConfig.screenHeight * 0.50);
+    if(cedulaR != null){
+      user.cedulaR = cedulaR;
+      return  Image.file(cedulaR!, height: SizeConfig.screenHeight * 0.50);
     }else{
-      user.photoPerfil = null;
-      return SvgPicture.asset(profilePhoto, height: SizeConfig.screenHeight * 0.50);
+      user.cedulaR = null;
+      return SvgPicture.asset(cedularImg, height: SizeConfig.screenHeight * 0.50);
     }
   }
 }

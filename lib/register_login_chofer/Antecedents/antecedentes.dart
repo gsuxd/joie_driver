@@ -36,4 +36,3 @@ class _AntecedentsScreen extends State<AntecedentsScreen> {
     );
   }
 }
-//para probar

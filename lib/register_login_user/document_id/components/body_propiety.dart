@@ -15,7 +15,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ImageNotify extends ChangeNotifier {
-  Widget _image = SvgPicture.asset(document_id, height: SizeConfig.screenHeight * 0.50);
+  Widget _image = SvgPicture.asset(cedularImg, height: SizeConfig.screenHeight * 0.50);
 
   Widget get widget => _image;
 
@@ -67,7 +67,7 @@ class _Body extends ConsumerState<Body> {
   Widget cargando = const Text("");
   RegisterUser user;
   _Body(this.user);
-  File? documentId;
+  File? cedulaR;
   late ImageNotify imageView;
 
   @override
@@ -104,7 +104,7 @@ class _Body extends ConsumerState<Body> {
                   ),
                 ),
                 Text(
-                  'Toma una Foto a tu Identificación',
+                  'Fotografía Trasera de tu Cédula',
                   style: heading2,
                   textAlign: TextAlign.center,
                 ),
@@ -115,7 +115,7 @@ class _Body extends ConsumerState<Body> {
                         text: 'Registrar',
                         press:  () async {
                           //lleva al Home
-                          if(user.documentId != null){
+                          if(user.cedulaR != null){
                             cargando = await londing();
                             screen.setScreen(true, MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
                           }
@@ -162,7 +162,6 @@ class _Body extends ConsumerState<Body> {
       future: fases(), // a previously-obtained Future<String> or null
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
-          print(snapshot.data);
           if(snapshot.data){
 
             return HomeScreenUser();
@@ -228,18 +227,21 @@ class _Body extends ConsumerState<Body> {
 
   Future<bool> upload() async {
       try{
-        Reference img = FirebaseStorage.instance.ref().child(user.email).child('/DocumentId.jpg');
+        Reference img = FirebaseStorage.instance.ref().child(user.email).child('/Cedula.jpg');
+        Reference img1 = FirebaseStorage.instance.ref().child(user.email).child('/CedulaR.jpg');
         Reference img2 = FirebaseStorage.instance.ref().child(user.email).child('/ProfilePhoto.jpg');
         // Reference doc1 = FirebaseStorage.instance.ref().child(user.email).child('/Antecent.pdf');
-        UploadTask uploadDocumentId = img.putFile(user.documentId!);
+        UploadTask uploadCedula = img.putFile(user.documentId!);
+        UploadTask uploadCedulaR = img1.putFile(user.cedulaR!);
         UploadTask uploadPhotoProfile = img2.putFile(user.photoPerfil!);
         // UploadTask uploadTaskAntecedent = doc1.putFile(user.documentAntecedentes!);
-        await uploadDocumentId.whenComplete((){ });
+        await uploadCedula.whenComplete((){ });
+        await uploadCedulaR.whenComplete((){ });
         await uploadPhotoProfile.whenComplete((){ });
+
 
         return true;
       }on FirebaseAuthException catch(error){
-        print(error.code);
         return false;
     }
   }
@@ -247,18 +249,17 @@ class _Body extends ConsumerState<Body> {
   Future getImage () async {
     ImagePicker imegaTemp = ImagePicker();
     var tempImage = await imegaTemp.pickImage(source: ImageSource.camera);
-    documentId =  File(tempImage!.path);
+    cedulaR =  File(tempImage!.path);
     imageView.setImage(cambiarmage());
   }
 
   Widget cambiarmage(){
-
-    if(documentId != null){
-      user.documentId = documentId;
-      return  Image.file(documentId!, height: SizeConfig.screenHeight * 0.50);
+    if(cedulaR != null){
+      user.cedulaR = cedulaR;
+      return  Image.file(cedulaR!, height: SizeConfig.screenHeight * 0.50);
     }else{
-      user.documentId = null;
-      return SvgPicture.asset(document_id, height: SizeConfig.screenHeight * 0.50);
+      user.cedulaR = null;
+      return SvgPicture.asset(cedularImg, height: SizeConfig.screenHeight * 0.50);
     }
   }
 }

@@ -122,7 +122,8 @@ class _RegistroFormState extends State<RegistroForm> {
                             photoPerfil: null,
                             documentAntecedentes: null,
                             genero: sexo!,
-                            code: hash.hash.toString()
+                            code: hash.hash.toString(),
+                            cedulaR: null,
                         );
                         Navigator.push(
                             context,

@@ -241,15 +241,30 @@ class _Body extends ConsumerState<Body> {
         Reference img = FirebaseStorage.instance.ref().child(user.email).child('/Vehicle.jpg');
         Reference img2 = FirebaseStorage.instance.ref().child(user.email).child('/TarjetaPropiedad.jpg');
         Reference img3 = FirebaseStorage.instance.ref().child(user.email).child('/ProfilePhoto.jpg');
-        Reference doc1 = FirebaseStorage.instance.ref().child(user.email).child('/Antecent.pdf');
+        Reference img4 = FirebaseStorage.instance.ref().child(user.email).child('/Cedula.jpg');
+        Reference img5 = FirebaseStorage.instance.ref().child(user.email).child('/CedulaR.jpg');
+        Reference img6 = FirebaseStorage.instance.ref().child(user.email).child('/Licencia.jpg');
+
         UploadTask uploadTaskCartaPropiedad = img.putFile(user.documentVehicle!);
         UploadTask uploadTaskTarjetaPropiedad = img2.putFile(user.documentTarjetaPropiedad!);
         UploadTask uploadTaskProfilePhoto = img3.putFile(user.photoPerfil!);
-        UploadTask uploadTaskAntecedent = doc1.putFile(user.documentAntecedentes!);
+        UploadTask uploadTaskCedula = img4.putFile(user.documentVehicle!);
+        UploadTask uploadTaskCedulaR = img5.putFile(user.documentVehicle!);
+        UploadTask uploadTaskLicencia = img6.putFile(user.documentVehicle!);
+
+        if(user.documentAntecedentes != null){
+          Reference doc1 = FirebaseStorage.instance.ref().child(user.email).child('/Antecent.pdf');
+          UploadTask uploadTaskAntecedent = doc1.putFile(user.documentAntecedentes!);
+          await uploadTaskAntecedent.whenComplete((){ });
+        }
+
         await uploadTaskCartaPropiedad.whenComplete((){ });
         await uploadTaskTarjetaPropiedad.whenComplete((){ });
         await uploadTaskProfilePhoto.whenComplete((){ });
-        await uploadTaskAntecedent.whenComplete((){ });
+        await uploadTaskCedula.whenComplete((){ });
+        await uploadTaskCedulaR.whenComplete((){ });
+        await uploadTaskLicencia.whenComplete((){ });
+
         return true;
       }on FirebaseAuthException catch(error){
         return false;

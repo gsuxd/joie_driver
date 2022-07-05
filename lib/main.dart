@@ -70,11 +70,10 @@ class _MyHomePageState extends State<MyHomePage> {
         _controller.play();
         _controller.setLooping(true);
         // Ensure the first frame is shown after the video is initialized.
+        setState(() {});
+        fetchUserOrder(context, 0.0, 0.0);
       });
-    setState(() {
 
-    });
-    fetchUserOrder(context, 0.0, 0.0);
   }
   @override
   Widget build(BuildContext context) {
@@ -142,7 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // Imagine that this function is fetching user info from another service or database.
     return Future.delayed(
 
-        const Duration(milliseconds: 7000),
+        const Duration(seconds: 7),
             () {
             _controller.dispose();
               Navigator.push(

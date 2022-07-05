@@ -16,6 +16,10 @@ class RegisterUser {
   File? documentTarjetaPropiedad;
   File? documentAntecedentes ;
   File? photoPerfil;
+  File? cedula;
+  File? cedulaR;
+  File? licencia;
+  File? licenciaR;
 
   RegisterUser( {
     required this.name,
@@ -34,6 +38,10 @@ class RegisterUser {
     required this.documentTarjetaPropiedad,
     required this.documentAntecedentes,
     required this.photoPerfil,
+    required this.cedula,
+    required this.cedulaR,
+    required this.licencia,
+    required this.licenciaR
   });
 
 

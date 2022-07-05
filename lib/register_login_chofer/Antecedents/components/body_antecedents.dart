@@ -51,7 +51,7 @@ class _Body extends State<Body> {
             ),
           ),
           Text(
-            'Adjunta tus antescedentes penales',
+            'Adjunta tus antescedentes Penales (Opcional)',
             style: heading2,
             textAlign: TextAlign.center,
           ),
@@ -61,14 +61,10 @@ class _Body extends State<Body> {
               child: ButtonDefChofer(
                   text: 'Siguiente',
                   press: () {
-                    //Navigator.pushNamed(context, CardPropierty.routeName);
-                    if(user.documentAntecedentes != null){
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => CardPropierty(user)));
-                    }
-
                   })),
           const Spacer(),
         ],

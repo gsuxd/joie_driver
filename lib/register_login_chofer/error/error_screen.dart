@@ -14,7 +14,7 @@ class OpError extends StatelessWidget {
     SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Error de Operación',
         ),
         centerTitle: true,
