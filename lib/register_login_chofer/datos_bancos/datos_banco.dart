@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import '../../register_login_chofer/registro/user_data_register.dart';
 import 'components/body_banco.dart';
 
 
 class DatosBanco extends StatelessWidget {
-  static String routeName = '/datos_banco';
-  const DatosBanco({Key? key}) : super(key: key);
+  RegisterUser user;
+  DatosBanco(this.user, {Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,7 @@ class DatosBanco extends StatelessWidget {
             icon: const Icon(Icons.keyboard_arrow_left)),
         title: const Text('Completar Perfil'),
       ),
-      body: const Body(),
+      body: Body(user),
     );
   }
 }

@@ -4,17 +4,24 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:joiedriver/components/default_button_chofer.dart';
 import '../../../components/error_form.dart';
 import '../../../register_login_chofer/size_config.dart';
+import '../../../register_login_chofer/registro/user_data_register.dart';
+import '../../../register_login_chofer/profile_photo/profile_photo.dart';
 import '../../conts.dart';
 
 
 class BancoForm extends StatefulWidget {
-  const BancoForm({Key? key}) : super(key: key);
+  RegisterUser user;
+  BancoForm(this.user, {Key? key}) : super(key: key);
+
 
   @override
-  State<BancoForm> createState() => _BancoFormState();
+  State<BancoForm> createState() => _BancoFormState(user);
 }
 
 class _BancoFormState extends State<BancoForm> {
+  RegisterUser user;
+  _BancoFormState(this.user);
+
   final List<String> errors = [];
   String? tipoCuenta2;
   String? bancoChofer;
@@ -52,7 +59,20 @@ class _BancoFormState extends State<BancoForm> {
         spaceMedium(),
         FormError(errors: errors),
         spaceMedium(),
-        ButtonDefChofer(text: 'Siguiente', press: (){},)
+        ButtonDefChofer(
+          text: 'Siguiente',
+          press: (){
+            user.nameComplete = controllerTextName.text;
+            user.numberBank = controllerTextNumber.text;
+            user.numberCi = controllerTextCedula.text;
+            user.bank = bancoChofer;
+            user.typeBank = tipoCuenta2;
+            user.dateCi = controllerTextDate;
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfilePhoto(user)));
+        },)
       ],
     );
   }
@@ -252,17 +272,17 @@ class _BancoFormState extends State<BancoForm> {
         onChanged: (value) {
           setState(() {
             String name = "Selecciona tu Banco";
-            if(value == "assets/images/nequi.svg"){
+            if(value == nequi){
               name = "NEQUI";
-            }else if(value == "assets/images/bancolombia.svg"){
+            }else if(value == bancolombia){
               name = "Bancolombia";
-            }else if(value == "assets/images/bbva.svg"){
+            }else if(value == bbva){
               name = "BBVA";
-            }else if(value == "assets/images/bogotabank.svg"){
+            }else if(value == bogotaBank){
               name = "Banco de Bogotá";
-            }else if(value == "assets/images/colpatria.svg"){
+            }else if(value == colpatria){
               name = "ColPatria";
-            }else if(value == "assets/images/Davivienda.svg"){
+            }else if(value == davivienda){
               name = "Davivienda";
             }
             vistaCuenta = name;
@@ -323,7 +343,6 @@ class _BancoFormState extends State<BancoForm> {
           ]),
         ),
         focusColor: jBase,
-
         alignment: Alignment.centerRight,
         //icon:
         iconSize: 6,

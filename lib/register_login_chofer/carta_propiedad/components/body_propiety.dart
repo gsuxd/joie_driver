@@ -222,6 +222,12 @@ class _Body extends ConsumerState<Body> {
               'address' : user.address,
               'parent' : user.referenceCode,
               'code' : user.code,
+              'nameComplete' : user.nameComplete,
+              'number_bank' : user.numberBank,
+              'number_ci' : user.numberCi,
+              'type_bank' : user.typeBank,
+              'bank' : user.bank,
+              'date_ci' : user.dateCi,
               'vehicle': {
                 'default' : {
                   'year': 0,

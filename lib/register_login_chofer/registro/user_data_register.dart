@@ -12,6 +12,12 @@ class RegisterUser {
   final String date;
   final String password;
   final String genero;
+  String? nameComplete;
+  String? numberCi;
+  String? dateCi;
+  String? bank;
+  String? typeBank;
+  String? numberBank;
   File? documentVehicle;
   File? documentTarjetaPropiedad;
   File? documentAntecedentes ;
@@ -41,7 +47,13 @@ class RegisterUser {
     required this.cedula,
     required this.cedulaR,
     required this.licencia,
-    required this.licenciaR
+    required this.licenciaR,
+    required this.nameComplete,
+    required this.numberCi,
+    required this.dateCi,
+    required this.bank,
+    required this.typeBank,
+    required this.numberBank,
   });
 
 

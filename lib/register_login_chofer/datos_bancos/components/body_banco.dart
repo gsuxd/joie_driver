@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
-
 import '../../../register_login_chofer/conts.dart';
 import '../../../register_login_chofer/size_config.dart';
+import '../../../register_login_chofer/registro/user_data_register.dart';
 import 'form_datos.dart';
 
 class Body extends StatefulWidget {
-  const Body({Key? key}) : super(key: key);
+  RegisterUser user;
+  Body(this.user, {Key? key}) : super(key: key);
+
 
   @override
-  State<Body> createState() => _BodyState();
+  State<Body> createState() => _BodyState(user);
 }
 
 class _BodyState extends State<Body> {
+  RegisterUser user;
+  _BodyState(this.user);
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -32,9 +36,9 @@ class _BodyState extends State<Body> {
               SizedBox(
                 height: SizeConfig.screenHeight * 0.03,
               ),
-              Padding(
+               Padding(
                 padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                child: BancoForm(),
+                child: BancoForm(user),
               ),
               const SizedBox(
                 height: 20.0,

@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../components/default_button_chofer.dart';
-import '../../../register_login_chofer/profile_photo/profile_photo.dart';
 import '../../conts.dart';
 import '../../datos_bancos/datos_banco.dart';
 import '../../size_config.dart';
@@ -134,13 +133,18 @@ class _RegistroFormState extends State<RegistroForm> {
                             cedula: null,
                             cedulaR: null,
                             licencia: null,
-                            licenciaR: null,
+                            licenciaR: null, bank: null,
+                            numberBank: null,
+                            dateCi: null,
+                            nameComplete: null,
+                            numberCi: null,
+                            typeBank: null,
                         );
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                                 //builder: (context) => ProfilePhoto(user)));
-                                builder: (context) => const DatosBanco()));
+                                builder: (context) =>  DatosBanco(user)));
                       } else if (e.code == 'wrong-password') {
                         showToast("El Email Ya Esta Registrado.\nIntente Iniciar Sesion o \nRecuperar la Contraseña");
                       }
