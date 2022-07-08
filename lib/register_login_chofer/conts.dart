@@ -118,20 +118,45 @@ const String colpatria = 'assets/images/colpatria.svg';
 const String davivienda = 'assets/images/Davivienda.svg';
 const String nequi = 'assets/images/nequi.svg';
 const String cash = 'assets/images/cash.png';
+const String avvillas = 'assets/images/avvillas.svg';
+const String bancamia = 'assets/images/Bancamía.svg';
+const String bancoAgrario = 'assets/images/banco_agrario.svg';
+const String bancoAvDibas = 'assets/images/banco_Av_Dibas.svg';
+const String bancoCajaSocial = 'assets/images/banco_caja_social.svg';
+const String bancoCoopCentral = 'assets/images/banco_Cooperativo_Coopcentral.svg';
+const String credifinanciera = 'assets/images/banco_Credifinanciera.svg';
+const String bancodeOccidente = 'assets/images/banco_de_occidente.svg';
+const String falabella = 'assets/images/Banco_Falabella.svg';
+const String finandia = 'assets/images/Banco_Finandina.svg';
+const String itau = 'assets/images/banco_Itau.svg';
+const String pichincha = 'assets/images/banco_Pichincha.svg';
+const String bpc = 'assets/images/banco_polular_de_colombia.svg';
+const String bancoW = 'assets/images/banco_W.svg';
+const String bancoOmeva = 'assets/images/Bancoomeva.svg';
+const String bancoldex = 'assets/images/Bancoldex.svg';
 List<String> banco = [
   bancolombia,
   bogotaBank,
   bbva,
   colpatria,
   davivienda,
+  avvillas,
+  bancamia,
+  bancoAgrario,
+  bancoCajaSocial,
+  bancoCoopCentral,
+  credifinanciera,
+  bancodeOccidente,
+  falabella,
+  finandia,
+  itau,
+  pichincha,
+  bpc,
+  bancoW,
+  bancoOmeva,
+  bancoldex,
 ];
-List bancos = [
-  {"id": 0, "image": bancolombia},
-  {"id": 1, "image": bogotaBank},
-  {"id": 2, "image": bbva},
-  {"id": 3, "image": colpatria},
-  {"id": 4, "image": davivienda},
-];
+
 const String genero = 'assets/icons/genero.svg';
 //Mensajes de error de login
 final RegExp emailValidator =

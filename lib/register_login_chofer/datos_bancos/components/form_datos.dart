@@ -281,6 +281,50 @@ class _BancoFormState extends State<BancoForm> {
               name = "ColPatria";
             }else if(value == davivienda){
               name = "Davivienda";
+            }else if (value == avvillas) {
+              name = 'Bnaco AV Villas';
+            } else
+            if (value == bancamia) {
+              name = 'Bancamía';
+            } else
+            if (value == bancoAgrario) {
+              name = 'Banco Agrario';
+            } else
+            if (value == bancoCajaSocial) {
+              name = 'Banco Caja Social';
+            } else
+            if (value == bancoCoopCentral) {
+              name = 'Banco Cooperativo Coopcentral';
+            }else
+            if (value == credifinanciera) {
+              name = 'Banco Credifinaciera';
+            }else
+            if (value == bancodeOccidente) {
+              name = 'Banco de Occidente';
+            }else
+            if (value == falabella) {
+              name = 'Banco Falabella';
+            }else
+            if (value == finandia) {
+              name = 'Banco Finandina';
+            }else
+            if (value == itau) {
+              name = 'Banco Itaú';
+            }else
+            if (value == pichincha) {
+              name = 'Banco Pichincha';
+            }else
+            if (value == bpc) {
+              name = 'Banco Popular de Colombia';
+            }else
+            if (value == bancoW) {
+              name = 'BancoW';
+            }else
+            if (value == bancoOmeva) {
+              name = 'Bancoomeva';
+            }else
+            if (value == bancoldex) {
+              name = 'Bancoldex';
             }
             vistaCuenta = name;
             bancoChofer = name;
