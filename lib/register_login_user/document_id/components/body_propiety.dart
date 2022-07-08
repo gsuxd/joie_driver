@@ -119,7 +119,6 @@ class _Body extends ConsumerState<Body> {
                             cargando = await londing();
                             screen.setScreen(true, MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
                           }
-                          //Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
                         })),
                 const Spacer(),
               ],

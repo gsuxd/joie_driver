@@ -103,7 +103,7 @@ String? numberAccount;
 const String bancoIcon = 'assets/icons/banco.svg';
 const String cedulaIcon = 'assets/icons/ceduladeidentidad.svg';
 const String tipodeCuenta = 'assets/icons/tipodecuenta.svg';
-late final String controllerTextDate;
+String controllerTextDate = "0";
 String vista = 'Selecciona tu genero';
 String vistaCuenta = 'Selecciona tu banco';
 String vistaTipo = 'Selecciona el tipo';
@@ -124,7 +124,6 @@ List<String> banco = [
   bbva,
   colpatria,
   davivienda,
-  nequi,
 ];
 List bancos = [
   {"id": 0, "image": bancolombia},
@@ -132,7 +131,6 @@ List bancos = [
   {"id": 2, "image": bbva},
   {"id": 3, "image": colpatria},
   {"id": 4, "image": davivienda},
-  {"id": 5, "image": nequi}
 ];
 const String genero = 'assets/icons/genero.svg';
 //Mensajes de error de login

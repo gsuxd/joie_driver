@@ -234,7 +234,6 @@ class _BancoFormState extends State<BancoForm> {
         hintText: 'Ingrese la fecha de emisión de la cédula',
       ),
       mode: DateTimeFieldPickerMode.date,
-      autovalidateMode: AutovalidateMode.always,
       firstDate: DateTime(1942, 01, 01),
       lastDate: DateTime.now(),
       initialDate: DateTime(1984, 01, 01),
@@ -272,9 +271,7 @@ class _BancoFormState extends State<BancoForm> {
         onChanged: (value) {
           setState(() {
             String name = "Selecciona tu Banco";
-            if(value == nequi){
-              name = "NEQUI";
-            }else if(value == bancolombia){
+            if(value == bancolombia){
               name = "Bancolombia";
             }else if(value == bbva){
               name = "BBVA";

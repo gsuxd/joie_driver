@@ -6,13 +6,6 @@ import '../../../components/states/states.dart';
 import '../../conts.dart';
 import '../../size_config.dart';
 
-// class Body extends StatefulWidget {
-//   Body({Key? key}) : super(key: key);
-//
-//   @override
-//   State<Body> createState() => _BodyState();
-// }
-
 class ScreenNotify extends ChangeNotifier {
 
   String _text = "Invita a un parcero";
@@ -32,6 +25,8 @@ class ScreenNotify extends ChangeNotifier {
 final screenProvider = ChangeNotifierProvider((ref) => ScreenNotify());
 
 class Body extends ConsumerWidget {
+  const Body({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context, watch) {
     CodeNotify  code = watch.watch(codeProvider);
@@ -41,11 +36,11 @@ class Body extends ConsumerWidget {
       child: ListView(
         children: [
           Container(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
               left: 15,
               right: 35,
             ),
-            margin: EdgeInsets.only(
+            margin: const EdgeInsets.only(
               top: 12,
             ),
             alignment: Alignment.center,
@@ -60,7 +55,7 @@ class Body extends ConsumerWidget {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(
+            margin: const EdgeInsets.only(
               top: 25,
               bottom: 25,
             ),
@@ -90,11 +85,11 @@ class Body extends ConsumerWidget {
             alignment: Alignment.center,
             width: getPropertieScreenWidth(300),
             height: getPropertieScreenHeight(80),
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: 18,
               vertical: 5,
             ),
-            margin: EdgeInsets.only(
+            margin: const EdgeInsets.only(
               top: 5,
               bottom: 5,
             ),
@@ -105,14 +100,14 @@ class Body extends ConsumerWidget {
                 Text(
                   code.value,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(
-                  'Comparte tu código de invitación',
+                const Text(
+                  'Bienvenido',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,
@@ -133,38 +128,19 @@ class Body extends ConsumerWidget {
               ),
               borderRadius: BorderRadius.circular(50),
             ),
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: 25,
               vertical: 15,
             ),
-            child: GestureDetector(
-                onTap: ()  async {
-                  screen.setScreen("Copiado" ,Colors.transparent);
-                  Clipboard.setData(new ClipboardData(text: code.value));
-                  // if (await Vibration.hasAmplitudeControl()) {
-                  // Vibration.vibrate(amplitude: 128, duration: 600);
-                  // }
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('Codigo Copiado'),
-                      // action: SnackBarAction(
-                      //   label: 'Action',
-                      //   onPressed: () {
-                      //     // Code to execute.
-                      //   },
-                      // ),
-                    ),
-                  );
-                },
-                child: Text(
-                  screen._text,
+            child: const Text(
+                  'Disfruta de JoieDriver',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: jBase,
                     fontSize: 20,
                     fontWeight: FontWeight.w900,
                   ),
-                )),
+                ),
           ),
         ],
       ),
