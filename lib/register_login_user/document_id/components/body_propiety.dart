@@ -49,7 +49,7 @@ final imageProvider = ChangeNotifierProvider((ref) => ImageNotify());
 class Body extends ConsumerStatefulWidget {
   RegisterUser user;
 
-  Body({required this.user});
+  Body({Key? key, required this.user}) : super(key: key);
   @override
   _Body createState() => _Body(this.user);
 }

@@ -24,7 +24,7 @@ class _TerminosCondicionesState extends State<TerminosCondiciones> {
         title: const Text("Terminos y Condiciones"),
         leading:
         Container(
-          padding: EdgeInsets.all(5.0),
+          padding: const EdgeInsets.all(5.0),
           child: GestureDetector(
               onTap: (){
                 Navigator.pop(context);
@@ -70,7 +70,7 @@ class _TerminosCondicionesState extends State<TerminosCondiciones> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => Registro()));
+                          builder: (context) => const Registro()));
                 } : null),
                 child: const Text("continuar"),
               ),

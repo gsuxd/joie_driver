@@ -3,13 +3,18 @@ import 'package:flutter/material.dart';
 import '/components/navigation_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  String codeLogin;
+   HomeScreen(this.codeLogin, {Key? key}) : super(key: key);
+
+
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState(codeLogin);
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String codeLogin;
+  _HomeScreenState(this.codeLogin);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('En Desarrollo'),
       ),
       drawer: const NavigationDrawer(),
-      body: ComparteYGana(),
+      body:  ComparteYGana(codeLogin),
     );
   }
 }

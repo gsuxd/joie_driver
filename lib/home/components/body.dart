@@ -3,10 +3,11 @@ import '../../register_login_chofer/share/comparte.dart';
 
 
 class Body extends StatelessWidget {
-  const Body({Key? key}) : super(key: key);
+  String codeLogin;
+   Body(this.codeLogin, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ComparteYGana();
+    return ComparteYGana(codeLogin);
   }
 }

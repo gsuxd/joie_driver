@@ -60,7 +60,7 @@ class _BodyState extends State<Body> {
               //Conductor: Aca llamamos a la función selectType() que tendrá como parámetros: la funcion al presionar, la URL del archivo SVG, y el texto que contendra
               selectType(() => { Navigator.push( context, MaterialPageRoute(builder: (context) => const LognInScreen()))}, "assets/icons/conductor.svg", "Conductor"),
               //Usuario: Aca llamamos a la función selectType() que tendrá como parámetros: la funcion al presionar, la URL del archivo SVG, y el texto que contendra
-              selectType(() => { Navigator.push( context, MaterialPageRoute(builder: (context) => const LognInScreenUser()))}, "assets/icons/usuarios.svg", "Usuario"),
+              selectType(() => { Navigator.push( context, MaterialPageRoute(builder: (context) => const LognInScreenUser()))}, "assets/icons/pasajero.svg", "Usuario"),
             ],
           ),
         ],

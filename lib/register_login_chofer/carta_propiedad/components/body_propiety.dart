@@ -168,7 +168,7 @@ class _Body extends ConsumerState<Body> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           if(snapshot.data){
-            return const HomeScreen();
+            return HomeScreen(user.code);
           }else{
             return const OpError(stackTrace: null,);
           }

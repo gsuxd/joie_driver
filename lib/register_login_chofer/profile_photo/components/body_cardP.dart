@@ -11,12 +11,12 @@ class Body extends StatefulWidget {
   RegisterUser  user;
   Body(this.user, {Key? key}) : super(key: key);
   @override
-  createState() =>  _Body(user);
+  createState() =>  BodyE(user);
 }
 
-class _Body extends State<Body> {
+class BodyE extends State<Body> {
   RegisterUser user;
-  _Body(this.user);
+  BodyE(this.user);
   File? phofilePhoto;
   late Widget imageWiew ;
   @override

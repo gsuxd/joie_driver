@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:archive/archive.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../../components/default_button_chofer.dart';
@@ -9,7 +10,7 @@ import '../../conts.dart';
 import '/register_login_chofer/sign_in/components/fogot.dart';
 
 class SignInForm extends StatefulWidget {
-  SignInForm({Key? key}) : super(key: key);
+  const SignInForm({Key? key}) : super(key: key);
 
   @override
   State<SignInForm> createState() => _SignInForm();
@@ -95,10 +96,15 @@ class _SignInForm extends State<SignInForm> {
                           email: _email.text.toString(),
                           password: _password.text.toString()
                       );
+                      Iterable<String> binarys = _email.text.codeUnits.map((int strInt) => strInt.toRadixString(2));
+                      Crc32 hash =  Crc32();
+                      for (var i in binarys) {
+                        hash.add([int.parse(i)]);
+                      }
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => HomeScreen()));
+                              builder: (context) =>  HomeScreen(hash.hash.toString())));
                     } on FirebaseAuthException catch (e) {
                       if (e.code == 'user-not-found') {
                         showToast("Este Email no esta registrado");

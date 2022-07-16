@@ -74,7 +74,7 @@ const String edad = 'assets/icons/edad.svg';
 const String profilePhoto = 'assets/icons/profile_photo.svg';
 const String document_id = 'assets/icons/document_id.svg';
 const String cedulaImg = 'assets/icons/cedula.svg';
-const String cedularImg = 'assets/icons/cedulaR.svg';
+const String cedularImg = 'assets/icons/cedula_reverso.svg';
 const String licenciaImg = 'assets/icons/licencia.svg';
 
 //Imagenes de prueba
@@ -182,13 +182,6 @@ const String carModelError = "Por favor ingresa el modelo de tu vehículo";
 const String carPlacaError = "Por favor ingresa la placa de tu vehículo";
 const String nickNameError = "Por favor ingresa el nombre de usuario";
 const String nickNameErrorMach = "Este usuario ya existe";
-
-//Iconos fijos
-// arrowBack = IconButton(
-//   onPressed: () {
-//     Navigator.pop(context);
-//   },
-//   icon: const Icon(Icons.keyboard_arrow_left));
 
 //Temas fijos de titulos, headings que se usarán siempre
 

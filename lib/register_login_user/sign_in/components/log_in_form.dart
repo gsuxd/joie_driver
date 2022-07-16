@@ -9,7 +9,7 @@ import '../../conts.dart';
 import '/register_login_user/sign_in/components/fogot.dart';
 
 class SignInForm extends StatefulWidget {
-  SignInForm({Key? key}) : super(key: key);
+  const SignInForm({Key? key}) : super(key: key);
 
   @override
   State<SignInForm> createState() => _SignInForm();
@@ -102,7 +102,7 @@ class _SignInForm extends State<SignInForm> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => HomeScreen()));
+                              builder: (context) => HomeScreen("Bienvenido")));
                     } on FirebaseAuthException catch (e) {
                       if (e.code == 'user-not-found') {
                         showToast("Este Email no esta registrado");

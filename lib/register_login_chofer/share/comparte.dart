@@ -4,14 +4,17 @@ import '../share/components/body.dart';
 import '../size_config.dart';
 
 class ComparteYGana extends StatefulWidget {
-  static String routeName = '/comparte';
-  ComparteYGana({Key? key}) : super(key: key);
+  String codeLogin;
+  ComparteYGana(this.codeLogin, {Key? key}) : super(key: key);
+
 
   @override
-  _ComparteYGanaState createState() => _ComparteYGanaState();
+  _ComparteYGanaState createState() => _ComparteYGanaState(codeLogin);
 }
 
 class _ComparteYGanaState extends State<ComparteYGana> {
+  String codeLogin;
+  _ComparteYGanaState(this.codeLogin);
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -20,7 +23,7 @@ class _ComparteYGanaState extends State<ComparteYGana> {
       child: Scaffold(
         //Este sccafoldKey en el const.dart
         key: scaffoldKey,
-        body: Body(),
+        body:  Body(codeLogin),
       ),
     );
   }

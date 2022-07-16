@@ -25,12 +25,16 @@ class ScreenNotify extends ChangeNotifier {
 final screenProvider = ChangeNotifierProvider((ref) => ScreenNotify());
 
 class Body extends ConsumerWidget {
-  const Body({Key? key}) : super(key: key);
+  String codeLogin;
+  Body(this.codeLogin, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, watch) {
     CodeNotify  code = watch.watch(codeProvider);
     ScreenNotify  screen = watch.watch(screenProvider);
+    if(code.value == 'Code'){
+      code.setCode(codeLogin);
+    }
     return SafeArea(
       minimum: EdgeInsets.all(getPropertieScreenWidth(10)),
       child: ListView(
