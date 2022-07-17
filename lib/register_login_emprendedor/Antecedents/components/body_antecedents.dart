@@ -112,7 +112,7 @@ class _Body extends ConsumerState<Body> {
                     height: SizeConfig.screenHeight * 0.1,
                     child: IconButton(
                       onPressed: getImage,
-                      icon: SvgPicture.asset(camara),
+                      icon: SvgPicture.asset(adjun),
                     ),
                   ),
                   Text(

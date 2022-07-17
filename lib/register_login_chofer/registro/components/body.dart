@@ -30,23 +30,6 @@ class Body extends StatelessWidget {
             SizedBox(
               height: getPropertieScreenHeight(18),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SocialCard(
-                  press: () {},
-                  icon: twitter,
-                ),
-                SocialCard(
-                  press: () {},
-                  icon: facebook,
-                ),
-                SocialCard(
-                  press: () {},
-                  icon: google,
-                ),
-              ],
-            ),
             SizedBox(
               height: getPropertieScreenHeight(20),
             ),
