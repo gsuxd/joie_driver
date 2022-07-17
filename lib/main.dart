@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:joiedriver/register_login_chofer/splash/splash_screen.dart';
+import 'package:joiedriver/register_login_chofer/theme.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_player/video_player.dart';
 import 'colors.dart';
@@ -39,6 +40,28 @@ class MyApp extends StatelessWidget {
             GlobalWidgetsLocalizations.delegate,
           ],
       title: 'Conductores',
+      theme: ThemeData(
+        scaffoldBackgroundColor: Colors.white,
+        fontFamily: "Montserrat",
+        appBarTheme: const AppBarTheme(
+            centerTitle: true,
+            backgroundColor: Colors.white,
+            elevation: 0,
+            iconTheme: IconThemeData(
+              color: Color(0xFF005EA8),
+            ),
+            titleTextStyle: TextStyle(
+              color: Color(0xFF005EA8),
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              fontStyle: FontStyle.normal,
+            )),
+        inputDecorationTheme: inputDecorationTheme(),
+        textTheme: const TextTheme(
+          bodyText1: TextStyle(color: Color.fromARGB(255, 6, 38, 63)),
+          bodyText2: TextStyle(color: Color.fromARGB(255, 6, 38, 63)),
+        ),
+      ),
 
       home: const MyHomePage(title: 'JoieDriver',),
     );

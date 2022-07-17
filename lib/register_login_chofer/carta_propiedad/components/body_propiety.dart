@@ -294,6 +294,4 @@ class _Body extends ConsumerState<Body> {
       return SvgPicture.asset(carnetPropiedad, height: SizeConfig.screenHeight * 0.50);
     }
   }
-
-
 }

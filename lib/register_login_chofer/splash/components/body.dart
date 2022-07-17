@@ -4,6 +4,7 @@ import '../../conts.dart';
 import '../../size_config.dart';
 import 'default_button.dart';
 import 'splash_components.dart';
+import 'package:transition_customer/transition_customer.dart';
 
 class Body extends StatefulWidget {
   const Body({Key? key}) : super(key: key);
@@ -52,11 +53,13 @@ class _BodyState extends State<Body> {
                     const Spacer(flex: 2),
                     ButtonDef(
                       press: () {
-                        //Navigator.pushNamed(context, LognInScreen.routename);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ChooseScreen()));
+                        TransitionCustomer(
+                            context: context, //BuildContext
+                            child: const ChooseScreen(),   //Página Widget
+                            animation: AnimationType.fadeIn, //Tipo de animación
+                            duration: const Duration(milliseconds: 400 ), //Milisegundos de duración
+                            replacement: false //Reemplazamiento de página
+                        );
                       },
                       text: "Empieza",
                     ),

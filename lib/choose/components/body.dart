@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:transition_customer/transition_customer.dart';
 import '../../register_login_chofer/sign_in/log_in.dart';
+import '../../register_login_emprendedor/sign_in/log_in.dart';
 import '../../register_login_user/sign_in/log_in.dart';
 class Body extends StatefulWidget {
   const Body({Key? key}) : super(key: key);
@@ -60,7 +62,26 @@ class _BodyState extends State<Body> {
               //Conductor: Aca llamamos a la función selectType() que tendrá como parámetros: la funcion al presionar, la URL del archivo SVG, y el texto que contendra
               selectType(() => { Navigator.push( context, MaterialPageRoute(builder: (context) => const LognInScreen()))}, "assets/icons/conductor.svg", "Conductor"),
               //Usuario: Aca llamamos a la función selectType() que tendrá como parámetros: la funcion al presionar, la URL del archivo SVG, y el texto que contendra
-              selectType(() => { Navigator.push( context, MaterialPageRoute(builder: (context) => const LognInScreenUser()))}, "assets/icons/pasajero.svg", "Usuario"),
+              selectType(() => {
+                TransitionCustomer(
+                  context: context, //BuildContext
+                  child: const LognInScreenUser(),   //Página Widget
+                  animation: AnimationType.fadeIn, //Tipo de animación
+                  duration: const Duration(milliseconds: 400 ), //Milisegundos de duración
+                replacement: false //Reemplazamiento de página
+                )
+              }, "assets/icons/pasajero.svg", "Usuario"),
+
+              //registro de emprendedor
+              selectType(() => {
+                TransitionCustomer(
+                    context: context, //BuildContext
+                    child: const LognInScreenEmprendedor(),   //Página Widget
+                    animation: AnimationType.fadeIn, //Tipo de animación
+                    duration: const Duration(milliseconds: 400 ), //Milisegundos de duración
+                    replacement: false //Reemplazamiento de página
+                )
+              }, "assets/icons/usuarios.svg", "Emprendedor"),
             ],
           ),
         ],
