@@ -254,9 +254,9 @@ class _Body extends ConsumerState<Body> {
         UploadTask uploadTaskCartaPropiedad = img.putFile(user.documentVehicle!);
         UploadTask uploadTaskTarjetaPropiedad = img2.putFile(user.documentTarjetaPropiedad!);
         UploadTask uploadTaskProfilePhoto = img3.putFile(user.photoPerfil!);
-        UploadTask uploadTaskCedula = img4.putFile(user.documentVehicle!);
-        UploadTask uploadTaskCedulaR = img5.putFile(user.documentVehicle!);
-        UploadTask uploadTaskLicencia = img6.putFile(user.documentVehicle!);
+        UploadTask uploadTaskCedula = img4.putFile(user.cedula!);
+        UploadTask uploadTaskCedulaR = img5.putFile(user.cedulaR!);
+        UploadTask uploadTaskLicencia = img6.putFile(user.licencia!);
 
         if(user.documentAntecedentes != null){
           Reference doc1 = FirebaseStorage.instance.ref().child(user.email).child('/Antecent.pdf');

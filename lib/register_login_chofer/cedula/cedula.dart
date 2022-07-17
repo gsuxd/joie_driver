@@ -7,7 +7,7 @@ import '/register_login_chofer/cedula/components/body_cardP.dart';
 
 class Cedula extends StatelessWidget {
   RegisterUser user;
-  Cedula(this.user);
+  Cedula(this.user, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
