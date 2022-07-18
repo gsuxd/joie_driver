@@ -43,6 +43,7 @@ class _BancoFormState extends State<BancoForm> {
 
   @override
   Widget build(BuildContext context) {
+    controllerTextName.text = user.name + " " + user.lastName;
     return Column(
       children: [
         nombreCompletoFormField(),
