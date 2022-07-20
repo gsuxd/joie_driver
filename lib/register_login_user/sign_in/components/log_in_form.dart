@@ -16,6 +16,7 @@ class SignInForm extends StatefulWidget {
 }
 
 class _SignInForm extends State<SignInForm> {
+  bool isHiddenPassword = true;
   final List<String> errors = [];
   final _formKey = GlobalKey<FormState>();
   final _email = TextEditingController();
@@ -31,7 +32,6 @@ class _SignInForm extends State<SignInForm> {
     }
   }
 
-  @override
   void removeError({required String error}) {
     if (errors.contains(error)) {
       setState(() {
@@ -130,7 +130,7 @@ class _SignInForm extends State<SignInForm> {
   Widget _inputPassword() {
     return TextFormField(
       controller: _password,
-      obscureText: true,
+      obscureText: isHiddenPassword,
       onChanged: (password) {
         if (password.isNotEmpty && errors.contains(passNull)) {
           removeError(error: passNull);
@@ -162,14 +162,21 @@ class _SignInForm extends State<SignInForm> {
               getPropertieScreenWidth(18),
               getPropertieScreenWidth(18),
             ),
-            child: Icon(
-              Icons.key,
-              size: getPropertieScreenWidth(18),
+            child: GestureDetector(
+              onTap: statePassword,
+              child: Icon(
+                isHiddenPassword ? Icons.visibility : Icons.visibility_off,
+                size: getPropertieScreenWidth(18),
+              ),
             ),
           )),
     );
   }
-
+  void statePassword() {
+    setState(() {
+      isHiddenPassword = !isHiddenPassword;
+    });
+  }
   Widget _inputEmail() {
     return TextFormField(
       controller: _email,
