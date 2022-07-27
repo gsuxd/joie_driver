@@ -30,7 +30,7 @@ Future<void> main() async {
       if (event != null) {
         await registerSingleton();
       } else {
-        if (GetIt.I.isRegistered<UserData>()) {
+        if (GetIt.I.isRegistered<UserData>() && FirebaseAuth.instance.currentUser != null) {
           GetIt.I.unregister<UserData>();
         }
       }
