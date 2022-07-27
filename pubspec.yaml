@@ -1,0 +1,181 @@
+name: joiedriver
+description: App Driver
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+version: 1.0.17+17
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+# Dependencies specify other packages that your package needs in order to work.
+# To automatically upgrade your package dependencies to the latest versions
+# consider running `flutter pub upgrade --major-versions`. Alternatively,
+# dependencies can be manually updated by changing the version numbers below to
+# the latest version available on pub.dev. To see which dependencies have newer
+# versions available, run `flutter pub outdated`.
+dependencies:
+  flutter:
+    sdk: flutter
+
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.2
+  transition_customer: ^0.0.5
+  google_maps_flutter: ^2.1.0
+  permission_handler: ^8.2.6
+  geolocator: ^7.7.1
+  fluttertoast: ^8.0.8
+  flutter_svg: ^1.0.3
+  syncfusion_flutter_charts: ^19.3.54
+  video_player:
+  firebase_database:
+  firebase_core:
+  intl: ^0.17.0
+  archive: ^3.3.0
+  image_picker:
+  file_picker:
+  flutter_riverpod:
+  firebase_storage:
+  date_field: ^3.0.1
+  firebase_auth:
+  cloud_firestore:
+  flutter_localizations:
+    sdk: flutter
+  get_it: ^7.2.0
+  flutter_bloc: ^8.0.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # The "flutter_lints" package below contains a set of recommended lints to
+  # encourage good coding practices. The lint set provided by the package is
+  # activated in the `analysis_options.yaml` file located at the root of your
+  # package. See that file for information about deactivating specific lint
+  # rules and activating additional ones.
+  flutter_lints: ^1.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/images/estrella5.png
+    - assets/images/A.png
+    - assets/images/B.png
+    - assets/images/estrella3.png
+    - assets/images/mapa.png
+    - assets/images/perfil_principal.svg
+    - assets/images/inicio.svg
+    - assets/images/ingresos.svg
+    - assets/images/historial.svg
+    - assets/images/historial2.svg
+    - assets/images/perfil.svg
+    - assets/images/girld2.jpg
+    - assets/images/auto.png
+    - assets/images/asistencia_tecnica.svg
+    - assets/images/profile.svg
+    - assets/images/recargar.svg
+    - assets/images/notificaciones.svg
+    - assets/images/share.svg
+    - assets/images/location.svg
+    - assets/images/request.svg
+    - assets/images/coches-en-el-mapa.png
+    - assets/images/iconito.png
+    - assets/images/especial.svg
+    - assets/images/puntoA.svg
+    - assets/images/puntoB.svg
+    - assets/images/tarifa.svg
+    - assets/images/usuario.svg
+    - assets/images/n_pasajeros.svg
+    - assets/images/estrella_vacia.svg
+    - assets/images/estrella.svg
+    - assets/images/pensando.gif
+    - assets/images/feliz.gif
+    - assets/images/moderado.gif
+    - assets/images/molesto.gif
+    - assets/images/llamar.svg
+    - assets/videos/video.mp4
+    - assets/images/cancelar_carrera.svg
+    - assets/images/genero.svg
+    - assets/images/edad.svg
+    - assets/images/correo.svg
+    - assets/images/nombre_y_apellido.svg
+    - assets/images/ciudad.svg
+    - assets/images/chica_asistencia_tecnica.svg
+    - assets/images/chica_asistencia_tecnica.png
+    - assets/images/outline_add_a_photo_black_24dp.png
+    - assets/images/foto_de_perfil.svg
+    - assets/images/perfil_de_auto.svg
+    - assets/images/color.svg
+    - assets/images/modelo.svg
+    - assets/images/placa.svg
+    - assets/images/capacidad.svg
+    - assets/images/otros.svg
+    - assets/images/se_reinicia_mi_cuenta.svg
+    - assets/images/problemas_de_geo_localizacion.svg
+    - assets/images/no_puedo_pedir_carro.svg
+    - assets/images/no_puedo_actualizar_mis_datos.svg
+    - assets/images/mi_calificacion_esta_mal.svg
+    - assets/images/imagenasistencia.png
+    - assets/images/imagenasistencia.svg
+    - assets/images/
+    - assets/icons/
+
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware.
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/assets-and-images/#from-packages
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  fonts:
+    - family: Futura
+      fonts:
+        - asset: assets/fonts/Futura/futura-bold_[allfont.es].ttf
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/Nunito-Bold.ttf
+    - family: Monserrat
+      fonts:
+        - asset: assets/fonts/Montserrat-Regular.ttf
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/custom-fonts/#from-packages
