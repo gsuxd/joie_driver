@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:archive/archive.dart';
+import 'package:flutter/foundation.dart';
 import 'package:joiedriver/register_login_emprendedor/registro/user_data_register.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../components/default_button_emprendedor.dart';
 import '../../conts.dart';
 import '../../datos_bancos/datos_banco.dart';
@@ -27,6 +29,7 @@ class _RegistroFormState extends State<RegistroForm> {
   final TextEditingController _controllerTextReferenceCode = TextEditingController();
   final TextEditingController _controllerTextPhone = TextEditingController();
   final TextEditingController _controllerTextAddress = TextEditingController();
+  final TextEditingController _controllerTextCity = TextEditingController();
   final TextEditingController _controllerTextPlaca = TextEditingController();
   final TextEditingController _controllerTextMarca = TextEditingController();
   String? _controllerTextDate;
@@ -70,6 +73,8 @@ class _RegistroFormState extends State<RegistroForm> {
         spaceMedium(),
         addressFormField(),
         spaceMedium(),
+        cityFormField(),
+        spaceMedium(),
         emailFormField(),
         spaceMedium(),
         passwordField(),
@@ -90,31 +95,42 @@ class _RegistroFormState extends State<RegistroForm> {
 
               if( sexo != null && _controllerTextDate != null){
                 if(_controllerTextReferenceCode.text.isEmpty){
-                  _controllerTextReferenceCode.text = "3050593811";
-                }
+                  //_controllerTextReferenceCode.text = "3050593811";
+                  showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                      content: alert(),
+                      contentPadding: const EdgeInsets.all(10.0),
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(40.0))
+                      ),
+                      elevation: 48,
+                    ),
+                  );
+                }else{
+                  try {
+                    var result = await  InternetAddress.lookup('google.com');
+                    if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                      try {
+                        await FirebaseAuth.instance.signInWithEmailAndPassword(
+                            email: _email.text.toString(),
+                            password: "SuperSecretPassword!7770#"
+                        );
+                      } on FirebaseAuthException catch (e) {
+                        if (e.code == 'user-not-found') {
+                          //se genera el codigo de referido
+                          Iterable<String> binarys = _email.text.codeUnits.map((int strInt) => strInt.toRadixString(2));
+                          Crc32 hash =  Crc32();
+                          for (var i in binarys) {
+                            hash.add([int.parse(i)]);
+                          }
 
-                try {
-                  var result = await  InternetAddress.lookup('google.com');
-                  if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-                    try {
-                      await FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: _email.text.toString(),
-                          password: "SuperSecretPassword!7770#"
-                      );
-                    } on FirebaseAuthException catch (e) {
-                      if (e.code == 'user-not-found') {
-                        //se genera el codigo de referido
-                        Iterable<String> binarys = _email.text.codeUnits.map((int strInt) => strInt.toRadixString(2));
-                        Crc32 hash =  Crc32();
-                        for (var i in binarys) {
-                          hash.add([int.parse(i)]);
-                        }
-
-                        RegisterUser user = RegisterUser(
+                          RegisterUser user = RegisterUser(
                             name: _controllerTextName.text,
                             lastName: _controllerTextLastName.text,
                             email: _email.text.replaceAll(" ", ""),
                             address: _controllerTextAddress.text,
+                            city: _controllerTextCity.text,
                             referenceCode: _controllerTextReferenceCode.text,
                             phone: _controllerTextPhone.text.replaceAll(" ", ""),
                             placa: _controllerTextPlaca.text,
@@ -133,20 +149,23 @@ class _RegistroFormState extends State<RegistroForm> {
                             nameComplete: null,
                             numberCi: null,
                             typeBank: null,
-                        );
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
+                          );
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
                                 //builder: (context) => ProfilePhoto(user)));
-                                builder: (context) =>  DatosBanco(user)));
-                      } else if (e.code == 'wrong-password') {
-                        showToast("El Email Ya Esta Registrado.\nIntente Iniciar Sesion o \nRecuperar la Contraseña");
+                                  builder: (context) =>  DatosBanco(user)));
+                        } else if (e.code == 'wrong-password') {
+                          showToast("El Email Ya Esta Registrado.\nIntente Iniciar Sesion o \nRecuperar la Contraseña");
+                        }
                       }
                     }
+                  } on SocketException catch (e) {
+                    showToast("Debes tener acceso a internet para registrarte\n" + e.toString());
                   }
-                } on SocketException catch (e) {
-                  showToast("Debes tener acceso a internet para registrarte\n" + e.toString());
                 }
+
+
               }else{
                 if(sexo == null){
                  showToast("Por favor Ingrese su Genero");
@@ -483,22 +502,7 @@ class _RegistroFormState extends State<RegistroForm> {
       textInputAction: TextInputAction.next,
       controller: _controllerTextReferenceCode,
       onSaved: (newValue) => codeRef = newValue,
-      autocorrect: true,
-      onChanged: (value) {
-        if (value.isNotEmpty && errors.contains(codeError)) {
-          removeError(error: codeError);
-          return;
-        }
-        return;
-      },
-      validator: (value) {
-        if (value!.isEmpty && !errors.contains(codeError)) {
-          addError(error: codeError);
-          return;
-        }
-
-        return null;
-      },
+      autocorrect: false,
       keyboardType: const TextInputType.numberWithOptions(signed: true),
       decoration: InputDecoration(
           hintText: "Ingresa el código de Lider",
@@ -600,6 +604,46 @@ class _RegistroFormState extends State<RegistroForm> {
     );
   }
 
+  TextFormField cityFormField() {
+    return TextFormField(
+      textInputAction: TextInputAction.next,
+      controller: _controllerTextCity,
+      onSaved: (newValue) => city = newValue,
+      onChanged: (value) {
+        if (value.isNotEmpty && errors.contains(cityError)) {
+          removeError(error: cityError);
+          return;
+        }
+        return;
+      },
+      validator: (value) {
+        if (value!.isEmpty && !errors.contains(cityError)) {
+          addError(error: cityError);
+          return;
+        }
+
+        return null;
+      },
+      keyboardType: TextInputType.streetAddress,
+      autocorrect: true,
+      decoration: InputDecoration(
+          hintText: "Ingresa tu Ciudad",
+          labelText: "Ciudad",
+          suffixIcon: Padding(
+            padding: EdgeInsets.fromLTRB(
+              0,
+              getPropertieScreenWidth(18),
+              getPropertieScreenWidth(18),
+              getPropertieScreenWidth(18),
+            ),
+            child: Icon(
+              Icons.location_city,
+              size: getPropertieScreenWidth(18),
+            ),
+          )),
+    );
+  }
+
   TextFormField phoneNumberFormField() {
     return TextFormField(
       textInputAction: TextInputAction.next,
@@ -681,5 +725,52 @@ class _RegistroFormState extends State<RegistroForm> {
         _controllerTextDate = value.toString();
       },
     );
+  }
+
+  Widget alert() {
+    return  SizedBox(
+      height: 230,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              ElevatedButton(onPressed: (){
+                Navigator.pop(context);
+              }, child: SvgPicture.asset("assets/icons/x.svg", height: 20,),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.white,
+                  onPrimary: jBase,
+                  shape: const CircleBorder(),
+                  padding: const EdgeInsets.all(0.0),
+                ),
+
+              ),
+              const Text("¿No tienes Código\nde Lider?", style: TextStyle(fontWeight: FontWeight.bold),),
+            ],
+          ),
+          SvgPicture.asset("assets/icons/whatsapp.svg", height: 100,),
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  shape:  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  )
+              ),
+              onPressed: (){
+            _launch("whatsapp://send?text=Saludos me podrían dar información acerca de los códigos dee referidos, voy como Emprendedor&phone=573128423060");
+          }, child: const Text("Contátanos", style: TextStyle(color: Colors.white),))
+        ],
+      ),
+    );
+  }
+
+  _launch(url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      if (kDebugMode) {
+        print("Not supported");
+      }
+    }
   }
 }

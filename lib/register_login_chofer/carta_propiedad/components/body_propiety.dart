@@ -220,6 +220,7 @@ class _Body extends ConsumerState<Body> {
               'gender' : user.genero.toUpperCase(),
               'phone' : user.phone,
               'address' : user.address,
+              'city' : user.city,
               'parent' : user.referenceCode,
               'code' : user.code,
               'nameComplete' : user.nameComplete,

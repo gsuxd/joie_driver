@@ -61,16 +61,17 @@ class _BodyState extends State<Body> {
               ),
               //Conductor: Aca llamamos a la función selectType() que tendrá como parámetros: la funcion al presionar, la URL del archivo SVG, y el texto que contendra
               selectType(() => { Navigator.push( context, MaterialPageRoute(builder: (context) => const LognInScreen()))}, "assets/icons/conductor.svg", "Conductor"),
+
               //Usuario: Aca llamamos a la función selectType() que tendrá como parámetros: la funcion al presionar, la URL del archivo SVG, y el texto que contendra
-              selectType(() => {
-                TransitionCustomer(
-                  context: context, //BuildContext
-                  child: const LognInScreenUser(),   //Página Widget
-                  animation: AnimationType.fadeIn, //Tipo de animación
-                  duration: const Duration(milliseconds: 400 ), //Milisegundos de duración
-                replacement: false //Reemplazamiento de página
-                )
-              }, "assets/icons/pasajero.svg", "Usuario"),
+              //selectType(() => {
+                //TransitionCustomer(
+                  //context: context, //BuildContext
+                  //child: const LognInScreenUser(),   //Página Widget
+                  //animation: AnimationType.fadeIn, //Tipo de animación
+                  //duration: const Duration(milliseconds: 400 ), //Milisegundos de duración
+                //replacement: false //Reemplazamiento de página
+                //)
+              //}, "assets/icons/pasajero.svg", "Usuario"),
 
               //registro de emprendedor
               selectType(() => {

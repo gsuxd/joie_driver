@@ -26,7 +26,7 @@ class _PedidosState extends State<ReportarUsuario> {
   Color color_icon_perfil = blue;
   Color color_icon_ingresos = blue_dark;
   String state = "Calificar";
-  TextEditingController _controllerText = TextEditingController();
+  final TextEditingController _controllerText = TextEditingController();
   int solicitudPedido = 0;
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class _PedidosState extends State<ReportarUsuario> {
               color: Colors.white,
             ),
           ),
-          title: Center(
+          title: const Center(
             child: Text("Calificar", style: TextStyle(fontFamily: "Monserrat", fontWeight: FontWeight.bold, fontSize: 20.0), textAlign: TextAlign.center,),
           ),
           actions: [ConectSwitch(context)],
@@ -61,9 +61,9 @@ class _PedidosState extends State<ReportarUsuario> {
                     Container(
                       width: 20,
                     ),
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width-40,
-                      child: Text("Reportar mal comportamiento de tu pasajero", style: TextStyle(color: Colors.black87, fontFamily: "Monserrat", fontSize: 16.0),),
+                      child: const Text("Reportar mal comportamiento de tu pasajero", style: TextStyle(color: Colors.black87, fontFamily: "Monserrat", fontSize: 16.0),),
                     )
                   ],
                 ),
@@ -127,7 +127,7 @@ class _PedidosState extends State<ReportarUsuario> {
       );
   }
   Widget alert(String title, int category){
-    return Container(
+    return SizedBox(
       height: 200,
       child:
       Column(
@@ -136,13 +136,13 @@ class _PedidosState extends State<ReportarUsuario> {
           Container(
             height: 20.0,
           ),
-          Text("Puedes describirnos la falla", style: TextStyle(color: Colors.black87, fontFamily: "Monserrat", fontSize: 14.0),)
+          const Text("Puedes describirnos la falla", style: TextStyle(color: Colors.black87, fontFamily: "Monserrat", fontSize: 14.0),)
           ,Container(
             height: 90.0,
-            margin: EdgeInsets.only(top:10.0, bottom: 10.0),
-            padding: EdgeInsets.only(left: 5.0, right: 5.0, top: 10.0, bottom: 5.0),
+            margin: const EdgeInsets.only(top:10.0, bottom: 10.0),
+            padding: const EdgeInsets.only(left: 5.0, right: 5.0, top: 10.0, bottom: 5.0),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
               border: Border.all(width: 1, color: blue),
             ),
             child: Align(
@@ -154,7 +154,7 @@ class _PedidosState extends State<ReportarUsuario> {
                 maxLines: 7,
                 keyboardType: TextInputType.multiline,
                 textInputAction: TextInputAction.newline,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   contentPadding: EdgeInsets.all(0),
                   enabledBorder: OutlineInputBorder(
                     gapPadding: 0.01,
@@ -175,7 +175,7 @@ class _PedidosState extends State<ReportarUsuario> {
               Container(
                 width: 10.0,
               ),
-              Container(
+              SizedBox(
                 height: 22,
                 child:
                 ElevatedButton(onPressed: (){Navigator.pop(context); _controllerText.clear();
@@ -185,17 +185,17 @@ class _PedidosState extends State<ReportarUsuario> {
                 },
                   style: ElevatedButton.styleFrom(
                       primary: Colors.grey,
-                      shape: RoundedRectangleBorder(
+                      shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10.0))
                       )
                   ),
-                  child: Center(
+                  child: const Center(
                       child: Text("cancelar", style: TextStyle(color: Colors.white, fontFamily: "Monserrat", fontSize: 12.0, fontWeight: FontWeight.bold),)),
                 ),),
               Container(
                 width: 10.0,
               ),
-              Container(
+              SizedBox(
                 height: 22,
                 child: ElevatedButton(onPressed: (){
                   Query n_reportes = ReporteDaoUsuario.obtenerReporteIndividual("usuarioPrueba333");
@@ -206,11 +206,11 @@ class _PedidosState extends State<ReportarUsuario> {
                   },
                     style: ElevatedButton.styleFrom(
                         primary: blue,
-                        shape: RoundedRectangleBorder(
+                        shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(Radius.circular(10.0))
                         )
                     ),
-                    child: Center(
+                    child: const Center(
                       child: Text("reportar", style: TextStyle(color: Colors.white, fontFamily: "Monserrat", fontSize: 12.0, fontWeight: FontWeight.bold),)
                       ,
                     ) ),
@@ -261,8 +261,8 @@ class _PedidosState extends State<ReportarUsuario> {
         builder: (BuildContext context) => AlertDialog(
 
           content: alert(title, category),
-          contentPadding: EdgeInsets.all(10.0),
-          shape: RoundedRectangleBorder(
+          contentPadding: const EdgeInsets.all(10.0),
+          shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10.0))
           ),
           elevation: 48,
@@ -273,7 +273,7 @@ class _PedidosState extends State<ReportarUsuario> {
           Container(
             width: 20.0,
           ),
-          Text(title, style: TextStyle(color: Colors.black54, fontFamily: "Monserrat", fontSize: 16.0),)
+          Text(title, style: const TextStyle(color: Colors.black54, fontFamily: "Monserrat", fontSize: 16.0),)
         ],
       ),
     );
@@ -291,14 +291,14 @@ class _PedidosState extends State<ReportarUsuario> {
           Container(
             width: 10.0,
           ),
-          Text(title, style: TextStyle(color: Colors.black54, fontFamily: "Monserrat", fontSize: 12.0),)
+          Text(title, style: const TextStyle(color: Colors.black54, fontFamily: "Monserrat", fontSize: 12.0),)
         ],
       ),
     );
   }
 
   Widget bottomNavBar(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Row(
 
@@ -308,14 +308,14 @@ class _PedidosState extends State<ReportarUsuario> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => MyApp()));
+                    builder: (context) => const MyApp()));
           },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding: const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_inicio,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/inicio.svg",
@@ -337,10 +337,10 @@ class _PedidosState extends State<ReportarUsuario> {
           },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding: const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_historial,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/historial2.svg",
@@ -360,10 +360,10 @@ class _PedidosState extends State<ReportarUsuario> {
           },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding: const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_ingresos,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/asistencia_tecnica.svg",
@@ -386,10 +386,10 @@ class _PedidosState extends State<ReportarUsuario> {
           },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding: const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_perfil,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/perfil.svg",

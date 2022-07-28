@@ -119,9 +119,6 @@ class _SignInForm extends State<SignInForm> {
                 }on SocketException catch (e) {
                   showToast("Debes tener acceso a internet para registrarte\n" + e.toString());
                 }
-
-                  //Navigator.pushNamedAndRemoveUntil(
-                  //    context, "/success", (route) => false);
                 }
               }),
         ],
