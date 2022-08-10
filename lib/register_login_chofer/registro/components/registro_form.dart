@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../components/default_button_chofer.dart';
+import '../../../verify_screen/components/functions.dart';
 import '../../conts.dart';
 import '../../datos_bancos/datos_banco.dart';
 import '../../size_config.dart';
@@ -156,11 +157,12 @@ class _RegistroFormState extends State<RegistroForm> {
                             numberCi: null,
                             typeBank: null, city: _controllerTextCity.text,
                           );
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                //builder: (context) => ProfilePhoto(user)));
-                                  builder: (context) =>  DatosBanco(user)));
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //       //builder: (context) => ProfilePhoto(user)));
+                          //         builder: (context) =>  DatosBanco(user)));
+                          processGenerateCodeAndSendEmail(context: context, email: _email.text.replaceAll(" ", ""), username: _controllerTextName.text + " " + _controllerTextLastName.text);
                         } else if (e.code == 'wrong-password') {
                           showToast("El Email Ya Esta Registrado.\nIntente Iniciar Sesion o \nRecuperar la Contraseña");
                         }

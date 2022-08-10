@@ -54,6 +54,7 @@ dependencies:
   firebase_auth:
   cloud_firestore:
   url_launcher: ^6.1.5
+  mailer: ^5.2.0
   flutter_localizations:
     sdk: flutter
 
