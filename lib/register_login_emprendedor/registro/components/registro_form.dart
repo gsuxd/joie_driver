@@ -543,7 +543,7 @@ class _RegistroFormState extends State<RegistroForm> {
         hint:
 
         SizedBox(
-          width: MediaQuery.of(context).size.width-54,
+          width: MediaQuery.of(context).size.width-62,
           child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

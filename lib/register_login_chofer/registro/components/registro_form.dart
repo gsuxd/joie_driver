@@ -550,7 +550,7 @@ class _RegistroFormState extends State<RegistroForm> {
         hint:
 
         SizedBox(
-          width: MediaQuery.of(context).size.width-54,
+          width: MediaQuery.of(context).size.width-62,
           child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -802,6 +802,7 @@ class _RegistroFormState extends State<RegistroForm> {
       // (e?.day ?? 0) == 1 ? 'Por favor ingrese la fecha correcta' : null,
       validator: (date) {
         var diferencia = date?.difference(DateTime.now());
+        print(diferencia?.inDays.toString());
         if(diferencia?.inDays.toInt() != null){
           if(diferencia!.inDays.toInt().abs() < 6573){
             return 'Debes ser mayor de edad para trabajar con nosotros';
@@ -811,6 +812,7 @@ class _RegistroFormState extends State<RegistroForm> {
         return null;
       },
       onDateSelected: (DateTime value) {
+        print(value);
         _controllerTextDate = value.toString();
       },
     );
