@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../register_login_chofer/conts.dart';
-import '../register_login_chofer/registro/registro.dart';
 import '../register_login_chofer/size_config.dart';
+import '../register_login_chofer/termin_y_condiciones/terminos_y_condiciones.dart';
 
 class NoAccountChofer extends StatelessWidget {
   const NoAccountChofer({
@@ -28,7 +28,7 @@ class NoAccountChofer extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => Registro()));
+                    builder: (context) => const TerminosCondiciones()));
           },
           child: Text(
             'Registrate',

@@ -44,7 +44,7 @@ class BodySign extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(
                     horizontal: getPropertieScreenWidth(20)),
-                child: SignInForm(),
+                child: const SignInForm(),
               ),
               SizedBox(
                 height: SizeConfig.screenHeight * 0.02,

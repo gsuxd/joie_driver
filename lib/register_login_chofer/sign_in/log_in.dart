@@ -16,13 +16,13 @@ class LognInScreen extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: const Icon(Icons.keyboard_arrow_left)),
+            icon: const Icon(Icons.keyboard_arrow_left, size: 30,)),
         title: const Text(
           "Iniciar Sesión",
         ),
         centerTitle: true,
       ),
-      body: BodySign(),
+      body: const BodySign(),
     );
   }
 }

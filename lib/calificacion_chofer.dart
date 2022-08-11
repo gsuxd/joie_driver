@@ -1,6 +1,5 @@
 import 'package:joiedriver/pedidos.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
@@ -11,7 +10,9 @@ import 'estatics.dart';
 import 'mapa_principal.dart';
 
 class CalificacionChofer extends StatefulWidget {
-  static const String routeName = '/Register';
+
+
+  const CalificacionChofer({Key? key}) : super(key: key);
   @override
   createState() =>  _CalificacionState();
 }
@@ -46,7 +47,7 @@ class _CalificacionState extends State<CalificacionChofer> {
             ),
           ),
           title: Center(
-            child: Text(state, style: TextStyle(fontFamily: "Monserrat", fontWeight: FontWeight.bold, fontSize: 20.0), textAlign: TextAlign.center,),
+            child: Text(state, style: const TextStyle(fontFamily: "Monserrat", fontWeight: FontWeight.bold, fontSize: 20.0), textAlign: TextAlign.center,),
           ),
           actions: [ConectSwitch(context)],
 
@@ -60,19 +61,19 @@ class _CalificacionState extends State<CalificacionChofer> {
                 Container(
                   height: 30.0,
                 ),
-                Center(
+                const Center(
                   child: Text("Califica a tu conductor", style: TextStyle(color: blue, fontFamily: "Monserrat",fontWeight: FontWeight.bold, fontSize: 18.0),),
                 ),
                 Container(
-                  padding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 5.0, right: 5.0),
-                  margin: EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.only(top: 5.0, bottom: 5.0, left: 5.0, right: 5.0),
+                  margin: const EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                    borderRadius: const BorderRadius.all(Radius.circular(40.0)),
                     border: Border.all( width: 2.0, color: blue_dark),
                   ),
                   child: Row(
                     children: [
-                      CircleAvatar(
+                      const CircleAvatar(
                         radius: 40,
                         backgroundImage: AssetImage("assets/images/girld2.jpg"),
                       ),
@@ -175,12 +176,12 @@ class _CalificacionState extends State<CalificacionChofer> {
                 ),
                 Center(
                   child:
-                  Container(
+                  SizedBox(
                     width: 150,
                     child:   ElevatedButton(onPressed: (){
                       if(calificacion != 0.0) {
                         Query calificacionPonderada = FirebaseDatabase.instance
-                            .reference()
+                            .ref()
                             .child(
                             'calificaciones/$usuarioReceptor/calificacion');
                         calificacionPonderada.get().then((value) =>
@@ -195,7 +196,7 @@ class _CalificacionState extends State<CalificacionChofer> {
                             //side: BorderSide(width: 1, color: Colors.black54),
                           ),
                         ),
-                        child: Text("Siguiente", style: TextStyle(color: Colors.white, fontFamily: "Monserrat",fontWeight: FontWeight.bold, fontSize: 18.0),)
+                        child: const Text("Siguiente", style: TextStyle(color: Colors.white, fontFamily: "Monserrat",fontWeight: FontWeight.bold, fontSize: 18.0),)
                     ),
                   ),
                 ),
@@ -204,7 +205,7 @@ class _CalificacionState extends State<CalificacionChofer> {
                 ),
                 Center(
                   child:
-                  Container(
+                  SizedBox(
                     width: 200,
                     child:   ElevatedButton(onPressed: (){},
                         style: ElevatedButton.styleFrom(
@@ -215,7 +216,7 @@ class _CalificacionState extends State<CalificacionChofer> {
                             //side: BorderSide(width: 1, color: Colors.black54),
                           ),
                         ),
-                        child: Text("Reportar queja", style: TextStyle(color: Colors.white, fontFamily: "Monserrat",fontWeight: FontWeight.bold, fontSize: 18.0),)
+                        child: const Text("Reportar queja", style: TextStyle(color: Colors.white, fontFamily: "Monserrat",fontWeight: FontWeight.bold, fontSize: 18.0),)
                     ),
                   ),
                 ),
@@ -236,16 +237,14 @@ class _CalificacionState extends State<CalificacionChofer> {
   }
 
   obtenerCalificacion(value){
-    if(value == null){
-      value = 0;
-    }
+    value ??= 0;
     double calificacionAnterior = value as double;
 
-    Query n_calificacionPonderada = FirebaseDatabase.instance
-        .reference()
+    Query nCalificacionPonderada = FirebaseDatabase.instance
+        .ref()
         .child(
         'calificaciones/$usuarioReceptor/calificaciones');
-    n_calificacionPonderada.get().then((snapshot) =>
+    nCalificacionPonderada.get().then((snapshot) =>
         ponderarCalificaciones(snapshot, calificacionAnterior));
 
 
@@ -266,7 +265,7 @@ class _CalificacionState extends State<CalificacionChofer> {
     double calificacionPonderadaNew = calificacionPonderada + calificacion;
     double calificacionFinal = calificacionPonderadaNew / (json.length + 1);
     calificacionFinal = double.parse((calificacionFinal).toStringAsFixed(3));
-    print(calificacionFinal);
+
     CalificacionEstrella calificacionBase = CalificacionEstrella(
         usuarioReceptor: usuarioReceptor,
         usuarioEmisor: 'usuarioPrueba',
@@ -286,14 +285,14 @@ class _CalificacionState extends State<CalificacionChofer> {
             width: 40,
             color: Colors.white,
           ),
-          Text(title, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12, fontFamily: "Monserrat"), textAlign: TextAlign.center,)
+          Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12, fontFamily: "Monserrat"), textAlign: TextAlign.center,)
         ],
       ),
     );
   }
 
   Widget bottomNavBar(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Row(
 
@@ -310,10 +309,10 @@ class _CalificacionState extends State<CalificacionChofer> {
           },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding: const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_inicio,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/inicio.svg",
@@ -335,10 +334,10 @@ class _CalificacionState extends State<CalificacionChofer> {
           },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding: const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_historial,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/historial.svg",
@@ -358,10 +357,10 @@ class _CalificacionState extends State<CalificacionChofer> {
           },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding: const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_ingresos,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/ingresos.svg",
@@ -383,10 +382,10 @@ class _CalificacionState extends State<CalificacionChofer> {
           },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding: const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_perfil,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/perfil.svg",

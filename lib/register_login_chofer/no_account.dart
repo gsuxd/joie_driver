@@ -28,7 +28,7 @@ class NoAccount extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => Registro()));
+                    builder: (context) => const Registro()));
           },
           child: Text(
             'Registrate',

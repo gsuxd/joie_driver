@@ -7,7 +7,7 @@ import '/register_login_chofer/profile_photo/components/body_cardP.dart';
 
 class ProfilePhoto extends StatelessWidget {
   RegisterUser user;
-  ProfilePhoto(this.user);
+  ProfilePhoto(this.user, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

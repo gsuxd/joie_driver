@@ -9,7 +9,7 @@ import '/components/default_button.dart';
 import 'dart:io';
 class Body extends StatefulWidget {
   RegisterUser user;
-  Body( RegisterUser this.user);
+  Body( this.user);
   @override
   createState() =>  _Body(this.user);
 }
@@ -17,7 +17,7 @@ class Body extends StatefulWidget {
 
 class _Body extends State<Body> {
   RegisterUser user;
-  _Body( RegisterUser this.user);
+  _Body( this.user);
   File? FileAntecedentes;
   late Widget imageWiew ;
   bool varInit = true;

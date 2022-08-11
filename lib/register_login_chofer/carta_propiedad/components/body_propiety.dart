@@ -43,102 +43,109 @@ class ScreenNotify extends ChangeNotifier {
   }
 }
 
-
-
 final screenProvider = ChangeNotifierProvider((ref) => ScreenNotify());
 final imageProvider = ChangeNotifierProvider((ref) => ImageNotify());
 
-// class Body extends StatefulWidget {
-//   RegisterUser user;
-//   Body(this.user);
-//   @override
-//   createState() =>  _Body(user);
-// }
-
-class Body extends ConsumerWidget {
-
-  Widget cargando = Text("");
+class Body extends ConsumerStatefulWidget {
   RegisterUser user;
-  Body(this.user);
+
+   Body({Key? key, required this.user}) : super(key: key);
+  @override
+  _Body createState() => _Body(this.user);
+}
+
+class _Body extends ConsumerState<Body> {
+
+  @override
+  void initState() {
+    super.initState();
+    final value = ref.read(screenProvider);
+    value.setScreen(false, 200, 200);
+  }
+  Widget cargando = const Text("");
+  RegisterUser user;
+  _Body(this.user);
   File? imagePropiedad;
   late ImageNotify imageView;
+
+
+
   @override
-  Widget build(BuildContext context, watch) {
-    EmailNotify  email = watch.watch(emailProvider);
-    ScreenNotify  screen = watch.watch(screenProvider);
-    imageView = watch.watch(imageProvider);
-    CodeNotify  code = watch.watch(codeProvider);
-    email.setEmail(user.email);
-    print(code.value);
-    code.setCode(user.code);
-    print(code.value);
-    return
-      Stack(
+  Widget build(BuildContext context) {
+    return Consumer(
+      builder: (context, ref, child) {
+        EmailNotify  email = ref.watch(emailProvider);
+        ScreenNotify  screen = ref.watch(screenProvider);
+        imageView = ref.watch(imageProvider);
+        CodeNotify  code = ref.watch(codeProvider);
+        email.setEmail(user.email);
+        code.setCode(user.code);
+        return Stack(
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: Column(
+                  children: [
+                    AppBar(
+                      title: const Text('Por tu seguridad y la nuestra'),
+                      centerTitle: true,
+                    ),
+                    SizedBox(
+                      height: SizeConfig.screenHeight * 0.05,
+                    ),
+                    imageView.widget,
+                    SizedBox(
+                      height: SizeConfig.screenHeight * 0.05,
+                    ),
+                    SizedBox(
+                      width: SizeConfig.screenWidth * 0.2,
+                      height: SizeConfig.screenHeight * 0.1,
+                      child: IconButton(
+                        onPressed: getImage,
+                        icon: SvgPicture.asset(camara),
+                      ),
+                    ),
+                    Text(
+                      'Toma una foto de tu Vehículo',
+                      style: heading2,
+                      textAlign: TextAlign.center,
+                    ),
+                    const Spacer(),
+                    SizedBox(
+                        width: SizeConfig.screenWidth * 0.6,
+                        child: ButtonDefChofer(
+                            text: 'Registrar',
+                            press:  () async {
+                              //lleva al Home
+                              if(user.documentVehicle != null){
+                                cargando = londing();
+                                screen.setScreen(true, MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
+                              }
+                              //Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+                            })),
+                    const Spacer(),
+                  ],
+                ),
+              ),
+              Visibility(
+                  visible: screen.view,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    color: const  Color(0x80000000),
+                  )),
 
-        children: [
-          SizedBox(
-            width: double.infinity,
-            child: Column(
-              children: [
-                AppBar(
-                  title: const Text('Por tu seguridad y la nuestra'),
-                  centerTitle: true,
-                ),
-                SizedBox(
-                  height: SizeConfig.screenHeight * 0.05,
-                ),
-                imageView.widget,
-                SizedBox(
-                  height: SizeConfig.screenHeight * 0.05,
-                ),
-                SizedBox(
-                  width: SizeConfig.screenWidth * 0.2,
-                  height: SizeConfig.screenHeight * 0.1,
-                  child: IconButton(
-                    onPressed: getImage,
-                    icon: SvgPicture.asset(camara),
-                  ),
-                ),
-                Text(
-                  'Toma una foto de tu Vehículo',
-                  style: heading2,
-                  textAlign: TextAlign.center,
-                ),
-                const Spacer(),
-                SizedBox(
-                    width: SizeConfig.screenWidth * 0.6,
-                    child: ButtonDefChofer(
-                        text: 'Registrar',
-                        press:  () async {
-                          //lleva al Home
-                          if(user.documentVehicle != null){
-                            cargando = await londing();
-                            screen.setScreen(true, MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
-                          }
-                          //Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
-                        })),
-                const Spacer(),
-              ],
-            ),
-          ),
-                 Visibility(
-                     visible: screen.view,
-                     child: Container(
-                   width: MediaQuery.of(context).size.width,
-                   height: MediaQuery.of(context).size.height,
-                   color: const  Color(0x80000000),
-                 )),
-
-                 Center(
+              Center(
                   child:
-                    Container(
+                  SizedBox(
                       width: screen.width,
                       height: screen.height,
                       child: cargando
-                    ))
-        ],
-      )
-      ;
+                  ))
+            ],
+          );
+      },
+    );
   }
 
   Future fases() async {
@@ -160,16 +167,13 @@ class Body extends ConsumerWidget {
       future: fases(), // a previously-obtained Future<String> or null
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
-          print(snapshot.data);
           if(snapshot.data){
-
-            return HomeScreen();
+            return HomeScreen(user.code);
           }else{
-            return OpError(stackTrace: null,);
+            return const OpError(stackTrace: null,);
           }
-
         } else if (snapshot.hasError) {
-           return OpError(stackTrace: null,);
+           return const OpError(stackTrace: null,);
         } else {
             return Container (
               height: 200.0,
@@ -180,12 +184,11 @@ class Body extends ConsumerWidget {
                   top: MediaQuery.of(context).size.height*.25,
                   bottom: MediaQuery.of(context).size.height*.25,
               ),
-              child: CircularProgressIndicator(
+              child: const CircularProgressIndicator(
                 strokeWidth: 8,
               ),
             );
         }
-
       },
     );
   }
@@ -197,13 +200,11 @@ class Body extends ConsumerWidget {
       return true;
     }on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
+
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
       }
       return false;
     } catch (e) {
-      print(e);
       return false;
     }
   }
@@ -219,8 +220,15 @@ class Body extends ConsumerWidget {
               'gender' : user.genero.toUpperCase(),
               'phone' : user.phone,
               'address' : user.address,
+              'city' : user.city,
               'parent' : user.referenceCode,
               'code' : user.code,
+              'nameComplete' : user.nameComplete,
+              'number_bank' : user.numberBank,
+              'number_ci' : user.numberCi,
+              'type_bank' : user.typeBank,
+              'bank' : user.bank,
+              'date_ci' : user.dateCi,
               'vehicle': {
                 'default' : {
                   'year': 0,
@@ -240,19 +248,32 @@ class Body extends ConsumerWidget {
         Reference img = FirebaseStorage.instance.ref().child(user.email).child('/Vehicle.jpg');
         Reference img2 = FirebaseStorage.instance.ref().child(user.email).child('/TarjetaPropiedad.jpg');
         Reference img3 = FirebaseStorage.instance.ref().child(user.email).child('/ProfilePhoto.jpg');
-        Reference doc1 = FirebaseStorage.instance.ref().child(user.email).child('/Antecent.pdf');
+        Reference img4 = FirebaseStorage.instance.ref().child(user.email).child('/Cedula.jpg');
+        Reference img5 = FirebaseStorage.instance.ref().child(user.email).child('/CedulaR.jpg');
+        Reference img6 = FirebaseStorage.instance.ref().child(user.email).child('/Licencia.jpg');
+
         UploadTask uploadTaskCartaPropiedad = img.putFile(user.documentVehicle!);
         UploadTask uploadTaskTarjetaPropiedad = img2.putFile(user.documentTarjetaPropiedad!);
         UploadTask uploadTaskProfilePhoto = img3.putFile(user.photoPerfil!);
-        UploadTask uploadTaskAntecedent = doc1.putFile(user.documentAntecedentes!);
+        UploadTask uploadTaskCedula = img4.putFile(user.cedula!);
+        UploadTask uploadTaskCedulaR = img5.putFile(user.cedulaR!);
+        UploadTask uploadTaskLicencia = img6.putFile(user.licencia!);
+
+        if(user.documentAntecedentes != null){
+          Reference doc1 = FirebaseStorage.instance.ref().child(user.email).child('/Antecent.pdf');
+          UploadTask uploadTaskAntecedent = doc1.putFile(user.documentAntecedentes!);
+          await uploadTaskAntecedent.whenComplete((){ });
+        }
+
         await uploadTaskCartaPropiedad.whenComplete((){ });
         await uploadTaskTarjetaPropiedad.whenComplete((){ });
         await uploadTaskProfilePhoto.whenComplete((){ });
-        await uploadTaskAntecedent.whenComplete((){ });
-        // String url = imgUrl.ref.getDownloadURL().toString();
+        await uploadTaskCedula.whenComplete((){ });
+        await uploadTaskCedulaR.whenComplete((){ });
+        await uploadTaskLicencia.whenComplete((){ });
+
         return true;
       }on FirebaseAuthException catch(error){
-        print(error.code);
         return false;
     }
   }

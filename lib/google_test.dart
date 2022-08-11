@@ -23,11 +23,8 @@ class _MapaState extends State<Mapa> {
     return Scaffold(
         backgroundColor: Colors.white,
         //bottomNavigationBar: Save(),
-
         body: MapSample(x: x, y:y));
   }
-
-
 }
 
 class MapSample extends StatefulWidget {
@@ -40,20 +37,19 @@ class MapSample extends StatefulWidget {
 
 class MapSampleState extends State<MapSample> {
 
-  MapSampleState({ required double this.x , required double this.y}){
-  }
+  MapSampleState({ required double this.x , required double this.y}){}
 
   late double x;
   late double y;
   late LatLng coor = LatLng(x, y);
-  Completer<GoogleMapController> _controller = Completer();
+  final Completer<GoogleMapController> _controller = Completer();
 
-  late CameraPosition _kGooglePlex = CameraPosition(
+  late final CameraPosition _kGooglePlex = CameraPosition(
     target: coor,
     zoom: 14.4746,
   );
 
-  static final CameraPosition _kLake = CameraPosition(
+  static const CameraPosition _kLake = CameraPosition(
       bearing: 192.8334901395799,
       target: LatLng(37.43296265331129, -122.08832357078792),
       tilt: 59.440717697143555,
@@ -61,7 +57,7 @@ class MapSampleState extends State<MapSample> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       body: GoogleMap(
         mapType: MapType.normal,
         initialCameraPosition: _kGooglePlex,

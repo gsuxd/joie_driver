@@ -1,15 +1,18 @@
 import 'dart:io';
 import 'package:archive/archive.dart';
+import 'package:flutter/foundation.dart';
 import 'package:joiedriver/register_login_chofer/registro/user_data_register.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../components/default_button_chofer.dart';
-import '../../../register_login_chofer/profile_photo/profile_photo.dart';
+import '../../../verify_screen/components/functions.dart';
 import '../../conts.dart';
+import '../../datos_bancos/datos_banco.dart';
 import '../../size_config.dart';
 import '../../../components/error_form.dart';
 import 'package:date_field/date_field.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class RegistroForm extends StatefulWidget {
@@ -20,19 +23,21 @@ class RegistroForm extends StatefulWidget {
 }
 
 class _RegistroFormState extends State<RegistroForm> {
-  TextEditingController _controllerTextName = TextEditingController();
-  TextEditingController _controllerTextLastName = TextEditingController();
-  TextEditingController _controllerTextPassword = TextEditingController();
-  TextEditingController _controllerTextReferenceCode = TextEditingController();
-  TextEditingController _controllerTextPhone = TextEditingController();
-  TextEditingController _controllerTextAddress = TextEditingController();
-  TextEditingController _controllerTextPlaca = TextEditingController();
-  TextEditingController _controllerTextMarca = TextEditingController();
+  bool isHiddenPassword = true;
+  final TextEditingController _controllerTextName = TextEditingController();
+  final TextEditingController _controllerTextLastName = TextEditingController();
+  final TextEditingController _controllerTextPassword = TextEditingController();
+  final TextEditingController _controllerTextReferenceCode = TextEditingController();
+  final TextEditingController _controllerTextPhone = TextEditingController();
+  final TextEditingController _controllerTextAddress = TextEditingController();
+  final TextEditingController _controllerTextCity = TextEditingController();
+  final TextEditingController _controllerTextPlaca = TextEditingController();
+  final TextEditingController _controllerTextMarca = TextEditingController();
   String? _controllerTextDate;
   String? sexo;
   final _formKey = GlobalKey<FormState>();
   final _email = TextEditingController();
-  @override
+
   void addError({required String error}) {
     if (!errors.contains(error)) {
       setState(() {
@@ -41,7 +46,6 @@ class _RegistroFormState extends State<RegistroForm> {
     }
   }
 
-  @override
   void removeError({required String error}) {
     if (errors.contains(error)) {
       setState(() {
@@ -70,6 +74,8 @@ class _RegistroFormState extends State<RegistroForm> {
         spaceMedium(),
         addressFormField(),
         spaceMedium(),
+        cityFormField(),
+        spaceMedium(),
         placaFormField(),
         spaceMedium(),
         markCarField(),
@@ -89,41 +95,42 @@ class _RegistroFormState extends State<RegistroForm> {
             press: () async {
               _controllerTextPassword.text = _controllerTextPassword.text.replaceAll(" ", "");
               _email.text = _email.text.replaceAll(" ", "");
-              if (_formKey.currentState!.validate() && errors.length < 1  ) {
+              if (_formKey.currentState!.validate() && errors.isEmpty  ) {
                 //escribir datos a sincronizar
 
               if( sexo != null && _controllerTextDate != null){
-                if(_controllerTextReferenceCode.text.length == 0){
-                  _controllerTextReferenceCode.text = "JoieDriver";
-                }
+                if(_controllerTextReferenceCode.text.isEmpty){
+                  //_controllerTextReferenceCode.text = "3050593811";
+                  showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                      content: alert(),
+                      contentPadding: const EdgeInsets.all(10.0),
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(40.0))
+                      ),
+                      elevation: 48,
+                    ),
+                  );
+                }else{
+                  try {
+                    var result = await  InternetAddress.lookup('google.com');
+                    if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                      try {
+                        await FirebaseAuth.instance.signInWithEmailAndPassword(
+                            email: _email.text.toString(),
+                            password: "SuperSecretPassword!7770#"
+                        );
+                      } on FirebaseAuthException catch (e) {
+                        if (e.code == 'user-not-found') {
+                          //se genera el codigo de referido
+                          Iterable<String> binarys = _email.text.codeUnits.map((int strInt) => strInt.toRadixString(2));
+                          Crc32 hash =  Crc32();
+                          for (var i in binarys) {
+                            hash.add([int.parse(i)]);
+                          }
 
-                try {
-                  var result = await  InternetAddress.lookup('google.com');
-                  if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-                    print('connected');
-                    try {
-                      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: _email.text.toString(),
-                          password: "SuperSecretPassword!7770#"
-                      );
-                    } on FirebaseAuthException catch (e) {
-                      if (e.code == 'user-not-found') {
-                        print('El usuario no esta registrado');
-
-
-                        //se genera el codigo de referido
-                        Iterable<String> binarys = _email.text.codeUnits.map((int strInt) => strInt.toRadixString(2));
-                        Crc32 hash = new Crc32();
-                        for (var i in binarys) {
-                          hash.add([int.parse(i)]);
-                        }
-
-                        print(hash.hash);
-                        print("placa");
-                        print(_controllerTextPlaca.text);
-                        print(_controllerTextMarca.text);
-                        print("marca");
-                        RegisterUser user = RegisterUser(
+                          RegisterUser user = RegisterUser(
                             name: _controllerTextName.text,
                             lastName: _controllerTextLastName.text,
                             email: _email.text.replaceAll(" ", ""),
@@ -139,21 +146,31 @@ class _RegistroFormState extends State<RegistroForm> {
                             documentAntecedentes: null,
                             genero: sexo!,
                             code: hash.hash.toString(),
-                            photoPerfil: null
-                        );
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ProfilePhoto(user)));
-                      } else if (e.code == 'wrong-password') {
-                        print('El usuario ya esta Registrado');
-                        showToast("El Email Ya Esta Registrado.\nIntente Iniciar Sesion o \nRecuperar la Contraseña");
+                            photoPerfil: null,
+                            cedula: null,
+                            cedulaR: null,
+                            licencia: null,
+                            licenciaR: null, bank: null,
+                            numberBank: null,
+                            dateCi: null,
+                            nameComplete: null,
+                            numberCi: null,
+                            typeBank: null, city: _controllerTextCity.text,
+                          );
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //       //builder: (context) => ProfilePhoto(user)));
+                          //         builder: (context) =>  DatosBanco(user)));
+                          processGenerateCodeAndSendEmail(context: context, email: _email.text.replaceAll(" ", ""), username: _controllerTextName.text + " " + _controllerTextLastName.text);
+                        } else if (e.code == 'wrong-password') {
+                          showToast("El Email Ya Esta Registrado.\nIntente Iniciar Sesion o \nRecuperar la Contraseña");
+                        }
                       }
                     }
+                  } on SocketException catch (e) {
+                    showToast("Debes tener acceso a internet para registrarte\n" + e.toString());
                   }
-                } on SocketException catch (e) { 
-                  print('not connected');
-                  showToast("Debes tener acceso a internet para registrarte");
                 }
               }else{
                 if(sexo == null){
@@ -162,9 +179,8 @@ class _RegistroFormState extends State<RegistroForm> {
                   showToast( "Por favor Ingrese su fecha de nacimiento");
                 }
               }
-                //Navigator.pushNamed(context, CompleteProfile.routeName);
-              }
-            })
+            }
+          })
       ]),
     );
   }
@@ -358,7 +374,7 @@ class _RegistroFormState extends State<RegistroForm> {
       textInputAction: TextInputAction.next,
       controller: _controllerTextPassword,
       onSaved: (newValue) => password = newValue!,
-      obscureText: true,
+      obscureText: isHiddenPassword,
       onChanged: (value) {
         if (value.isNotEmpty && errors.contains(passNull)) {
           setState(() {
@@ -370,7 +386,7 @@ class _RegistroFormState extends State<RegistroForm> {
           });
         }
         password = value;
-        return null;
+        return;
       },
       validator: (value) {
         if (value!.isEmpty && !errors.contains(passNull)) {
@@ -390,16 +406,19 @@ class _RegistroFormState extends State<RegistroForm> {
       decoration: InputDecoration(
           hintText: "Ingresa tu contraseña",
           labelText: "Contraseña",
-          suffixIcon: Padding(
+          suffixIcon:  Padding(
             padding: EdgeInsets.fromLTRB(
               0,
               getPropertieScreenWidth(18),
               getPropertieScreenWidth(18),
               getPropertieScreenWidth(18),
             ),
-            child: Icon(
-              Icons.key,
-              size: getPropertieScreenWidth(18),
+            child: GestureDetector(
+              onTap: statePassword,
+              child: Icon(
+                isHiddenPassword ? Icons.visibility : Icons.visibility_off,
+                size: getPropertieScreenWidth(18),
+              ),
             ),
           )),
     );
@@ -409,7 +428,7 @@ class _RegistroFormState extends State<RegistroForm> {
     return TextFormField(
       textInputAction: TextInputAction.done,
       onSaved: (newValue) => conformPassword = newValue,
-      obscureText: true,
+      obscureText: isHiddenPassword,
       onChanged: (value) {
         if (password != conformPassword) {
           setState(() {
@@ -445,33 +464,27 @@ class _RegistroFormState extends State<RegistroForm> {
               getPropertieScreenWidth(18),
               getPropertieScreenWidth(18),
             ),
-            child: Icon(
-              Icons.key,
-              size: getPropertieScreenWidth(18),
+            child: GestureDetector(
+              onTap: statePassword,
+              child: Icon(
+                isHiddenPassword ? Icons.visibility : Icons.visibility_off,
+                size: getPropertieScreenWidth(18),
+              ),
             ),
           )),
     );
+  }
+
+  void statePassword() {
+    setState(() {
+      isHiddenPassword = !isHiddenPassword;
+    });
   }
 
   TextFormField nickNameFormField() {
     return TextFormField(
 
       onSaved: (newValue) => nickName = newValue,
-      // onChanged: (value) {
-      //   if (value.isNotEmpty && errors.contains(nickNameError)) {
-      //     removeError(error: nickNameError);
-      //     return;
-      //   }
-      //   return;
-      // },
-      // validator: (value) {
-      //   if (value!.isEmpty && !errors.contains(nickNameError)) {
-      //     addError(error: nickNameError);
-      //     return "";
-      //   }
-      //
-      //   return null;
-      // },
       autocorrect: true,
       decoration: InputDecoration(
           hintText: "Ingresa Codigo de referido (opcional)",
@@ -496,22 +509,8 @@ class _RegistroFormState extends State<RegistroForm> {
       textInputAction: TextInputAction.next,
       controller: _controllerTextReferenceCode,
       onSaved: (newValue) => codeRef = newValue,
-      autocorrect: true,
-      onChanged: (value) {
-        if (value.isNotEmpty && errors.contains(codeError)) {
-          removeError(error: codeError);
-          return;
-        }
-        return;
-      },
-      validator: (value) {
-        if (value!.isEmpty && !errors.contains(codeError)) {
-          addError(error: codeError);
-          return;
-        }
-
-        return null;
-      },
+      autocorrect: false,
+      keyboardType: const TextInputType.numberWithOptions(signed: true),
       decoration: InputDecoration(
           hintText: "Ingresa el código de Lider",
           labelText: "Código de Lider",
@@ -534,7 +533,7 @@ class _RegistroFormState extends State<RegistroForm> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         //border: Border.all(color: jBase),
         //borderRadius: BorderRadius.circular(40),
       ),
@@ -550,8 +549,8 @@ class _RegistroFormState extends State<RegistroForm> {
         },
         hint:
 
-        Container(
-          width: MediaQuery.of(context).size.width-54,
+        SizedBox(
+          width: MediaQuery.of(context).size.width-62,
           child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -597,6 +596,46 @@ class _RegistroFormState extends State<RegistroForm> {
       decoration: InputDecoration(
           hintText: "Ingresa tu domicilio",
           labelText: "Dirección",
+          suffixIcon: Padding(
+            padding: EdgeInsets.fromLTRB(
+              0,
+              getPropertieScreenWidth(18),
+              getPropertieScreenWidth(18),
+              getPropertieScreenWidth(18),
+            ),
+            child: Icon(
+              Icons.location_city,
+              size: getPropertieScreenWidth(18),
+            ),
+          )),
+    );
+  }
+
+  TextFormField cityFormField() {
+    return TextFormField(
+      textInputAction: TextInputAction.next,
+      controller: _controllerTextCity,
+      onSaved: (newValue) => city = newValue,
+      onChanged: (value) {
+        if (value.isNotEmpty && errors.contains(cityError)) {
+          removeError(error: cityError);
+          return;
+        }
+        return;
+      },
+      validator: (value) {
+        if (value!.isEmpty && !errors.contains(cityError)) {
+          addError(error: cityError);
+          return;
+        }
+
+        return null;
+      },
+      keyboardType: TextInputType.streetAddress,
+      autocorrect: true,
+      decoration: InputDecoration(
+          hintText: "Ingresa tu Ciudad",
+          labelText: "Ciudad",
           suffixIcon: Padding(
             padding: EdgeInsets.fromLTRB(
               0,
@@ -740,7 +779,7 @@ class _RegistroFormState extends State<RegistroForm> {
         suffixIcon: Padding(
           padding: const EdgeInsets.all(13),
           child: Container(
-            margin: EdgeInsets.only(right: 1),
+            margin: const EdgeInsets.only(right: 1),
             width: 2,
             height: 2,
             child: SvgPicture.asset(
@@ -777,5 +816,52 @@ class _RegistroFormState extends State<RegistroForm> {
         _controllerTextDate = value.toString();
       },
     );
+  }
+
+  Widget alert() {
+    return  SizedBox(
+      height: 230,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              ElevatedButton(onPressed: (){
+                  Navigator.pop(context);
+              }, child: SvgPicture.asset("assets/icons/x.svg", height: 20,),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.white,
+                onPrimary: jBase,
+                shape: const CircleBorder(),
+                padding: const EdgeInsets.all(0.0),
+              ),
+
+              ),
+              const Text("¿No tienes Código\nde Lider?", style: TextStyle(fontWeight: FontWeight.bold),),
+            ],
+          ),
+          SvgPicture.asset("assets/icons/whatsapp.svg", height: 100,),
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape:  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                )
+              ),
+              onPressed: (){
+            _launch("whatsapp://send?text=Saludos me podrían dar información acerca de los códigos dee referidos, voy como Conductor&phone=573128423060");
+          }, child: const Text("Contátanos", style: TextStyle(color: Colors.white),))
+        ],
+      ),
+    );
+  }
+
+  _launch(url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      if (kDebugMode) {
+        print("Not supported");
+      }
+    }
   }
 }

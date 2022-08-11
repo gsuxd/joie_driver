@@ -23,7 +23,7 @@ class _ComparteYGanaState extends State<ComparteYGana> {
 //late GlobalKey<ScaffoldState>? scaffoldKey;
 
         key: scaffoldKey,
-        body: Body(),
+        body: const Body(),
       ),
     );
   }

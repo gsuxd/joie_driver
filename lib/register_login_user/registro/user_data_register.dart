@@ -11,7 +11,8 @@ class RegisterUser {
   final String genero;
   File? documentId;
   File? photoPerfil;
-  File? documentAntecedentes ;
+  File? documentAntecedentes;
+  File? cedulaR;
 
   RegisterUser( {
     required this.name,
@@ -26,6 +27,7 @@ class RegisterUser {
     required this.documentId,
     required this.photoPerfil,
     required this.documentAntecedentes,
+    required this.cedulaR,
   });
 
 

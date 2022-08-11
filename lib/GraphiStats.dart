@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-
 import 'colors.dart';
 
 class GraphicPie extends StatefulWidget {
+  const GraphicPie({Key? key}) : super(key: key);
+
   @override
   State<GraphicPie> createState() => _GraphicPieState();
 }
@@ -47,7 +48,6 @@ class _GraphicPieState extends State<GraphicPie> {
       FoodData('Vieajes de Hoy', 5, Colors.green),
       FoodData('Cancelados por pasajero', 23, Colors.blueGrey),
       FoodData('Cancelados por conductor', 23, Colors.red),
-
     ];
     return chartData;
   }
@@ -57,6 +57,7 @@ class FoodData {
   final String stat;
   final int numb;
   final Color color;
+
   FoodData(
     this.stat,
     this.numb,

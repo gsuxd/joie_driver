@@ -18,6 +18,6 @@ class _ChooseScreenState extends State<ChooseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Body();
+    return const Body();
   }
 }
