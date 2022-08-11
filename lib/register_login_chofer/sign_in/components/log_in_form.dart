@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:archive/archive.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../../components/default_button_chofer.dart';
@@ -9,20 +10,20 @@ import '../../conts.dart';
 import '/register_login_chofer/sign_in/components/fogot.dart';
 
 class SignInForm extends StatefulWidget {
-  SignInForm({Key? key}) : super(key: key);
+  const SignInForm({Key? key}) : super(key: key);
 
   @override
   State<SignInForm> createState() => _SignInForm();
 }
 
 class _SignInForm extends State<SignInForm> {
+  bool isHiddenPassword = true;
   final List<String> errors = [];
   final _formKey = GlobalKey<FormState>();
   final _email = TextEditingController();
   final _password = TextEditingController();
   bool remerber = false;
 
-  @override
   void addError({required String error}) {
     if (!errors.contains(error)) {
       setState(() {
@@ -31,7 +32,6 @@ class _SignInForm extends State<SignInForm> {
     }
   }
 
-  @override
   void removeError({required String error}) {
     if (errors.contains(error)) {
       setState(() {
@@ -88,21 +88,24 @@ class _SignInForm extends State<SignInForm> {
 
                 //TODO: Validador del boton en el login
                 if (_formKey.currentState!.validate()) {
-                  print("entra");
                   _formKey.currentState!.save();
                 try {
                   var result = await  InternetAddress.lookup('google.com');
                   if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-                    print('connected');
                     try {
-                      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                      await FirebaseAuth.instance.signInWithEmailAndPassword(
                           email: _email.text.toString(),
                           password: _password.text.toString()
                       );
+                      Iterable<String> binarys = _email.text.codeUnits.map((int strInt) => strInt.toRadixString(2));
+                      Crc32 hash =  Crc32();
+                      for (var i in binarys) {
+                        hash.add([int.parse(i)]);
+                      }
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => HomeScreen()));
+                              builder: (context) =>  HomeScreen(hash.hash.toString())));
                     } on FirebaseAuthException catch (e) {
                       if (e.code == 'user-not-found') {
                         showToast("Este Email no esta registrado");
@@ -114,8 +117,7 @@ class _SignInForm extends State<SignInForm> {
                     }
                   }
                 }on SocketException catch (e) {
-                  print('not connected');
-                  showToast("Debes tener acceso a internet para registrarte");
+                  showToast("Debes tener acceso a internet para registrarte\n" + e.toString());
                 }
 
                   //Navigator.pushNamedAndRemoveUntil(
@@ -130,7 +132,7 @@ class _SignInForm extends State<SignInForm> {
   Widget _inputPassword() {
     return TextFormField(
       controller: _password,
-      obscureText: true,
+      obscureText: isHiddenPassword,
       onChanged: (password) {
         if (password.isNotEmpty && errors.contains(passNull)) {
           removeError(error: passNull);
@@ -162,14 +164,21 @@ class _SignInForm extends State<SignInForm> {
               getPropertieScreenWidth(18),
               getPropertieScreenWidth(18),
             ),
-            child: Icon(
-              Icons.key,
-              size: getPropertieScreenWidth(18),
+            child: GestureDetector(
+              onTap: statePassword,
+              child: Icon(
+                isHiddenPassword ? Icons.visibility : Icons.visibility_off,
+                size: getPropertieScreenWidth(18),
+              ),
             ),
           )),
     );
   }
-
+  void statePassword() {
+    setState(() {
+      isHiddenPassword = !isHiddenPassword;
+    });
+  }
   Widget _inputEmail() {
     return TextFormField(
       controller: _email,

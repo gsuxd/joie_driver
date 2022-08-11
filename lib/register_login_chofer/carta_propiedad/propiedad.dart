@@ -7,14 +7,14 @@ import 'components/body_propiety.dart';
 class PropiedadScreen extends StatelessWidget {
   static String routeName = '/propiety';
   RegisterUser user;
-  PropiedadScreen(this.user);
+  PropiedadScreen(this.user, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Scaffold(
 
-      body: Body(user),
+      body: Body(user:user),
     );
   }
 }

@@ -2,21 +2,21 @@ import 'package:joiedriver/register_login_chofer/registro/user_data_register.dar
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../components/default_button_chofer.dart';
-import '../../../register_login_chofer/Antecedents/antecedentes.dart';
+import '../../cedula/cedula.dart';
 import '../../conts.dart';
 import '../../size_config.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 class Body extends StatefulWidget {
   RegisterUser  user;
-  Body(this.user);
+  Body(this.user, {Key? key}) : super(key: key);
   @override
-  createState() =>  _Body(user);
+  createState() =>  BodyE(user);
 }
 
-class _Body extends State<Body> {
+class BodyE extends State<Body> {
   RegisterUser user;
-  _Body(this.user);
+  BodyE(this.user);
   File? phofilePhoto;
   late Widget imageWiew ;
   @override
@@ -62,7 +62,7 @@ class _Body extends State<Body> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AntecedentsScreen(user)));
+                              builder: (context) => Cedula(user)));
                     }
 
                     //Navigator.pushNamed(context, PropiedadScreen.routeName);
@@ -91,7 +91,7 @@ class _Body extends State<Body> {
       return  Image.file(phofilePhoto!, height: SizeConfig.screenHeight * 0.50);
     }else{
       user.photoPerfil = null;
-      return SvgPicture.asset(fotoCarnet, height: SizeConfig.screenHeight * 0.50);
+      return SvgPicture.asset(profilePhoto, height: SizeConfig.screenHeight * 0.50);
     }
   }
 }

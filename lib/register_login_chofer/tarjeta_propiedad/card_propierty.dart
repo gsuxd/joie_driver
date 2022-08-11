@@ -6,7 +6,7 @@ import 'components/body_cardP.dart';
 
 class CardPropierty extends StatelessWidget {
   RegisterUser user;
-  CardPropierty(this.user);
+  CardPropierty(this.user, {Key? key}) : super(key: key);
   static String routeName = '/card_propierty';
 
   @override

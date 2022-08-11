@@ -4,6 +4,7 @@ class RegisterUser {
   final String lastName;
   final String email;
   final String address;
+  final String city;
   final String referenceCode;
   final String code;
   final String phone;
@@ -12,16 +13,27 @@ class RegisterUser {
   final String date;
   final String password;
   final String genero;
+  String? nameComplete;
+  String? numberCi;
+  String? dateCi;
+  String? bank;
+  String? typeBank;
+  String? numberBank;
   File? documentVehicle;
   File? documentTarjetaPropiedad;
   File? documentAntecedentes ;
   File? photoPerfil;
+  File? cedula;
+  File? cedulaR;
+  File? licencia;
+  File? licenciaR;
 
   RegisterUser( {
     required this.name,
     required this.lastName,
     required this.email,
     required this.address,
+    required this.city,
     required this.referenceCode,
     required this.code,
     required this.phone,
@@ -34,6 +46,16 @@ class RegisterUser {
     required this.documentTarjetaPropiedad,
     required this.documentAntecedentes,
     required this.photoPerfil,
+    required this.cedula,
+    required this.cedulaR,
+    required this.licencia,
+    required this.licenciaR,
+    required this.nameComplete,
+    required this.numberCi,
+    required this.dateCi,
+    required this.bank,
+    required this.typeBank,
+    required this.numberBank,
   });
 
 

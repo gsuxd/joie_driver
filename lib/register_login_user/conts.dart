@@ -72,7 +72,9 @@ const String error = 'assets/icons/error.svg';
 const String recargar = 'assets/icons/recargar.svg';
 const String share = 'assets/icons/refiere-y-gana.svg';
 const String edad = 'assets/icons/edad.svg';
-
+const String profilePhoto = 'assets/icons/profile_photo.svg';
+const String cedularImg = 'assets/icons/cedulaR.svg';
+const String cedulaImg = 'assets/icons/cedula.svg';
 //Imagenes de prueba
 const String chica2 = 'assets/images/girld2.jpg';
 const String estrella3 = 'assets/images/estrella3.png';
@@ -153,12 +155,12 @@ final heading2 = TextStyle(
   color: jSec,
 );
 
-final listStyle =
+const listStyle =
 TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0, color: blue);
 
 final shareDecoration = BoxDecoration(
   color: Colors.grey[100],
-  borderRadius: BorderRadius.only(
+  borderRadius: const BorderRadius.only(
     topLeft: Radius.circular(24),
     topRight: Radius.circular(24),
   ),

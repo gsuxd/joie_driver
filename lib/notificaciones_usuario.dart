@@ -1,7 +1,6 @@
 import 'package:joiedriver/pedidos.dart';
 import 'package:joiedriver/profile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
 import 'colors.dart';
 import 'estatics.dart';
@@ -11,15 +10,16 @@ import 'notificaciones_usuario_dao.dart';
 import 'notificacionwidget.dart';
 
 class ListaNotificacionesUsuario extends StatefulWidget {
-
   ListaNotificacionesUsuario({Key? key}) : super(key: key);
   final notificacionDAO = NotificacionUsuarioDAO();
 
   @override
-  ListaNotificacionesUsuarioState createState() => ListaNotificacionesUsuarioState();
+  ListaNotificacionesUsuarioState createState() =>
+      ListaNotificacionesUsuarioState();
 }
 
-class ListaNotificacionesUsuarioState extends State<ListaNotificacionesUsuario> {
+class ListaNotificacionesUsuarioState
+    extends State<ListaNotificacionesUsuario> {
   String usuario = "UsuarioPrueba";
   ScrollController _scrollController = ScrollController();
   TextEditingController _mensajeController = TextEditingController();
@@ -27,27 +27,30 @@ class ListaNotificacionesUsuarioState extends State<ListaNotificacionesUsuario> 
   Color color_icon_historial = blue;
   Color color_icon_perfil = blue;
   Color color_icon_ingresos = blue;
+
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollHaciaAbajo());
 
     return Scaffold(
         appBar: AppBar(
-          leading: Icon(Icons.notifications, color: Colors.white, size: 30,),
-          title: const Text('Notificaciones',), backgroundColor: blue,),
+          leading: const Icon(
+            Icons.notifications,
+            color: Colors.white,
+            size: 30,
+          ),
+          title: const Text(
+            'Notificaciones',
+          ),
+          backgroundColor: blue,
+        ),
         body: Padding(
-            padding: EdgeInsets.only(top: 10.0, bottom: 10.0, left: 0.0, right: 0.0),
-            child:
-                Column(
-                    children: [
-
-                      _getListaMensajes(),
-                      bottomNavBar(context),
-                    ]
-                )
-        )
-    );
-
+            padding: const EdgeInsets.only(
+                top: 10.0, bottom: 10.0, left: 0.0, right: 0.0),
+            child: Column(children: [
+              _getListaMensajes(),
+              bottomNavBar(context),
+            ])));
   }
 
   Widget _getListaMensajes() {
@@ -58,13 +61,12 @@ class ListaNotificacionesUsuarioState extends State<ListaNotificacionesUsuario> 
           controller: _scrollController,
           query: widget.notificacionDAO.getMensajes(usuario),
           itemBuilder: (context, snapshot, animation, index) {
-
             final json = snapshot.value as Map<dynamic, dynamic>;
             final mensaje = Notificacion.fromJson(json);
-            return NotificacionWidget(snapshot.key.toString(), mensaje.fecha, "UsuarioPrueba");
+            return NotificacionWidget(
+                snapshot.key.toString(), mensaje.fecha, "UsuarioPrueba");
           },
-        )
-    );
+        ));
   }
 
   void _scrollHaciaAbajo() {
@@ -73,102 +75,95 @@ class ListaNotificacionesUsuarioState extends State<ListaNotificacionesUsuario> 
     }
   }
 
-  Widget bottomNavBar(BuildContext context) {
-    return Container(
+  SizedBox bottomNavBar(BuildContext context) {
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Row(
-
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ElevatedButton(onPressed: () {
-          },
+          ElevatedButton(
+            onPressed: () {},
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_inicio,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/inicio.svg",
               width: 40,
               color: Colors.white,
-
             ),
-
           ),
-
           Container(
             width: 10,
           ),
-          ElevatedButton(onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => Pedidos()));
-          },
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => Pedidos()));
+            },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_historial,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/historial2.svg",
               width: 40,
               color: Colors.white,
             ),
-
           ),
           Container(
             width: 10,
           ),
-          ElevatedButton(onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => Statics()));
-          },
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Statics()));
+            },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_ingresos,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/asistencia_tecnica.svg",
               width: 40,
               color: Colors.white,
             ),
-
           ),
           Container(
             width: 10,
           ),
-          ElevatedButton(onPressed: () {
-            setState(() {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Profile()));
-            });
-
-          },
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Profile()));
+              });
+            },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_perfil,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/perfil.svg",
               width: 40,
               color: Colors.white,
             ),
-
           ),
         ],
       ),

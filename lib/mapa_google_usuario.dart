@@ -2,78 +2,79 @@ import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+
 class MapaUsuario extends StatefulWidget {
   late double x;
   late double y;
-  MapaUsuario({ required double this.x, required double this.y});
+
+  MapaUsuario({required double this.x, required double this.y});
+
   static const String routeName = '/Mapa';
 
   @override
-  createState() =>  _MapaState(x: x, y: y);
+  createState() => _MapaState(x: x, y: y);
 }
 
 class _MapaState extends State<MapaUsuario> {
   late double x;
   late double y;
-  _MapaState({ required double this.x, required double this.y});
+
+  _MapaState({required double this.x, required double this.y});
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-        backgroundColor: Colors.white,
-        body: MapSample(x: x, y:y)
-    );
+    return Scaffold(backgroundColor: Colors.white, body: MapSample(x: x, y: y));
   }
-
-
 }
 
 class MapSample extends StatefulWidget {
   late double x;
   late double y;
-  MapSample({ required double this.x, required double this.y});
+
+  MapSample({required double this.x, required double this.y});
+
   @override
   State<MapSample> createState() => MapSampleState(x: x, y: y);
 }
 
 class MapSampleState extends State<MapSample> {
-
-  MapSampleState({ required double this.x , required double this.y}){
-  }
+  MapSampleState({required double this.x, required double this.y}) {}
   Set<Marker> markers = Set();
 
   late BitmapDescriptor myIcon;
   late BitmapDescriptor myIcon2;
+
   @override
   void initState() {
     BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(size: Size(96, 96)), 'assets/images/iconito.png')
+            const ImageConfiguration(size: Size(96, 96)),
+            'assets/images/iconito.png')
         .then((onValue) {
       myIcon = onValue;
     });
 
     BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(size: Size(96, 96)), 'assets/images/coches-en-el-mapa.png')
+            const ImageConfiguration(size: Size(96, 96)),
+            'assets/images/coches-en-el-mapa.png')
         .then((onValue) {
       myIcon2 = onValue;
     });
   }
 
-
   late double x;
   late double y;
   late LatLng coor = LatLng(x, y);
-  late LatLng coor2 = LatLng(x-0.009, y-0.001);
-  late LatLng coor3 = LatLng(x-0.003, y-0.003);
-  late LatLng coor4 = LatLng(x+0.002, y+0.002);
-  Completer<GoogleMapController> _controller = Completer();
+  late LatLng coor2 = LatLng(x - 0.009, y - 0.001);
+  late LatLng coor3 = LatLng(x - 0.003, y - 0.003);
+  late LatLng coor4 = LatLng(x + 0.002, y + 0.002);
+  final Completer<GoogleMapController> _controller = Completer();
 
-  late CameraPosition _kGooglePlex = CameraPosition(
+  late final CameraPosition _kGooglePlex = CameraPosition(
     target: coor,
     zoom: 14.4746,
   );
 
-  static final CameraPosition _kLake = CameraPosition(
+  static const CameraPosition _kLake = CameraPosition(
       bearing: 192.8334901395799,
       target: LatLng(37.43296265331129, -122.08832357078792),
       tilt: 59.440717697143555,
@@ -81,48 +82,38 @@ class MapSampleState extends State<MapSample> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       body: GoogleMap(
-        markers:markers,
+        markers: markers,
         mapType: MapType.normal,
         initialCameraPosition: _kGooglePlex,
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
-          setState((){
-
+          setState(() {
             markers = Set();
-            markers.add(
-                Marker(
-                  markerId:MarkerId("target"),
-                  position: coor,
-                  icon: myIcon,
-                )
-            );
-            markers.add(
-                Marker(
-                  markerId:MarkerId("target2"),
-                  position: coor2,
-                  icon: myIcon2,
-                )
-            );
-            markers.add(
-                Marker(
-                  markerId:MarkerId("target3"),
-                  position: coor4,
-                  icon: myIcon2,
-                )
-            );
-            markers.add(
-                Marker(
-                  markerId:MarkerId("target4"),
-                  position: coor3,
-                  icon: myIcon2,
-                )
-            );
+            markers.add(Marker(
+              markerId: const MarkerId("target"),
+              position: coor,
+              icon: myIcon,
+            ));
+            markers.add(Marker(
+              markerId: const MarkerId("target2"),
+              position: coor2,
+              icon: myIcon2,
+            ));
+            markers.add(Marker(
+              markerId: const MarkerId("target3"),
+              position: coor4,
+              icon: myIcon2,
+            ));
+            markers.add(Marker(
+              markerId: const MarkerId("target4"),
+              position: coor3,
+              icon: myIcon2,
+            ));
           });
         },
       ),
-
     );
   }
 

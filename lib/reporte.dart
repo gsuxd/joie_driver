@@ -4,8 +4,8 @@ class Reporte {
   final String problema;
   final String descipcion;
   final DateTime fecha;
-  static String _sms = "Estamos trabajando en solucionar tu problema, en la brevedad unos de nuestros asesores te constestaran";
-  static String _emisor = "asistente";
+  static const String _sms = "Estamos trabajando en solucionar tu problema, en la brevedad unos de nuestros asesores te constestaran";
+  static const String _emisor = "asistente";
 
   Reporte(this.usuario, this.tipo, this.problema, this.descipcion, this.fecha);
 
@@ -16,7 +16,7 @@ class Reporte {
         problema = json['problema'] as String,
         descipcion = json['descipcion'] as String;
 
-  static Map<dynamic, dynamic> _sms_ini = {
+  static final Map<dynamic, dynamic> _sms_ini = {
     'emisor': _emisor,
     'mensaje' : _sms,
     'fecha' : DateTime.now().toString(),

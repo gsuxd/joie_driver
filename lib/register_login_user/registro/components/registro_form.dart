@@ -20,6 +20,7 @@ class RegistroForm extends StatefulWidget {
 }
 
 class _RegistroFormState extends State<RegistroForm> {
+  bool isHiddenPassword = true;
   TextEditingController _controllerTextName = TextEditingController();
   TextEditingController _controllerTextLastName = TextEditingController();
   TextEditingController _controllerTextPassword = TextEditingController();
@@ -122,7 +123,8 @@ class _RegistroFormState extends State<RegistroForm> {
                             photoPerfil: null,
                             documentAntecedentes: null,
                             genero: sexo!,
-                            code: hash.hash.toString()
+                            code: hash.hash.toString(),
+                            cedulaR: null,
                         );
                         Navigator.push(
                             context,
@@ -341,7 +343,7 @@ class _RegistroFormState extends State<RegistroForm> {
       textInputAction: TextInputAction.next,
       controller: _controllerTextPassword,
       onSaved: (newValue) => password = newValue!,
-      obscureText: true,
+      obscureText: isHiddenPassword,
       onChanged: (value) {
         if (value.isNotEmpty && errors.contains(passNull)) {
           setState(() {
@@ -353,7 +355,7 @@ class _RegistroFormState extends State<RegistroForm> {
           });
         }
         password = value;
-        return null;
+        return;
       },
       validator: (value) {
         if (value!.isEmpty && !errors.contains(passNull)) {
@@ -380,9 +382,12 @@ class _RegistroFormState extends State<RegistroForm> {
               getPropertieScreenWidth(18),
               getPropertieScreenWidth(18),
             ),
-            child: Icon(
-              Icons.key,
-              size: getPropertieScreenWidth(18),
+            child: GestureDetector(
+              onTap: statePassword,
+              child: Icon(
+                isHiddenPassword ? Icons.visibility : Icons.visibility_off,
+                size: getPropertieScreenWidth(18),
+              ),
             ),
           )),
     );
@@ -392,7 +397,7 @@ class _RegistroFormState extends State<RegistroForm> {
     return TextFormField(
       textInputAction: TextInputAction.done,
       onSaved: (newValue) => conformPassword = newValue,
-      obscureText: true,
+      obscureText: isHiddenPassword,
       onChanged: (value) {
         if (password != conformPassword) {
           setState(() {
@@ -428,14 +433,21 @@ class _RegistroFormState extends State<RegistroForm> {
               getPropertieScreenWidth(18),
               getPropertieScreenWidth(18),
             ),
-            child: Icon(
-              Icons.key,
-              size: getPropertieScreenWidth(18),
+            child: GestureDetector(
+              onTap: statePassword,
+              child: Icon(
+                isHiddenPassword ? Icons.visibility : Icons.visibility_off,
+                size: getPropertieScreenWidth(18),
+              ),
             ),
           )),
     );
   }
-
+  void statePassword() {
+    setState(() {
+      isHiddenPassword = !isHiddenPassword;
+    });
+  }
   TextFormField nickNameFormField() {
     return TextFormField(
 

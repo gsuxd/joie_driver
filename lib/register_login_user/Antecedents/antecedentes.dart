@@ -5,7 +5,7 @@ import 'components/body_antecedents.dart';
 
 class AntecedentsScreen extends StatefulWidget {
   RegisterUser user;
-  AntecedentsScreen(this.user);
+  AntecedentsScreen(this.user, {Key? key}) : super(key: key);
   @override
   createState() =>  _AntecedentsScreen(user);
 
