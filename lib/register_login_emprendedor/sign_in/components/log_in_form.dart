@@ -8,6 +8,7 @@ import '../../size_config.dart';
 import '../components/error_form.dart';
 import '../../conts.dart';
 import '/register_login_emprendedor/sign_in/components/fogot.dart';
+import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({Key? key}) : super(key: key);
@@ -17,6 +18,7 @@ class SignInForm extends StatefulWidget {
 }
 
 class _SignInForm extends State<SignInForm> {
+  EncryptedSharedPreferences encryptedSharedPreferences = EncryptedSharedPreferences();
   bool isHiddenPassword = true;
   final List<String> errors = [];
   final _formKey = GlobalKey<FormState>();
@@ -102,6 +104,11 @@ class _SignInForm extends State<SignInForm> {
                       for (var i in binarys) {
                         hash.add([int.parse(i)]);
                       }
+                      await encryptedSharedPreferences.setString('code', hash.hash.toString());
+                      await encryptedSharedPreferences.setString('email', _email.text.toString());
+                      await encryptedSharedPreferences.setString('passwd', _password.text.toString());
+                      await encryptedSharedPreferences.setString('typeuser', "emprendedor");
+
                       Navigator.push(
                           context,
                           MaterialPageRoute(

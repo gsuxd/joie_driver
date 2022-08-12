@@ -1,7 +1,12 @@
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:get_it/get_it.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:joiedriver/pedidos.dart';
 import 'package:joiedriver/profile.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
+import 'package:joiedriver/singletons/user_data.dart';
 import 'automovil_chofer.dart';
 import 'colors.dart';
 import 'estatics.dart';
@@ -23,6 +28,44 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
   String ciudadText = "Bucaramanga";
   bool correo = false;
   bool ciudad = false;
+
+  Future _getImage() async {
+    ImagePicker imegaTemp = ImagePicker();
+    var tempImage = await imegaTemp.pickImage(source: ImageSource.camera);
+    return File(tempImage!.path);
+  }
+
+  String? _newImage;
+
+  void _changeImage() async {
+    setState(() {
+      _isLoading = true;
+    });
+    final image = await _getImage();
+    if (image != null) {
+      try {
+        final newImage = await FirebaseStorage.instance
+            .ref()
+            .child(GetIt.I.get<UserData>().email)
+            .child("ProfilePhoto.jpg")
+            .putFile(image);
+        _newImage = await newImage.ref.getDownloadURL();
+        setState(() {});
+        if (_newImage != null) {
+          GetIt.I.get<UserData>().profilePicture = _newImage!;
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Error al cargar la imagen"),
+        ));
+      }
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -61,11 +104,23 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        if (_isLoading) {
+                          return;
+                        }
+                        _changeImage();
+                      },
                       child: Stack(children: [
-                        const CircleAvatar(
-                          backgroundImage:
-                              AssetImage("assets/images/girld2.jpg"),
+                        CircleAvatar(
+                          backgroundImage: !_isLoading
+                              ? NetworkImage(
+                                  GetIt.I.get<UserData>().profilePicture)
+                              : null,
+                          child: _isLoading
+                              ? const Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : null,
                           radius: 50,
                         ),
                         Positioned(
@@ -75,7 +130,7 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
                             onPressed: () {},
                             style: ElevatedButton.styleFrom(
                               primary: blue,
-                              shape: CircleBorder(),
+                              shape: const CircleBorder(),
                             ),
                             child: SvgPicture.asset(
                               "assets/images/foto_de_perfil.svg",
@@ -103,15 +158,18 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
                 Container(
                   height: 20.0,
                 ),
-                item("Melina", "assets/images/nombre_y_apellido.svg"),
+                item(GetIt.I.get<UserData>().name,
+                    "assets/images/nombre_y_apellido.svg"),
                 Container(
                   height: 20.0,
                 ),
-                item("Sabedra", "assets/images/nombre_y_apellido.svg"),
+                item(GetIt.I.get<UserData>().lastName,
+                    "assets/images/nombre_y_apellido.svg"),
                 Container(
                   height: 20.0,
                 ),
-                item("14/06/1993", "assets/images/edad.svg"),
+                item(GetIt.I.get<UserData>().birthDate.substring(0, 10),
+                    "assets/images/edad.svg"),
                 Container(
                   height: 20.0,
                 ),
@@ -119,11 +177,13 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
                 Container(
                   height: 20.0,
                 ),
-                item("Femenino", "assets/images/genero.svg"),
+                item(
+                    GetIt.I.get<UserData>().genero, "assets/images/genero.svg"),
                 Container(
                   height: 20.0,
                 ),
-                itemCorreo(correoText, "assets/images/correo.svg"),
+                itemCorreo(
+                    GetIt.I.get<UserData>().email, "assets/images/correo.svg"),
                 Container(
                   height: 20.0,
                 ),
@@ -132,7 +192,7 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const AutomovilChofer()));
+                            builder: (context) => AutomovilChofer()));
                   },
                   child:
                       item("Mi Automovil", "assets/images/perfil_de_auto.svg"),
@@ -318,11 +378,11 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
             onPressed: () {},
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: const EdgeInsets.only(
-                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding:
+                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_inicio,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/inicio.svg",
@@ -340,8 +400,8 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: const EdgeInsets.only(
-                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding:
+                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_historial,
               shape: const CircleBorder(),
@@ -357,13 +417,13 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const Statics()));
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => Statics()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: const EdgeInsets.only(
-                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding:
+                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_ingresos,
               shape: const CircleBorder(),
@@ -386,11 +446,11 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: const EdgeInsets.only(
-                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding:
+                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_perfil,
-              shape: const CircleBorder(),
+              shape: CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/perfil.svg",

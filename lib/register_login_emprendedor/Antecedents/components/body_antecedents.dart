@@ -1,3 +1,4 @@
+import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:joiedriver/register_login_emprendedor/registro/user_data_register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -55,7 +56,7 @@ class Body extends ConsumerStatefulWidget {
 }
 
 class _Body extends ConsumerState<Body> {
-
+  EncryptedSharedPreferences encryptedSharedPreferences = EncryptedSharedPreferences();
   @override
   void initState() {
     super.initState();
@@ -204,6 +205,10 @@ class _Body extends ConsumerState<Body> {
     try{
       final FirebaseAuth auth = FirebaseAuth.instance;
       await auth.createUserWithEmailAndPassword(email: user.email, password: user.password);
+      await encryptedSharedPreferences.setString('code', user.code);
+      await encryptedSharedPreferences.setString('email', user.email);
+      await encryptedSharedPreferences.setString('passwd', user.password);
+      await encryptedSharedPreferences.setString('typeuser', "emprendedor");
       return true;
     }on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {

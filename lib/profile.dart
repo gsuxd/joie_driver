@@ -1,3 +1,4 @@
+import 'package:get_it/get_it.dart';
 import 'package:joiedriver/pedidos.dart';
 import 'package:firebase_database/firebase_database.dart';
 import "package:flutter/material.dart";
@@ -6,10 +7,10 @@ import 'package:geolocator/geolocator.dart';
 import 'colors.dart';
 import 'estatics.dart';
 import 'mapa_principal.dart';
+import 'singletons/user_data.dart';
 
 class Profile extends StatefulWidget {
   static const String routeName = '/Register';
-
   @override
   createState() => _ProfileState();
 }
@@ -23,7 +24,6 @@ class _ProfileState extends State<Profile> {
   Color color_icon_historial = blue;
   Color color_icon_perfil = blue_dark;
   Color color_icon_ingresos = blue;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,9 +74,9 @@ class _ProfileState extends State<Profile> {
                               fontWeight: FontWeight.bold,
                               color: blue),
                         ),
-                        const Text(
-                          "Andrea",
-                          style: TextStyle(
+                        Text(
+                          GetIt.I.get<UserData>().name,
+                          style: const TextStyle(
                               fontSize: 16,
                               fontFamily: "Monserrat",
                               fontWeight: FontWeight.bold,
@@ -91,9 +91,10 @@ class _ProfileState extends State<Profile> {
                     Container(
                       width: 10,
                     ),
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 40,
-                      backgroundImage: AssetImage("assets/images/girld2.jpg"),
+                      backgroundImage:
+                          NetworkImage(GetIt.I.get<UserData>().profilePicture),
                     ),
                     Container(
                       width: 10,
@@ -112,7 +113,7 @@ class _ProfileState extends State<Profile> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       itemMenu("Editar perfil", "assets/images/profile.svg"),
-                      itemMenu("Asistencia\Tecnica",
+                      itemMenu("Asistencia\nTecnica",
                           "assets/images/asistencia_tecnica.svg"),
                       itemMenu(
                           "Notificaciones", "assets/images/notificaciones.svg"),
@@ -148,9 +149,9 @@ class _ProfileState extends State<Profile> {
                     Container(
                       width: 20.0,
                     ),
-                    Text(
+                    const Text(
                       "Saldo",
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: Colors.black87,
                           fontSize: 16.0,
                           fontFamily: "Monserrat",
@@ -159,9 +160,9 @@ class _ProfileState extends State<Profile> {
                     Container(
                       width: 100.0,
                     ),
-                    Text(
+                    const Text(
                       "56.000 \$",
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 16,
                           fontFamily: "Monserrat",
                           fontWeight: FontWeight.bold,
@@ -659,8 +660,8 @@ class _ProfileState extends State<Profile> {
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: const EdgeInsets.only(
-                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding:
+                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_inicio,
               shape: const CircleBorder(),
@@ -681,8 +682,8 @@ class _ProfileState extends State<Profile> {
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: const EdgeInsets.only(
-                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding:
+                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_historial,
               shape: const CircleBorder(),
@@ -698,13 +699,13 @@ class _ProfileState extends State<Profile> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const Statics()));
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => const Statics()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: const EdgeInsets.only(
-                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding:
+                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_ingresos,
               shape: const CircleBorder(),
@@ -729,8 +730,8 @@ class _ProfileState extends State<Profile> {
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: const EdgeInsets.only(
-                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding:
+                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_perfil,
               shape: const CircleBorder(),

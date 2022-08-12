@@ -1,11 +1,19 @@
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:get_it/get_it.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:joiedriver/metodos_pago/components/nuevo_metodo.dart';
 import 'package:joiedriver/pedidos.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
+import 'package:joiedriver/singletons/user_data.dart';
 import 'asistencia_tecnica.dart';
 import 'colors.dart';
 import 'main.dart';
 
 class PerfilUsuario extends StatefulWidget {
+  const PerfilUsuario({Key? key}) : super(key: key);
+
   @override
   createState() => _PerfilUsuarioState();
 }
@@ -17,10 +25,46 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
   Color color_icon_ingresos = blue;
   String state = "Tu Perfil";
   bool isSwitched = false;
-  String correoText = "ejemplorandom@gmail.com";
   String ciudadText = "Bucaramanga";
   bool correo = false;
   bool ciudad = false;
+  Future _getImage() async {
+    ImagePicker imegaTemp = ImagePicker();
+    var tempImage = await imegaTemp.pickImage(source: ImageSource.camera);
+    return File(tempImage!.path);
+  }
+
+  String? _newImage;
+
+  void _changeImage() async {
+    setState(() {
+      _isLoading = true;
+    });
+    final image = await _getImage();
+    if (image != null) {
+      try {
+        final newImage = await FirebaseStorage.instance
+            .ref()
+            .child(GetIt.I.get<UserData>().email)
+            .child("ProfilePhoto.jpg")
+            .putFile(image);
+        _newImage = await newImage.ref.getDownloadURL();
+        setState(() {});
+        if (_newImage != null) {
+          GetIt.I.get<UserData>().profilePicture = _newImage!;
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Error al cargar la imagen"),
+        ));
+      }
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -73,12 +117,22 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        if (_isLoading) {
+                          return;
+                        }
+                        _changeImage();
+                      },
                       child: Stack(children: [
-                        const CircleAvatar(
-                          backgroundImage:
-                              AssetImage("assets/images/girld2.jpg"),
+                        CircleAvatar(
+                          backgroundImage: !_isLoading
+                              ? NetworkImage(
+                                  GetIt.I.get<UserData>().profilePicture)
+                              : null,
                           radius: 50,
+                          child: _isLoading
+                              ? const CircularProgressIndicator()
+                              : null,
                         ),
                         Positioned(
                           bottom: -5,
@@ -87,7 +141,7 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                             onPressed: () {},
                             style: ElevatedButton.styleFrom(
                               primary: blue,
-                              shape: CircleBorder(),
+                              shape: const CircleBorder(),
                             ),
                             child: SvgPicture.asset(
                               "assets/images/foto_de_perfil.svg",
@@ -115,15 +169,18 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                 Container(
                   height: 20.0,
                 ),
-                item("Melina", "assets/images/nombre_y_apellido.svg"),
+                item(GetIt.I.get<UserData>().name,
+                    "assets/images/nombre_y_apellido.svg"),
                 Container(
                   height: 20.0,
                 ),
-                item("Sabedra", "assets/images/nombre_y_apellido.svg"),
+                item(GetIt.I.get<UserData>().lastName,
+                    "assets/images/nombre_y_apellido.svg"),
                 Container(
                   height: 20.0,
                 ),
-                item("14/06/1993", "assets/images/edad.svg"),
+                item(GetIt.I.get<UserData>().birthDate.substring(0, 10),
+                    "assets/images/edad.svg"),
                 Container(
                   height: 20.0,
                 ),
@@ -131,14 +188,33 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                 Container(
                   height: 20.0,
                 ),
-                item("Femenino", "assets/images/genero.svg"),
+                item(
+                    GetIt.I.get<UserData>().genero, "assets/images/genero.svg"),
                 Container(
                   height: 20.0,
                 ),
-                itemCorreo(correoText, "assets/images/correo.svg"),
+                itemCorreo(
+                    GetIt.I.get<UserData>().email, "assets/images/correo.svg"),
                 Container(
-                  height: 70.0,
+                  height: 20.0,
                 ),
+                if (GetIt.I.get<UserData>().type != "usersPasajeros")
+                  Row(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(left: 14),
+                        child: ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) => const NuevoMetodo()),
+                              );
+                            },
+                            icon: const Icon(Icons.monetization_on_outlined),
+                            label: const Text("Metodos de pago")),
+                      ),
+                    ],
+                  )
               ],
             ),
             Positioned(bottom: 10, left: 0.0, child: bottomNavBar(context))
@@ -319,12 +395,12 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
           ElevatedButton(
             onPressed: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => MyApp()));
+                  context, MaterialPageRoute(builder: (context) => const MyApp()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: const EdgeInsets.only(
-                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding:
+                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_inicio,
               shape: const CircleBorder(),
@@ -345,8 +421,8 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: const EdgeInsets.only(
-                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding:
+                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_historial,
               shape: const CircleBorder(),
@@ -369,8 +445,8 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: const EdgeInsets.only(
-                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding:
+                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_ingresos,
               shape: const CircleBorder(),
@@ -388,13 +464,13 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
             onPressed: () {
               setState(() {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => PerfilUsuario()));
+                    MaterialPageRoute(builder: (context) => const PerfilUsuario()));
               });
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: const EdgeInsets.only(
-                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding:
+                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_perfil,
               shape: const CircleBorder(),
