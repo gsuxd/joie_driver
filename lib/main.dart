@@ -30,7 +30,8 @@ Future<void> main() async {
       if (event != null) {
         await registerSingleton();
       } else {
-        if (GetIt.I.isRegistered<UserData>() && FirebaseAuth.instance.currentUser != null) {
+        if (GetIt.I.isRegistered<UserData>() &&
+            FirebaseAuth.instance.currentUser != null) {
           GetIt.I.unregister<UserData>();
         }
       }
@@ -191,7 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
           builder: (context) {
         if (FirebaseAuth.instance.currentUser != null) {
           if (GetIt.I.get<UserData>().type != "users") {
-            return const PerfilUsuario();
+            return const HomeScreenUser();
           }
           return PerfilChofer();
         }
