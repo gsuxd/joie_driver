@@ -13,90 +13,124 @@ class BodyGanancias extends ConsumerStatefulWidget {
 }
 
 class _Body extends ConsumerState<BodyGanancias> {
+  Future getDataGanancas() async {
+    sum = 0;
+    email = await encryptedSharedPreferences.getString('email');
+    DateTime mesAcutal = DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      1,
+      0,
+      0,
+      0,
+    );
+    await FirebaseFirestore.instance
+        .collection('usersEmprendedor/' + email + "/comisiones")
+        .where('date', isGreaterThan: mesAcutal)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+        sum = sum + doc["mount"];
+      }
+    });
+  }
+
   String email = "None";
+  double sum = 0;
   EncryptedSharedPreferences encryptedSharedPreferences =
-  EncryptedSharedPreferences();
-  CollectionReference users = FirebaseFirestore.instance.collection('usersEmprendedor');
+      EncryptedSharedPreferences();
+  CollectionReference users =
+      FirebaseFirestore.instance.collection('usersEmprendedor');
 
   @override
   Widget build(BuildContext context) {
-
     return Consumer(builder: (context, ref, child) {
       return Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-             FutureBuilder<DocumentSnapshot>(
-                  future: nameFuture(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                    if (snapshot.hasError) {
-                      return  Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            decoration: const BoxDecoration(
-                              color: Colors.redAccent,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          FutureBuilder<DocumentSnapshot>(
+            future: nameFuture(),
+            builder: (BuildContext context,
+                AsyncSnapshot<DocumentSnapshot> snapshot) {
+              if (snapshot.hasError) {
+                return Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      decoration: const BoxDecoration(
+                        color: Colors.redAccent,
                       ),
-                            child: Center(
-                                child: Text("Verifica tu Conexión", style: textStyleBlack())),
-                          )
-                        ],
-                      );
-                    }
+                      child: Center(
+                          child: Text("Verifica tu Conexión",
+                              style: textStyleBlack())),
+                    )
+                  ],
+                );
+              }
 
-                    if (snapshot.hasData && !snapshot.data!.exists) {
-                      return  Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            decoration: const BoxDecoration(
-                              color: Colors.redAccent,
-                            ),
-                            child: Center(
-                                child: Text("Error al obtener los datos", style: textStyleBlack())),
-                          )
-                        ],
-                      );
-                    }
+              if (snapshot.hasData && !snapshot.data!.exists) {
+                return Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      decoration: const BoxDecoration(
+                        color: Colors.redAccent,
+                      ),
+                      child: Center(
+                          child: Text("Error al obtener los datos",
+                              style: textStyleBlack())),
+                    )
+                  ],
+                );
+              }
 
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      Map<String, dynamic> data =
-                      snapshot.data!.data() as Map<String, dynamic>;
-                      return
-                        Padding(
-                            padding: const EdgeInsets.only(top: 10, left: 30, right: 10),
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Saldo Personal",
-                                  style: textStyleGreyName(),
-                                ),
-                                Text(
-                                  data['nameComplete'].toString().toUpperCase(),
-                                  style: textStyleGreyName(),
-                                )
-                              ]),
-                        );
-                    }
-                    return const LinearProgressIndicator(
+              if (snapshot.connectionState == ConnectionState.done) {
+                Map<String, dynamic> data =
+                    snapshot.data!.data() as Map<String, dynamic>;
 
-                    );
-                  },
-                ),
-              ganancias()
-            ],
-          );
+                return Padding(
+                  padding: const EdgeInsets.only(top: 10, left: 30, right: 10),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Saldo Personal",
+                          style: textStyleGreyName(),
+                        ),
+                        Text(
+                          data['nameComplete'].toString().toUpperCase(),
+                          style: textStyleGreyName(),
+                        ),
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        ganancias(),
+                      ]),
+                );
+              }
+              return const LinearProgressIndicator();
+            },
+          ),
+          const SizedBox(
+            height: 30.0,
+          ),
+          const Divider(
+            color: blue_light,
+            thickness: 30.0,
+          ),
+        ],
+      );
     });
   }
 
   Future<DocumentSnapshot> nameFuture() async {
     email = await encryptedSharedPreferences.getString('email');
-    return  users.doc(email).get();
+    await getDataGanancas();
+    return users.doc(email).get();
   }
 
   Row ganancias() {
@@ -104,8 +138,11 @@ class _Body extends ConsumerState<BodyGanancias> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SvgPicture.asset(
-          "assets/icons/llamar.svg",
-          height: 80,
+          "assets/icons/bolsa.svg",
+          height: 60,
+        ),
+        const SizedBox(
+          width: 10.0,
         ),
         Column(
           children: [
@@ -114,7 +151,7 @@ class _Body extends ConsumerState<BodyGanancias> {
               style: textStyleBlue(),
             ),
             Text(
-              "21000.000 \$",
+              "S/. $sum",
               style: textStyleGreen(),
             )
           ],
