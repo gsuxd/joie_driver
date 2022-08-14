@@ -157,12 +157,12 @@ class _RegistroFormState extends State<RegistroForm> {
                             numberCi: null,
                             typeBank: null, city: _controllerTextCity.text,
                           );
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //       //builder: (context) => ProfilePhoto(user)));
-                          //         builder: (context) =>  DatosBanco(user)));
-                          processGenerateCodeAndSendEmail(context: context, email: _email.text.replaceAll(" ", ""), username: _controllerTextName.text + " " + _controllerTextLastName.text);
+                           Navigator.push(
+                               context,
+                               MaterialPageRoute(
+                                 //builder: (context) => ProfilePhoto(user)));
+                                   builder: (context) =>  DatosBanco(user)));
+                          //processGenerateCodeAndSendEmail(context: context, email: _email.text.replaceAll(" ", ""), username: _controllerTextName.text + " " + _controllerTextLastName.text);
                         } else if (e.code == 'wrong-password') {
                           showToast("El Email Ya Esta Registrado.\nIntente Iniciar Sesion o \nRecuperar la Contraseña");
                         }

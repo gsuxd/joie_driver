@@ -14,6 +14,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:joiedriver/register_login_emprendedor/app_screens/ganancias/ganancias.dart';
 
 class ImageNotify extends ChangeNotifier {
   Widget _image = SvgPicture.asset(antePen, height: SizeConfig.screenHeight * 0.50);
@@ -176,7 +177,7 @@ class _Body extends ConsumerState<Body> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           if(snapshot.data){
-            return HomeScreen(user.code);
+            return Ganancias();
           }else{
             return const OpError(stackTrace: null,);
           }

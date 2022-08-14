@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -10,6 +9,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:joiedriver/register_login_chofer/conts.dart';
 import 'package:joiedriver/register_login_chofer/splash/splash_screen.dart';
 import 'package:joiedriver/register_login_chofer/theme.dart';
+import 'package:joiedriver/register_login_emprendedor/app_screens/ganancias/ganancias.dart';
 import 'package:joiedriver/singletons/user_data.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_player/video_player.dart';
@@ -17,7 +17,6 @@ import 'colors.dart';
 import 'generated/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
-
 import 'home/home.dart';
 
 Future<void> main() async {
@@ -201,7 +200,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   .signInWithEmailAndPassword(email: email, password: passwd);
               initScreen = false;
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => HomeScreen(code)));
+                  MaterialPageRoute(builder: (context) => const Ganancias()));
             } on FirebaseAuthException catch (e) {
               if (e.code == 'user-not-found') {
                 //showToast("Este Email no esta registrado");
@@ -224,6 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
             context,
             MaterialPageRoute(
               //builder: (context) => MapaMenu(longitude: longitude, latitude: latitude,))));
+              //builder: (context) => const SplashScreen()
                 builder: (context) => const SplashScreen()
               // builder: (context) {
               //   if (FirebaseAuth.instance.currentUser != null) {

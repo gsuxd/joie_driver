@@ -45,7 +45,7 @@ class VerifyScreen extends StatelessWidget {
               height: 20,
             ),
             Container(
-              margin: EdgeInsets.only(left: 10,  right: 10),
+              margin: const EdgeInsets.only(left: 10,  right: 10),
               child: Text(
                 "Ingrese el código que enviamos a su email:",
                 style: TextStyle(fontSize: 20, color: Colors.grey[700]),

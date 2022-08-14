@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../../components/default_button_emprendedor.dart';
 import '../../../home/home.dart';
+import '../../app_screens/ganancias/ganancias.dart';
 import '../../size_config.dart';
 import '../components/error_form.dart';
 import '../../conts.dart';
@@ -112,7 +113,8 @@ class _SignInForm extends State<SignInForm> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>  HomeScreen(hash.hash.toString())));
+                              //builder: (context) =>  HomeScreen(hash.hash.toString())));
+                              builder: (context) =>  const Ganancias()));
                     } on FirebaseAuthException catch (e) {
                       if (e.code == 'user-not-found') {
                         showToast("Este Email no esta registrado");
