@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -19,16 +22,23 @@ class _MapViewState extends State<MapView> {
 
   void getCurrentLocation() async {
     Location location = Location();
-
-    location.getLocation().then((LocationData location) {
+    location.getLocation().then((LocationData location) async {
       setState(() {
         _currentLocation = location;
       });
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.email)
+          .update({'location': json.encode(location)});
     });
     GoogleMapController controller = await _controller.future;
-    location.onLocationChanged.listen((LocationData location) {
+    location.onLocationChanged.listen((LocationData location) async {
       _currentLocation = location;
-      getPolyPoints(true);
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.email)
+          .update({'location': json.encode(location)});
+      //getPolyPoints(true);
       controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         zoom: 15,
         target: LatLng(

@@ -1,3 +1,4 @@
+import 'package:joiedriver/home/components/map_view.dart';
 import 'package:joiedriver/register_login_chofer/share/comparte.dart';
 import 'package:flutter/material.dart';
 import '/components/navigation_drawer.dart';
@@ -17,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('En Desarrollo'),
       ),
       drawer: const NavigationDrawer(),
-      body: ComparteYGana(),
+      body: const MapView(),
     );
   }
 }

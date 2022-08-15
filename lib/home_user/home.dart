@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:joiedriver/home_user/components/map_view.dart';
+import 'package:joiedriver/home/components/map_view.dart';
+import 'package:joiedriver/home_user/components/appBar.dart';
 import '/components/navigation_drawer.dart';
+import 'components/map_view_pasajeros.dart';
 
 class HomeScreenUser extends StatelessWidget {
   static String routeName = '/home';
@@ -9,12 +11,10 @@ class HomeScreenUser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('En Desarrollo'),
-      ),
-      drawer: const NavigationDrawer(),
-      body: const MapView(),
+    return const Scaffold(
+      appBar: Appbar(),
+      drawer: NavigationDrawer(),
+      body: MapViewPasajeros(),
     );
   }
 }
