@@ -3,6 +3,7 @@ import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:joiedriver/register_login_emprendedor/app_screens/ganancias/item_ganancia.dart';
 import '../../../colors.dart';
 
 class BodyGanancias extends ConsumerStatefulWidget {
@@ -13,6 +14,37 @@ class BodyGanancias extends ConsumerStatefulWidget {
 }
 
 class _Body extends ConsumerState<BodyGanancias> {
+  final List<ItemGanancia> ganaciasList = [];
+
+
+  Future getDataGanancasList(int start, int end) async {
+    email = await encryptedSharedPreferences.getString('email');
+    DateTime mesAcutal = DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      1,
+      0,
+      0,
+      0,
+    );
+    await FirebaseFirestore.instance
+        .collection('usersEmprendedor/' + email + "/comisiones")
+        .where('date', isGreaterThan: mesAcutal)
+        .orderBy('date', descending: true)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+        ganaciasList.add(ItemGanancia(nameReferer: doc['name_referer'], codeReferer: doc['code_referer'], date: doc['date'], mount: doc['mount'], description: doc['description']));
+        ganaciasList.add(ItemGanancia(nameReferer: doc['name_referer'], codeReferer: doc['code_referer'], date: doc['date'], mount: doc['mount'], description: doc['description']));
+        ganaciasList.add(ItemGanancia(nameReferer: doc['name_referer'], codeReferer: doc['code_referer'], date: doc['date'], mount: doc['mount'], description: doc['description']));
+        ganaciasList.add(ItemGanancia(nameReferer: doc['name_referer'], codeReferer: doc['code_referer'], date: doc['date'], mount: doc['mount'], description: doc['description']));
+        ganaciasList.add(ItemGanancia(nameReferer: doc['name_referer'], codeReferer: doc['code_referer'], date: doc['date'], mount: doc['mount'], description: doc['description']));
+        ganaciasList.add(ItemGanancia(nameReferer: doc['name_referer'], codeReferer: doc['code_referer'], date: doc['date'], mount: doc['mount'], description: doc['description']));
+      }
+    });
+  }
+
+
   Future getDataGanancas() async {
     sum = 0;
     email = await encryptedSharedPreferences.getString('email');
@@ -116,11 +148,19 @@ class _Body extends ConsumerState<BodyGanancias> {
             },
           ),
           const SizedBox(
-            height: 30.0,
+            height: 20.0,
           ),
-          const Divider(
-            color: blue_light,
-            thickness: 30.0,
+          Expanded(
+              child: ListView.separated(
+                  itemBuilder: (context, index) {
+                    return Text(ganaciasList[index].nameReferer, style: const TextStyle(color: Colors.black),);
+                  },
+                  separatorBuilder: (context, index) =>  Container(
+                    color: blue_light,
+                    height: 30.0,
+                  ),
+                  itemCount: ganaciasList.length
+              )
           ),
         ],
       );
@@ -130,6 +170,7 @@ class _Body extends ConsumerState<BodyGanancias> {
   Future<DocumentSnapshot> nameFuture() async {
     email = await encryptedSharedPreferences.getString('email');
     await getDataGanancas();
+    await getDataGanancasList(0, 10);
     return users.doc(email).get();
   }
 
