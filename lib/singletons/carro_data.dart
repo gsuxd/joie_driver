@@ -24,4 +24,13 @@ class CarroData {
       picture: json['picture'] as String,
     );
   }
+
+  toJson() => {
+        "brand": brand,
+        "year": year,
+        "plate": plate,
+        "color": color,
+        "capacity": capacity,
+        "picture": picture
+      };
 }

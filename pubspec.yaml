@@ -56,10 +56,13 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   get_it: ^7.2.0
-  flutter_bloc: ^8.0.1
+  flutter_bloc: ^8.1.0
   location: ^4.4.0
   flutter_polyline_points: ^1.0.0
   geocoding: ^2.0.4
+  shared_preferences: ^2.0.15
+  bloc: ^8.1.0
+  equatable: ^2.0.3
 
 dev_dependencies:
   flutter_test:

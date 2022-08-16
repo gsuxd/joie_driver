@@ -26,14 +26,16 @@ class UserData {
       this.carroData});
 
   factory UserData.fromJson(Map<String, dynamic> json) => UserData(
-      profilePicture: json["profilePicture"],
-      name: json["name"],
-      lastName: json["lastName"],
-      referralsCode: json["code"],
-      birthDate: json["datebirth"],
-      email: json["email"],
-      genero: json["gender"],
-      type: json["type"]);
+        profilePicture: json["profilePicture"],
+        name: json["name"],
+        lastName: json["lastName"],
+        referralsCode: json["code"],
+        birthDate: json["datebirth"],
+        email: json["email"],
+        genero: json["gender"],
+        type: json["type"],
+        carroData: CarroData.fromJson(json["carroData"]),
+      );
 
   Map<String, dynamic> toJson() => {
         "profilePicture": profilePicture,
@@ -43,7 +45,16 @@ class UserData {
         "datebirth": birthDate,
         "email": email,
         "gender": genero,
-        "type": type
+        "type": type,
+        "carroData": carroData ??
+            CarroData(
+                    brand: "none",
+                    year: "2006",
+                    plate: "plate",
+                    color: "color",
+                    capacity: "capacity",
+                    picture: "picture")
+                .toJson()
       };
 }
 

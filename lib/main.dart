@@ -1,6 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:joiedriver/blocs/position/position_bloc.dart';
+import 'package:joiedriver/blocs/user/user_bloc.dart';
+import 'package:joiedriver/choose/choose.dart';
+import 'package:joiedriver/home/home.dart';
+import 'package:joiedriver/home_user/home.dart';
 import 'package:joiedriver/loadingScreen.dart';
 import 'package:joiedriver/register_login_chofer/theme.dart';
 import 'generated/l10n.dart';
@@ -9,12 +15,20 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp().then((value) {
-    runApp(const ProviderScope(
-      child: MyApp(),
+    runApp(ProviderScope(
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => UserBloc()..add(LoadUserEvent()),
+          ),
+          BlocProvider(
+            create: (context) => PositionBloc(),
+          ),
+        ],
+        child: const MyApp(),
+      ),
     ));
   });
-
-  //runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -53,19 +67,38 @@ class MyApp extends StatelessWidget {
           bodyText2: TextStyle(color: Color.fromARGB(255, 6, 38, 63)),
         ),
       ),
-      home: const MyHomePage(
-        title: 'JoieDriver',
-      ),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+  const MyHomePage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return const LoadingScreen();
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) {
+        if (state is UserNotLogged) {
+          return const ChooseScreen();
+        }
+        if (state is UserLogged) {
+          switch (state.user.type) {
+            case "choferes":
+              return const HomeScreen();
+            default:
+              return const HomeScreenUser();
+          }
+        }
+        if (state is UserLoading) {
+          return const LoadingScreen();
+        }
+
+        return const Scaffold(
+          body: Center(
+            child: Text("Error de estado, porfavor reinicia la aplicación"),
+          ),
+        );
+      },
+    );
   }
 }

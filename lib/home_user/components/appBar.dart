@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart' hide Location;
-import 'package:get_it/get_it.dart';
-import 'package:joiedriver/singletons/user_data.dart';
-import 'package:location/location.dart';
+import 'package:joiedriver/blocs/position/position_bloc.dart';
+import 'package:joiedriver/blocs/user/user_bloc.dart';
+import 'package:joiedriver/colors.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Appbar extends StatefulWidget implements PreferredSizeWidget {
   const Appbar({Key? key}) : super(key: key);
@@ -15,32 +17,68 @@ class Appbar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _AppbarState extends State<Appbar> {
-  @override
-  void initState() {
-    getCity();
-    super.initState();
-  }
+  String cityName = "";
 
-  void getCity() async {
-    Location location = Location();
-    final locationData = await location.getLocation();
+  void getCity(locationData) async {
     List<Placemark> placemarks = await placemarkFromCoordinates(
         locationData.latitude!, locationData.longitude!);
     var first = placemarks.first;
-    print(
-        ' ${first.locality}, ${first.subLocality}${first.thoroughfare}, ${first.subThoroughfare}');
+    setState(() {
+      cityName = first.locality!;
+    });
   }
+
+  final TextStyle _baseStyle = const TextStyle(
+      color: Colors.white,
+      fontFamily: "Monserrat",
+      fontWeight: FontWeight.bold);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-        title: Row(
-      children: [
-        CircleAvatar(
-          foregroundImage: NetworkImage(GetIt.I.get<UserData>().profilePicture),
+      backgroundColor: blue,
+      automaticallyImplyLeading: false,
+      actions: <Widget>[Container()],
+      title: BlocListener<PositionBloc, PositionState>(
+        listener: (context, state) {
+          if (state is PositionObtained) {
+            getCity(state.location);
+          }
+        },
+        child: Row(
+          children: [
+            CircleAvatar(
+              foregroundImage: NetworkImage(
+                  (context.read<UserBloc>().state as UserLogged)
+                      .user
+                      .profilePicture),
+            ),
+            Row(children: [
+              Container(
+                margin: const EdgeInsets.only(left: 60, right: 10),
+                child: const Icon(
+                  Icons.location_on_outlined,
+                  color: Colors.white,
+                ),
+              ),
+              Text(
+                cityName,
+                style: _baseStyle,
+              ),
+              Container(
+                margin: const EdgeInsets.only(left: 40),
+                child: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.share,
+                    color: Colors.white,
+                  ),
+                ),
+              )
+            ])
+          ],
         ),
-        Row(children: [])
-      ],
-    ));
+      ),
+    );
   }
 }
