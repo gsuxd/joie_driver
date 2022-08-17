@@ -14,11 +14,26 @@ class BodyGanancias extends ConsumerStatefulWidget {
 }
 
 class _Body extends ConsumerState<BodyGanancias> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      if(_scrollController.position.pixels >= _scrollController.position.pixels *.95){
+        if(endDoc != null){
+          print("entro");
+          getDataGanancasList(endDoc);
+        }
+      }
+    });
+  }
   final List<ItemGanancia> ganaciasList = [];
 
 
-  Future getDataGanancasList(int start, int end) async {
-    email = await encryptedSharedPreferences.getString('email');
+
+  Future getDataGanancasListInit() async {
     DateTime mesAcutal = DateTime(
       DateTime.now().year,
       DateTime.now().month,
@@ -31,23 +46,54 @@ class _Body extends ConsumerState<BodyGanancias> {
         .collection('usersEmprendedor/' + email + "/comisiones")
         .where('date', isGreaterThan: mesAcutal)
         .orderBy('date', descending: true)
+        .limit(1)
         .get()
         .then((QuerySnapshot querySnapshot) {
       for (var doc in querySnapshot.docs) {
-        ganaciasList.add(ItemGanancia(nameReferer: doc['name_referer'], codeReferer: doc['code_referer'], date: doc['date'], mount: doc['mount'], description: doc['description']));
-        ganaciasList.add(ItemGanancia(nameReferer: doc['name_referer'], codeReferer: doc['code_referer'], date: doc['date'], mount: doc['mount'], description: doc['description']));
-        ganaciasList.add(ItemGanancia(nameReferer: doc['name_referer'], codeReferer: doc['code_referer'], date: doc['date'], mount: doc['mount'], description: doc['description']));
-        ganaciasList.add(ItemGanancia(nameReferer: doc['name_referer'], codeReferer: doc['code_referer'], date: doc['date'], mount: doc['mount'], description: doc['description']));
-        ganaciasList.add(ItemGanancia(nameReferer: doc['name_referer'], codeReferer: doc['code_referer'], date: doc['date'], mount: doc['mount'], description: doc['description']));
-        ganaciasList.add(ItemGanancia(nameReferer: doc['name_referer'], codeReferer: doc['code_referer'], date: doc['date'], mount: doc['mount'], description: doc['description']));
+        endDoc = doc;
+        ganaciasList.add(ItemGanancia(nameReferer: doc['name_referer'], codeReferer: doc['code_referer'], date: doc['date'], mount: double.parse(doc['mount'].toStringAsFixed(2)), description: doc['description']));
       }
     });
+  }
+
+  Future getDataGanancasList(QueryDocumentSnapshot? start) async {
+    if(start != null){
+      int count = 0;
+      late QueryDocumentSnapshot tempSnap;
+      DateTime mesAcutal = DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        1,
+        0,
+        0,
+        0,
+      );
+      await FirebaseFirestore.instance
+          .collection('usersEmprendedor/' + email + "/comisiones")
+          .where('date', isGreaterThan: mesAcutal)
+          .orderBy('date', descending: true)
+          .startAfterDocument(start!)
+          .limit(10)
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        for (var doc in querySnapshot.docs) {
+          count = count + 1;
+          ganaciasList.add(ItemGanancia(nameReferer: doc['name_referer'], codeReferer: doc['code_referer'], date: doc['date'], mount: double.parse(doc['mount'].toStringAsFixed(2)), description: doc['description']));
+          tempSnap = doc;
+        }
+        if(count >= 10){
+          endDoc = tempSnap;
+        }else{
+          endDoc = null;
+        }
+
+      });
+    }
   }
 
 
   Future getDataGanancas() async {
     sum = 0;
-    email = await encryptedSharedPreferences.getString('email');
     DateTime mesAcutal = DateTime(
       DateTime.now().year,
       DateTime.now().month,
@@ -62,11 +108,15 @@ class _Body extends ConsumerState<BodyGanancias> {
         .get()
         .then((QuerySnapshot querySnapshot) {
       for (var doc in querySnapshot.docs) {
-        sum = sum + doc["mount"];
+        sum = sum + double.parse(doc['mount'].toStringAsFixed(2));
       }
     });
   }
+  late ScrollController _scrollController;
+  bool isLoading = false;
+  bool hashMore = true;
 
+  QueryDocumentSnapshot? endDoc;
   String email = "None";
   double sum = 0;
   EncryptedSharedPreferences encryptedSharedPreferences =
@@ -77,11 +127,7 @@ class _Body extends ConsumerState<BodyGanancias> {
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (context, ref, child) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          FutureBuilder<DocumentSnapshot>(
+      return FutureBuilder<DocumentSnapshot>(
             future: nameFuture(),
             builder: (BuildContext context,
                 AsyncSnapshot<DocumentSnapshot> snapshot) {
@@ -123,9 +169,7 @@ class _Body extends ConsumerState<BodyGanancias> {
                 Map<String, dynamic> data =
                     snapshot.data!.data() as Map<String, dynamic>;
 
-                return Padding(
-                  padding: const EdgeInsets.only(top: 10, left: 30, right: 10),
-                  child: Column(
+                return Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -141,36 +185,36 @@ class _Body extends ConsumerState<BodyGanancias> {
                           height: 10.0,
                         ),
                         ganancias(),
-                      ]),
+                        const SizedBox(
+                          height: 20.0,
+                        ),
+                        Expanded(
+                            child: ListView.separated(
+                              controller: _scrollController,
+                                itemBuilder: (context, index) {
+                                  return Text(ganaciasList[index].nameReferer, style: const TextStyle(color: Colors.black),);
+                                },
+                                separatorBuilder: (context, index) =>  Container(
+                                  color: blue_light,
+                                  height: 50.0,
+                                ),
+                                itemCount: ganaciasList.length
+                            )
+                        ),
+                      ],
                 );
               }
               return const LinearProgressIndicator();
             },
-          ),
-          const SizedBox(
-            height: 20.0,
-          ),
-          Expanded(
-              child: ListView.separated(
-                  itemBuilder: (context, index) {
-                    return Text(ganaciasList[index].nameReferer, style: const TextStyle(color: Colors.black),);
-                  },
-                  separatorBuilder: (context, index) =>  Container(
-                    color: blue_light,
-                    height: 30.0,
-                  ),
-                  itemCount: ganaciasList.length
-              )
-          ),
-        ],
-      );
+          );
     });
   }
 
   Future<DocumentSnapshot> nameFuture() async {
     email = await encryptedSharedPreferences.getString('email');
     await getDataGanancas();
-    await getDataGanancasList(0, 10);
+    await getDataGanancasListInit();
+    await getDataGanancasList(endDoc);
     return users.doc(email).get();
   }
 
@@ -192,7 +236,7 @@ class _Body extends ConsumerState<BodyGanancias> {
               style: textStyleBlue(),
             ),
             Text(
-              "S/. $sum",
+              "S/. ${double.parse(sum.toStringAsFixed(2))}",
               style: textStyleGreen(),
             )
           ],
