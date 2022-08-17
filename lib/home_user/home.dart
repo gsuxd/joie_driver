@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joiedriver/blocs/position/position_bloc.dart';
 import 'package:joiedriver/blocs/user/user_bloc.dart';
-import 'package:joiedriver/home/components/map_view.dart';
 import 'package:joiedriver/home_user/components/appBar.dart';
-import 'package:joiedriver/singletons/user_data.dart';
 import '/components/navigation_drawer.dart';
+import 'bloc/cars_bloc.dart';
 import 'components/map_view_pasajeros.dart';
 
 class HomeScreenUser extends StatefulWidget {
@@ -27,10 +26,13 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      appBar: Appbar(),
-      drawer: NavigationDrawer(),
-      body: MapViewPasajeros(),
+    return Scaffold(
+      appBar: const Appbar(),
+      drawer: const NavigationDrawer(),
+      body: BlocProvider(
+        create: (context) => CarsBloc()..add(const LoadNearCars()),
+        child: const MapViewPasajeros(),
+      ),
     );
   }
 }

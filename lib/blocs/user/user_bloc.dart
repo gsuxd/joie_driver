@@ -20,6 +20,18 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<LoginUserEvent>(_handleLogin);
   }
 
+  late DocumentReference<Map<String, dynamic>> userSnapshot;
+
+  @override
+  Future<void> close() async {
+    if (state is UserLogged) {
+      if ((state as UserLogged).user.carroData != null) {
+        await userSnapshot.update({"active": false});
+      }
+    }
+    await super.close();
+  }
+
   void _handleLoadUser(LoadUserEvent event, Emitter<UserState> emit) async {
     emit(UserLoading());
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -70,7 +82,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                     .getDownloadURL(),
               ),
             );
-            UserLogged(u);
+            value.reference.update({"active": true});
+            userSnapshot = value.reference;
+            emit(UserLogged(u));
             prefs.setString("user", jsonEncode(u.toJson()));
             return;
           } else {

@@ -1,5 +1,4 @@
 import 'package:joiedriver/home/components/map_view.dart';
-import 'package:joiedriver/register_login_chofer/share/comparte.dart';
 import 'package:flutter/material.dart';
 import '/components/navigation_drawer.dart';
 

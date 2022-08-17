@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 part 'cars_event.dart';
@@ -10,7 +11,7 @@ part 'cars_state.dart';
 
 class CarsBloc extends Bloc<CarsEvent, CarsState> {
   CarsBloc() : super(CarsInitial()) {
-    on<CarsEvent>((event, emit) {});
+    on<LoadNearCars>(_handleLoad);
   }
 
   double calculateDistance(lat1, lon1, lat2, lon2) {
@@ -22,10 +23,32 @@ class CarsBloc extends Bloc<CarsEvent, CarsState> {
   }
 
   void _handleLoad(LoadNearCars event, Emitter<CarsState> emit) async {
-    final List<Future> futures = <Future>[];
+    final List<Stream<DocumentSnapshot<Map<String, dynamic>>>> futures = [];
     final docs = await FirebaseFirestore.instance
-        .collection("usersPasajeros")
-        .where("active", isEqualTo: "true")
+        .collection("users")
+        .where("active", isEqualTo: true)
         .get();
+    if (docs.docs.isEmpty) {
+      emit(const CarsLoaded(<Marker>[]));
+      return;
+    }
+    for (var element in docs.docs) {
+      futures.add(element.reference.snapshots());
+    }
+    final List<Marker> cars = [];
+    for (var element in futures) {
+      await for (final x in element) {
+        cars.add(
+          Marker(
+              markerId: MarkerId(x.id),
+              icon: await BitmapDescriptor.fromAssetImage(
+                  const ImageConfiguration(size: Size(12, 12)),
+                  "assets/images/coches-en-el-mapa.png"),
+              position: LatLng(x.data()!["location"]["latitude"],
+                  x.data()!["location"]["longitude"])),
+        );
+        emit(CarsLoaded(cars));
+      }
+    }
   }
 }

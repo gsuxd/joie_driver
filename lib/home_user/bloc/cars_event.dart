@@ -7,4 +7,9 @@ abstract class CarsEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadNearCars extends CarsEvent {}
+class LoadNearCars extends CarsEvent {
+  const LoadNearCars();
+
+  @override
+  List<Object> get props => [];
+}
