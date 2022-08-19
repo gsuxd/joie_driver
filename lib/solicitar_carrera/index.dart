@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:joiedriver/register_login_user/conts.dart';
 import 'package:joiedriver/solicitar_carrera/components/textedit.dart';
 
@@ -28,6 +27,7 @@ class SolicitarCarreraModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: MediaQuery.of(context).size.height * 0.63,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black, width: 2),
         borderRadius: const BorderRadius.only(
@@ -41,29 +41,28 @@ class SolicitarCarreraModal extends StatelessWidget {
           children: [
             CustomTextField(
               hintText: "Dirección de partida",
-              icon: Image.asset(
-                "assets/images/A.png",
-                width: 30,
-                color: Colors.grey,
-              ),
+              icon: "assets/images/A.png",
               onSaved: (value) => data["partida"] = value,
             ),
             CustomTextField(
               hintText: "Dirección de destino",
-              icon: Image.asset(
-                "assets/images/B.png",
-                width: 30,
-                color: Colors.grey,
-              ),
+              icon: "assets/images/B.png",
               onSaved: (value) => data["destino"] = value,
             ),
             CustomTextField(
               hintText: "Monto a ofertar",
-              icon: const Icon(
-                Icons.monetization_on_outlined,
-                size: 32,
-              ),
-              onSaved: (value) => data["partida"] = value,
+              icon: "assets/images/outline_add_a_photo_black_24dp.png",
+              onSaved: (value) => data["montoOferta"] = value,
+            ),
+            CustomTextField(
+              hintText: "Número de passajeros",
+              icon: "assets/images/outline_add_a_photo_black_24dp.png",
+              onSaved: (value) => data["pasajeros"] = value,
+            ),
+            CustomTextField(
+              hintText: "Necesidad especial",
+              icon: "assets/images/outline_add_a_photo_black_24dp.png",
+              onSaved: (value) => data["necesidad"] = value,
             ),
             Container(
               margin: const EdgeInsets.only(top: 10),
@@ -74,11 +73,17 @@ class SolicitarCarreraModal extends StatelessWidget {
                   Radius.circular(10),
                 ),
               ),
+              padding: const EdgeInsets.all(4),
               child: TextButton(
                   onPressed: () {
                     handleSubmit(context);
                   },
-                  child: const Text("Pedir carrera")),
+                  child: const Text(
+                    "Pedir carrera",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  )),
             )
           ],
         ),

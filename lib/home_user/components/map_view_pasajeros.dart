@@ -81,14 +81,15 @@ class _MapViewPasajerosState extends State<MapViewPasajeros> {
             },
             child: Container(
               decoration: BoxDecoration(
-                border: Border.all(color: blue, width: 2),
-                color: Colors.lightGreen[300],
+                border: Border.all(color: blue, width: 5),
+                color: const Color.fromRGBO(255, 250, 17, 1),
                 borderRadius: BorderRadius.circular(100),
               ),
               padding: const EdgeInsets.all(5),
               child: SvgPicture.asset(
-                "assets/images/request.svg",
+                "assets/icons/pedirAutoUst.svg",
                 width: 130,
+                color: blue,
               ),
             ),
           ),

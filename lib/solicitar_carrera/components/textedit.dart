@@ -1,24 +1,36 @@
 import 'package:flutter/material.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   const CustomTextField(
       {Key? key,
       required this.icon,
+      this.value,
       required this.hintText,
       required this.onSaved})
       : super(key: key);
 
-  final Widget icon;
+  final String icon;
+  final String? value;
   final String hintText;
   final void Function(String?) onSaved;
+
+  @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  // ignore: prefer_final_fields
+  Color _color = Colors.grey;
+
+  final FocusNode _focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
           border: Border(
-        bottom: BorderSide(color: Colors.grey, width: 2),
+        bottom: BorderSide(color: _color, width: 2),
       )),
       child: Row(
         children: [
@@ -26,19 +38,24 @@ class CustomTextField extends StatelessWidget {
             margin: const EdgeInsets.only(left: 10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(100),
-              border: Border.all(color: Colors.grey, width: 2),
+              border: Border.all(color: _color, width: 2),
             ),
-            child: icon,
+            child: Image.asset(
+              widget.icon,
+              width: 30,
+              color: _color,
+            ),
           ),
           Expanded(
             child: TextFormField(
-              onSaved: onSaved,
+              onSaved: widget.onSaved,
+              focusNode: _focusNode,
               decoration: InputDecoration(
                 border: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 errorBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
-                hintText: hintText,
+                hintText: widget.hintText,
               ),
             ),
           ),
