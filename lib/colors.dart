@@ -11,6 +11,7 @@ const background_color = Color(0xffe2e2e2);
 const greyColor =  Color(0xff818181);
 TextStyle textStyleGrey() =>  const TextStyle(color: greyColor, fontSize: 25, fontWeight: FontWeight.bold);
 TextStyle textStyleGreyName() =>  const TextStyle(color: greyColor, fontSize: 16, fontWeight: FontWeight.bold);
+TextStyle textStyleGreyNameCity() =>  const TextStyle(color: Colors.black54, fontFamily: "Monserrat", fontSize: 18.0);
 TextStyle textStyleBlueItemGanancia() =>  const TextStyle(color: Color(0xFF005EA8), fontSize: 18, fontWeight: FontWeight.bold);
 TextStyle textStyleRed() =>  const TextStyle(color: Colors.redAccent, fontSize: 25, fontWeight: FontWeight.bold);
 TextStyle textStyleBlack() =>  const TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold);

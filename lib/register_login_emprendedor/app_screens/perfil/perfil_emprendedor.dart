@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../colors.dart';
 import '../../conts.dart';
@@ -108,6 +109,32 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
     }
   }
 
+  Future<void> updateUser() {
+    return users
+        .doc(email)
+        .update({'city': _controllerTextCity.text, 'address': _controllerTextAddress.text})
+        .then((value) => Fluttertoast.showToast(
+        msg: "Actualización Exitosa!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.blue,
+        textColor: Colors.white,
+        fontSize: 16.0
+    ))
+        .catchError((error) =>Fluttertoast.showToast(
+        msg: "$error",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.blue,
+        textColor: Colors.white,
+        fontSize: 16.0
+    ));
+  }
+
+  final TextEditingController _controllerTextCity = TextEditingController();
+  final TextEditingController _controllerTextAddress = TextEditingController();
   File? phofilePhoto;
   String email = "None";
   EncryptedSharedPreferences encryptedSharedPreferences =
@@ -119,6 +146,7 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
 
   CollectionReference users =
       FirebaseFirestore.instance.collection('usersEmprendedor');
+
 
   @override
   Widget build(BuildContext context) {
@@ -166,7 +194,8 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
             if (snapshot.connectionState == ConnectionState.done) {
               Map<String, dynamic> data =
                   snapshot.data!.data() as Map<String, dynamic>;
-
+              _controllerTextCity.text = data['city'].toString();
+              _controllerTextAddress.text = data['address'].toString();
               return ListView(
                 children: [
                   const SizedBox(
@@ -271,31 +300,29 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
                   item(data['name'].toString().toUpperCase(),
                       "assets/images/nombre_y_apellido.svg"),
                   const SizedBox(
-                    height: 20.0,
+                    height: 25.0,
                   ),
                   item(data['lastname'].toString().toUpperCase(),
                       "assets/images/nombre_y_apellido.svg"),
                   const SizedBox(
-                    height: 20.0,
+                    height: 25.0,
                   ),
                   item(data['datebirth'].toString().substring(0, 10),
                       "assets/images/edad.svg"),
                   const SizedBox(
-                    height: 20.0,
+                    height: 25.0,
                   ),
-                  item(data['city'].toString().toUpperCase(),
-                      "assets/images/ciudad.svg"),
-                  const SizedBox(
-                    height: 20.0,
-                  ),
+
                   item(data['gender'].toString().toUpperCase(),
                       "assets/images/genero.svg"),
                   const SizedBox(
-                    height: 20.0,
+                    height: 25.0,
                   ),
                   item(email, "assets/images/correo.svg"),
+                  cityFormField(_controllerTextCity, "Ingresa tu Ciudad", "Ciudad", "assets/icons/city.svg"),
+                  cityFormField(_controllerTextAddress, "Ingresa tu Dirección", "Dirección", "assets/icons/direccion.svg"),
                   const SizedBox(
-                    height: 20.0,
+                    height: 10.0,
                   ),
                 ],
               );
@@ -326,5 +353,49 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
         )
       ],
     );
+  }
+
+  Padding cityFormField(TextEditingController controller, String? hint, String? label, String icon) {
+    return
+      Padding(
+        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+      child: TextFormField(
+
+        style: textStyleGreyNameCity(),
+        textInputAction: TextInputAction.done,
+        controller: controller,
+        cursorColor: Colors.grey,
+        onEditingComplete: (){
+          updateUser();
+        },
+
+        onChanged: (value) {
+
+        },
+        keyboardType: TextInputType.streetAddress,
+        autocorrect: true,
+        decoration:  InputDecoration(
+          border: InputBorder.none,
+          enabledBorder: InputBorder.none,
+            disabledBorder: InputBorder.none,
+          focusedBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(0)),
+            borderSide: BorderSide(
+              color: jBase,
+              width: 0.0,
+            ),
+          ),
+            hintStyle: textStyleGreyName(),
+            hintText: hint,
+            prefixIcon: Padding(
+              padding: const EdgeInsets.only(left: 0.0, right: 10.0),
+              child: SvgPicture.asset(
+                icon,
+                height: 10,
+              ),
+            ),
+            ),
+      ),
+      );
   }
 }

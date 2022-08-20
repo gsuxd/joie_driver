@@ -125,7 +125,7 @@ class _SignInForm extends State<SignInForm> {
                     }
                   }
                 }on SocketException catch (e) {
-                  showToast("Debes tener acceso a internet para registrarte\n" + e.toString());
+                  showToast("Debes tener acceso a internet para registrarte");
                 }
                 }
               }),

@@ -75,7 +75,7 @@ class _Body extends ConsumerState<BodyGanancias> {
           .collection('usersEmprendedor/' + email + "/comisiones")
           .where('date', isGreaterThan: mesAcutal)
           .orderBy('date', descending: true)
-          .startAfterDocument(start!)
+          .startAfterDocument(start)
           .limit(10)
           .get()
           .then((QuerySnapshot querySnapshot) {
