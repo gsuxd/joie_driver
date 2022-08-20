@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:joiedriver/register_login_emprendedor/app_screens/perfil/perfil_emprendedor.dart';
 import '../../colors.dart';
 import '../../main.dart';
 import 'ganancias/ganancias.dart';
@@ -14,7 +15,7 @@ Drawer menuEmprendedor({required BuildContext context}) {
       children: [
         Image.asset("assets/images/banner_header.png", fit: BoxFit.cover,),
         itemMenu(context: context, image: "ganancias.svg", title: "Ganancias", page: const Ganancias()),
-        itemMenu(context: context, image: "perfil_menu.svg", title: "Perfil", page: const Ganancias()),
+        itemMenu(context: context, image: "perfil_menu.svg", title: "Perfil", page:  PerfilEmprendedor()),
         itemMenu(context: context, image: "cuenta_bancaria.svg", title: "Datos Bancarios", page: const Ganancias()),
         itemMenu(context: context, image: "ajustes.svg", title: "Ajustes", page: const Ganancias()),
         itemMenu(context: context, image: "asistencia_tecnica_menu.svg", title: "Asistencia Técnica", page: const Ganancias()),

@@ -284,3 +284,15 @@ Future<bool?> showToast(String message) {
       fontSize: 16.0
   );
 }
+
+IconButton back(BuildContext context) {
+  return IconButton(
+      onPressed: () {
+        Navigator.pop(context);
+      },
+      icon: const Icon(
+        Icons.keyboard_arrow_left,
+        size: 30,
+        color: Colors.white,
+      ));
+}

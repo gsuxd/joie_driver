@@ -3,7 +3,6 @@ import 'package:archive/archive.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../../components/default_button_emprendedor.dart';
-import '../../../home/home.dart';
 import '../../app_screens/ganancias/ganancias.dart';
 import '../../size_config.dart';
 import '../components/error_form.dart';
