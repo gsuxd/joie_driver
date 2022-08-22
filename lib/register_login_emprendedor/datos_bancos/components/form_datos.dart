@@ -283,7 +283,7 @@ class _BancoFormState extends State<BancoForm> {
             }else if(value == davivienda){
               name = "Davivienda";
             }else if (value == avvillas) {
-              name = 'Bnaco AV Villas';
+              name = 'Banco AV Villas';
             } else
             if (value == bancamia) {
               name = 'Bancamía';

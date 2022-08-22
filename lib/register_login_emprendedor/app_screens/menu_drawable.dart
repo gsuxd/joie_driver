@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:joiedriver/register_login_emprendedor/app_screens/perfil/perfil_emprendedor.dart';
 import '../../colors.dart';
 import '../../main.dart';
+import 'banco/bancos_data.dart';
 import 'ganancias/ganancias.dart';
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 
@@ -16,7 +17,7 @@ Drawer menuEmprendedor({required BuildContext context}) {
         Image.asset("assets/images/banner_header.png", fit: BoxFit.cover,),
         itemMenu(context: context, image: "ganancias.svg", title: "Ganancias", page: const Ganancias()),
         itemMenu(context: context, image: "perfil_menu.svg", title: "Perfil", page:  PerfilEmprendedor()),
-        itemMenu(context: context, image: "cuenta_bancaria.svg", title: "Datos Bancarios", page: const Ganancias()),
+        itemMenu(context: context, image: "cuenta_bancaria.svg", title: "Datos Bancarios", page: BancoEmprendedor()),
         itemMenu(context: context, image: "ajustes.svg", title: "Ajustes", page: const Ganancias()),
         itemMenu(context: context, image: "asistencia_tecnica_menu.svg", title: "Asistencia Técnica", page: const Ganancias()),
         cerrarSession(context: context, image: "cerrar_sesion.svg", title: "Cerrar Sesión", page: const MyHomePage(title: 'JoieDriver',)),
