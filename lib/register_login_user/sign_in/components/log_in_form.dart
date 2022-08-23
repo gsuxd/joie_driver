@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:joiedriver/blocs/user/user_bloc.dart';
 import '../../../home/home.dart';
 import '../../size_config.dart';
 import '/components/default_button.dart';
@@ -85,36 +87,21 @@ class _SignInForm extends State<SignInForm> {
           ButtonDef(
               text: "Ingresar",
               press: () async {
+                if (context.read<UserBloc>().state is UserLoading) {
+                  return;
+                }
+
                 //TODO: Validador del boton en el login
                 if (_formKey.currentState!.validate()) {
-                  print("entra");
                   _formKey.currentState!.save();
                   try {
                     var result = await InternetAddress.lookup('google.com');
                     if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-                      print('connected');
-                      try {
-                        UserCredential userCredential = await FirebaseAuth
-                            .instance
-                            .signInWithEmailAndPassword(
-                                email: _email.text.toString(),
-                                password: _password.text.toString());
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const HomeScreen()));
-                      } on FirebaseAuthException catch (e) {
-                        if (e.code == 'user-not-found') {
-                          showToast("Este Email no esta registrado");
-                        } else if (e.code == 'wrong-password') {
-                          showToast("Contraseña Incorrecta");
-                        }
-                      } catch (e) {
-                        showToast(e.toString());
-                      }
+                      context.read<UserBloc>().add(
+                          LoginUserEvent(_email.text, _password.text, context));
                     }
                   } on SocketException catch (e) {
-                    print('not connected');
+                    e;
                     showToast("Debes tener acceso a internet para registrarte");
                   }
 

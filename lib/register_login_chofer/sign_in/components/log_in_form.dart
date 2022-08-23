@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:joiedriver/blocs/user/user_bloc.dart';
 import 'package:joiedriver/helpers/generate_random_string.dart';
 import '../../../components/default_button_chofer.dart';
 import '../../../home/home.dart';
@@ -91,23 +93,8 @@ class _SignInForm extends State<SignInForm> {
                   try {
                     var result = await InternetAddress.lookup('google.com');
                     if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-                      try {
-                        await FirebaseAuth.instance.signInWithEmailAndPassword(
-                            email: _email.text.toString(),
-                            password: _password.text.toString());
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const HomeScreen()));
-                      } on FirebaseAuthException catch (e) {
-                        if (e.code == 'user-not-found') {
-                          showToast("Este Email no esta registrado");
-                        } else if (e.code == 'wrong-password') {
-                          showToast("Contraseña Incorrecta");
-                        }
-                      } catch (e) {
-                        showToast(e.toString());
-                      }
+                      context.read<UserBloc>().add(
+                          LoginUserEvent(_email.text, _password.text, context));
                     }
                   } on SocketException catch (e) {
                     showToast(
