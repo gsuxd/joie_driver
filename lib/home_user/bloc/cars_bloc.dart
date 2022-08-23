@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 
 part 'cars_event.dart';
 part 'cars_state.dart';
@@ -38,14 +39,24 @@ class CarsBloc extends Bloc<CarsEvent, CarsState> {
     final List<Marker> cars = [];
     for (var element in futures) {
       await for (final x in element) {
+        final data = x.data();
+        final distance = calculateDistance(
+            event.location.latitude,
+            event.location.longitude,
+            data!["location"]["latitude"],
+            data["location"]["longitude"]);
+        if (distance > 60) {
+          emit(CarsLoaded(cars));
+          continue;
+        }
         cars.add(
           Marker(
               markerId: MarkerId(x.id),
               icon: await BitmapDescriptor.fromAssetImage(
                   const ImageConfiguration(size: Size(12, 12)),
                   "assets/images/coches-en-el-mapa.png"),
-              position: LatLng(x.data()!["location"]["latitude"],
-                  x.data()!["location"]["longitude"])),
+              position: LatLng(
+                  data["location"]["latitude"], data["location"]["longitude"])),
         );
         emit(CarsLoaded(cars));
       }

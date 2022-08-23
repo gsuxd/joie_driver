@@ -93,9 +93,8 @@ class _SignInForm extends State<SignInForm> {
                   try {
                     var result = await InternetAddress.lookup('google.com');
                     if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-                      context
-                          .read<UserBloc>()
-                          .add(LoginUserEvent(_email.text, _password.text));
+                      context.read<UserBloc>().add(
+                          LoginUserEvent(_email.text, _password.text, context));
                     }
                   } on SocketException catch (e) {
                     showToast(

@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geocoding/geocoding.dart' hide Location;
 import 'package:joiedriver/singletons/user_data.dart';
 import 'package:location/location.dart';
 
@@ -36,9 +36,17 @@ class PositionBloc extends Bloc<PositionEvent, PositionState> {
       }
 
       final userRef = collection.doc(event.user.email);
+      final LocationData locationData = await location.getLocation();
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          locationData.latitude!, locationData.longitude!);
+      var first = placemarks.first;
       await for (final value in location.onLocationChanged) {
         await userRef.update({
-          "location": {"latitude": value.latitude, "longitude": value.longitude}
+          "location": {
+            "latitude": value.latitude,
+            "longitude": value.longitude
+          },
+          "city": first.locality,
         });
         emit(PositionObtained(value));
       }

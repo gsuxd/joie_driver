@@ -8,7 +8,8 @@ abstract class CarsEvent extends Equatable {
 }
 
 class LoadNearCars extends CarsEvent {
-  const LoadNearCars();
+  final LocationData location;
+  const LoadNearCars(this.location);
 
   @override
   List<Object> get props => [];

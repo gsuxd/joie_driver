@@ -4,7 +4,6 @@ import 'package:geocoding/geocoding.dart' hide Location;
 import 'package:joiedriver/blocs/position/position_bloc.dart';
 import 'package:joiedriver/blocs/user/user_bloc.dart';
 import 'package:joiedriver/colors.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Appbar extends StatefulWidget implements PreferredSizeWidget {
   const Appbar({Key? key}) : super(key: key);
@@ -53,29 +52,33 @@ class _AppbarState extends State<Appbar> {
                       .user
                       .profilePicture),
             ),
-            Row(children: [
-              Container(
-                margin: const EdgeInsets.only(left: 60, right: 10),
-                child: const Icon(
-                  Icons.location_on_outlined,
-                  color: Colors.white,
-                ),
-              ),
-              Text(
-                cityName,
-                style: _baseStyle,
-              ),
-              Container(
-                margin: const EdgeInsets.only(left: 40),
-                child: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.share,
-                    color: Colors.white,
-                  ),
-                ),
-              )
-            ])
+            Container(
+              width: 240,
+              margin: const EdgeInsets.only(left: 78),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.location_on_outlined,
+                          color: Colors.white,
+                        ),
+                        Text(
+                          cityName,
+                          style: _baseStyle,
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.share,
+                        color: Colors.white,
+                      ),
+                    )
+                  ]),
+            )
           ],
         ),
       ),

@@ -5,10 +5,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:joiedriver/home_user/home.dart';
 import 'package:joiedriver/register_login_user/conts.dart';
 import 'package:joiedriver/singletons/carro_data.dart';
 import 'package:joiedriver/singletons/user_data.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'user_event.dart';
@@ -86,6 +88,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             userSnapshot = value.reference;
             emit(UserLogged(u));
             prefs.setString("user", jsonEncode(u.toJson()));
+            Navigator.of(event.context).pushReplacement(
+                MaterialPageRoute(builder: (_) => const HomeScreenUser()));
             return;
           } else {
             await FirebaseFirestore.instance
@@ -117,6 +121,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                       u.toJson(),
                     ),
                   );
+                  userSnapshot = value.reference;
+                  Navigator.of(event.context).pushReplacement(MaterialPageRoute(
+                      builder: (_) => const HomeScreenUser()));
                   return;
                 } else {
                   await FirebaseFirestore.instance
@@ -125,29 +132,33 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                       .then(
                     (value) async {
                       if (value.exists) {
+                        final u = UserData(
+                          lastName: value['lastname'],
+                          name: value['name'],
+                          birthDate: value['datebirth'],
+                          referralsCode: value['code'],
+                          email: FirebaseAuth.instance.currentUser!.email!,
+                          genero: value['gender'],
+                          type: "usersPasajeros",
+                          profilePicture: await FirebaseStorage.instance
+                              .ref()
+                              .child(
+                                  "${FirebaseAuth.instance.currentUser!.email!}/ProfilePhoto.jpg")
+                              .getDownloadURL(),
+                        );
                         emit(
-                          UserLogged(
-                            UserData(
-                              lastName: value['lastname'],
-                              name: value['name'],
-                              birthDate: value['datebirth'],
-                              referralsCode: value['code'],
-                              email: FirebaseAuth.instance.currentUser!.email!,
-                              genero: value['gender'],
-                              type: "usersEmprendedor",
-                              profilePicture: await FirebaseStorage.instance
-                                  .ref()
-                                  .child(
-                                      "${FirebaseAuth.instance.currentUser!.email!}/ProfilePhoto.jpg")
-                                  .getDownloadURL(),
-                            ),
+                          UserLogged(u),
+                        );
+                        prefs.setString(
+                          "user",
+                          jsonEncode(
+                            u.toJson(),
                           ),
                         );
-                        value.reference.snapshots().listen(
-                          (event) {
-                            prefs.setString("user", jsonEncode(event.data()!));
-                          },
-                        );
+                        userSnapshot = value.reference;
+                        Navigator.of(event.context).pushReplacement(
+                            MaterialPageRoute(
+                                builder: (_) => const HomeScreenUser()));
                       }
                     },
                   );

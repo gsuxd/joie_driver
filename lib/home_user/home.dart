@@ -29,9 +29,24 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
     return Scaffold(
       appBar: const Appbar(),
       drawer: const NavigationDrawer(),
-      body: BlocProvider(
-        create: (context) => CarsBloc()..add(const LoadNearCars()),
-        child: const MapViewPasajeros(),
+      body: BlocBuilder<PositionBloc, PositionState>(
+        builder: (context, state) {
+          if (state is PositionLoading || state is PositionInitial) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (state is PositionError) {
+            return const Center(
+              child: Text('Error'),
+            );
+          }
+          return BlocProvider(
+            create: (context) => CarsBloc()
+              ..add(LoadNearCars((state as PositionObtained).location)),
+            child: const MapViewPasajeros(),
+          );
+        },
       ),
     );
   }

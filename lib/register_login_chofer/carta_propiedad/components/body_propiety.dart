@@ -161,7 +161,7 @@ class _Body extends ConsumerState<Body> {
         if (fase3) {
           context
               .read<UserBloc>()
-              .add(LoginUserEvent(user.email, user.password));
+              .add(LoginUserEvent(user.email, user.password, context));
           return true;
         }
       }

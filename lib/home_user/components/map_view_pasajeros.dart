@@ -21,63 +21,68 @@ class _MapViewPasajerosState extends State<MapViewPasajeros> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        BlocBuilder<PositionBloc, PositionState>(
-          builder: (context, state) {
-            if (state is PositionLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
+        BlocBuilder<CarsBloc, CarsState>(
+          builder: (context, carsState) {
+            return BlocBuilder<PositionBloc, PositionState>(
+              builder: (context, positionState) {
+                if (positionState is PositionLoading ||
+                    carsState is! CarsLoaded) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
 
-            if (state is PositionObtained) {
-              return BlocListener<PositionBloc, PositionState>(
-                listener: (context, state) {
-                  if (state is PositionObtained) {
-                    _controller.animateCamera(
-                        CameraUpdate.newCameraPosition(CameraPosition(
-                      zoom: 15,
-                      target: LatLng(
-                        state.location.latitude!,
-                        state.location.longitude!,
+                if (positionState is PositionObtained) {
+                  return BlocListener<PositionBloc, PositionState>(
+                    listener: (context, state) {
+                      if (state is PositionObtained) {
+                        _controller.animateCamera(
+                            CameraUpdate.newCameraPosition(CameraPosition(
+                          zoom: 15,
+                          target: LatLng(
+                            state.location.latitude!,
+                            state.location.longitude!,
+                          ),
+                        )));
+                      }
+                    },
+                    child: GoogleMap(
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(positionState.location.latitude!,
+                            positionState.location.longitude!),
+                        zoom: 15,
                       ),
-                    )));
-                  }
-                },
-                child: GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                    target: LatLng(
-                        state.location.latitude!, state.location.longitude!),
-                    zoom: 15,
-                  ),
-                  markers: {
-                    Marker(
-                      markerId: const MarkerId('current_location'),
-                      position: LatLng(
-                          state.location.latitude!, state.location.longitude!),
+                      markers: {
+                        Marker(
+                          markerId: const MarkerId('current_location'),
+                          position: LatLng(positionState.location.latitude!,
+                              positionState.location.longitude!),
+                        ),
+                        ...(context.watch<CarsBloc>().state as CarsLoaded).cars
+                      },
+                      myLocationButtonEnabled: true,
+                      onMapCreated: (GoogleMapController controller) {
+                        _controller = controller;
+                      },
                     ),
-                    ...(context.watch<CarsBloc>().state as CarsLoaded).cars
-                  },
-                  myLocationButtonEnabled: true,
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller = controller;
-                  },
-                ),
-              );
-            }
-            return const Center(
-              child: Text(
-                  "Ocurrió un error obteniendo tu ubicación, porfavor verifica tu conexión a internet y habilita los "),
+                  );
+                }
+                return const Center(
+                  child: Text(
+                      "Ocurrió un error obteniendo tu ubicación, porfavor verifica tu conexión a internet y habilita los "),
+                );
+              },
             );
           },
         ),
         Positioned(
           bottom: 15,
-          left: 135,
+          left: 120,
           child: InkWell(
             onTap: () {
               showBottomSheet(
                   context: context,
-                  builder: (context) => SolicitarCarreraModal());
+                  builder: (context) => const SolicitarCarreraModal());
             },
             child: Container(
               decoration: BoxDecoration(
