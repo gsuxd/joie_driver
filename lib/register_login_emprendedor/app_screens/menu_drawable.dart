@@ -4,6 +4,7 @@ import 'package:joiedriver/register_login_emprendedor/app_screens/perfil/perfil_
 import '../../colors.dart';
 import '../../main.dart';
 import 'banco/bancos_data.dart';
+import 'change_password/change_password.dart';
 import 'ganancias/ganancias.dart';
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 
@@ -18,7 +19,7 @@ Drawer menuEmprendedor({required BuildContext context}) {
         itemMenu(context: context, image: "ganancias.svg", title: "Ganancias", page: const Ganancias()),
         itemMenu(context: context, image: "perfil_menu.svg", title: "Perfil", page:  PerfilEmprendedor()),
         itemMenu(context: context, image: "cuenta_bancaria.svg", title: "Datos Bancarios", page: BancoEmprendedor()),
-        itemMenu(context: context, image: "ajustes.svg", title: "Ajustes", page: const Ganancias()),
+        itemMenu(context: context, image: "ajustes.svg", title: "Ajustes", page: ChangePasswordScreen()),
         itemMenu(context: context, image: "asistencia_tecnica_menu.svg", title: "Asistencia Técnica", page: const Ganancias()),
         cerrarSession(context: context, image: "cerrar_sesion.svg", title: "Cerrar Sesión", page: const MyHomePage(title: 'JoieDriver',)),
       ],
@@ -35,7 +36,7 @@ ListTile itemMenu(
     leading: SvgPicture.asset("assets/icons/"+image, height: 30, color: greyColor,),
     title: Text(title, style: textStyleGrey(),),
     onTap: () {
-      Navigator.pushReplacement(
+      Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) =>  page
