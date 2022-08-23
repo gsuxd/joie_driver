@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:joiedriver/blocs/markers/markers_bloc.dart';
 import 'package:joiedriver/blocs/position/position_bloc.dart';
+import 'package:joiedriver/blocs/user/user_bloc.dart';
 import 'package:joiedriver/register_login_user/conts.dart';
 import 'package:joiedriver/solicitar_carrera/components/textedit.dart';
 
@@ -35,7 +36,7 @@ class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
     });
   }
 
-  getlocationfromaddress(String v) async {
+  Future<Location> getlocationfromaddress(String v) async {
     List<Location> placemarks = await locationFromAddress(v);
     var first = placemarks.first;
     return first;
@@ -51,6 +52,13 @@ class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
     final isValid = formKey.currentState!.validate();
     if (isValid) {
       formKey.currentState!.save();
+      final location =
+          (context.read<PositionBloc>().state as PositionObtained).location;
+      data['inicio'] = LatLng(location.latitude!, location.longitude!);
+      data['destino'] = const LatLng(11.6856744, -70.2053779);
+
+      data['pasajeroId'] =
+          (context.read<UserBloc>().state as UserLogged).user.email;
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => SelectPagoScreen(data: data),

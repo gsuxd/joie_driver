@@ -238,9 +238,10 @@ class _SelectPagoScreenState extends State<SelectPagoScreen> {
                           destino: widget.data['destino'],
                           inicio: widget.data['inicio'],
                           metodoPago: _formaPago.name,
-                          numeroPasajeros: widget.data['pasajeros'],
+                          numeroPasajeros: int.parse(widget.data['pasajeros']),
                           pasajeroId: widget.data['pasajeroId'],
-                          precioOfertado: widget.data['montoOferta'],
+                          precioOfertado:
+                              double.parse(widget.data['montoOferta']),
                         );
                         context
                             .read<CarreraBloc>()

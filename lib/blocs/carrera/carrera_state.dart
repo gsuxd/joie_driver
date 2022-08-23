@@ -9,7 +9,14 @@ abstract class CarreraState extends Equatable {
 
 class CarreraInitial extends CarreraState {}
 
-class CarreraEnEspera extends CarreraState {}
+class CarreraEnEspera extends CarreraState {
+  final Carrera carrera;
+
+  const CarreraEnEspera(this.carrera);
+
+  @override
+  List<Object> get props => [carrera.inicio];
+}
 
 class CarreraAceptada extends CarreraState {}
 

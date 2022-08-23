@@ -8,10 +8,11 @@ abstract class CarreraEvent extends Equatable {
 }
 
 class ListenCarrerasEvent extends CarreraEvent {
-  const ListenCarrerasEvent();
+  final LatLng location;
+  const ListenCarrerasEvent(this.location);
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [location.latitude, location.longitude];
 }
 
 class NuevaCarreraEvent extends CarreraEvent {
