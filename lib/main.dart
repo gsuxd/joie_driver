@@ -11,6 +11,7 @@ import 'package:joiedriver/home/home.dart';
 import 'package:joiedriver/home_user/home.dart';
 import 'package:joiedriver/loadingScreen.dart';
 import 'package:joiedriver/register_login_chofer/theme.dart';
+import 'package:joiedriver/register_login_user/sign_in/log_in.dart';
 import 'blocs/carrera/carrera_bloc.dart';
 import 'generated/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -89,7 +90,7 @@ class MyHomePage extends StatelessWidget {
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
         if (state is UserNotLogged) {
-          return const ChooseScreen();
+          return const LognInScreenUser();
         }
         if (state is UserLogged) {
           switch (state.user.type) {

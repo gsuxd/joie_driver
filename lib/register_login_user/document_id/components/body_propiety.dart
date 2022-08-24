@@ -1,3 +1,5 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:joiedriver/blocs/user/user_bloc.dart';
 import 'package:joiedriver/helpers/generate_random_string.dart';
 import 'package:joiedriver/register_login_user/registro/user_data_register.dart';
 import 'package:flutter/material.dart';
@@ -117,7 +119,7 @@ class _Body extends ConsumerState<Body> {
                       press: () async {
                         //lleva al Home
                         if (user.cedulaR != null) {
-                          cargando = await londing();
+                          cargando = londing();
                           screen.setScreen(
                               true,
                               MediaQuery.of(context).size.width,
@@ -149,11 +151,9 @@ class _Body extends ConsumerState<Body> {
       if (fase2) {
         bool fase3 = await upload();
         if (fase3) {
-          try {
-            await registerSingleton();
-          } catch (e) {
-            print(e);
-          }
+          context
+              .read<UserBloc>()
+              .add(LoginUserEvent(email!, password!, context));
           return true;
         }
       }
@@ -167,7 +167,7 @@ class _Body extends ConsumerState<Body> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data) {
-            return HomeScreenUser();
+            return const HomeScreenUser();
           } else {
             return const OpError(
               stackTrace: null,
@@ -200,8 +200,6 @@ class _Body extends ConsumerState<Body> {
     try {
       final FirebaseAuth auth = FirebaseAuth.instance;
       await auth.createUserWithEmailAndPassword(
-          email: user.email, password: user.password);
-      await auth.signInWithEmailAndPassword(
           email: user.email, password: user.password);
       return true;
     } on FirebaseAuthException catch (e) {
