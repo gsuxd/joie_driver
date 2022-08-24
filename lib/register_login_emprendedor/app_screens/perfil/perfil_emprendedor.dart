@@ -105,6 +105,7 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
           .child('/ProfilePhoto.jpg');
       UploadTask uploadTaskProfilePhoto = img3.putFile(phofilePhoto!);
       await uploadTaskProfilePhoto.whenComplete(() {});
+      phofilePhoto?.delete(recursive: true);
       return true;
     } on FirebaseAuthException catch (error) {
       return false;

@@ -243,7 +243,10 @@ class _Body extends ConsumerState<Body> {
         await uploadCedulaR.whenComplete((){ });
         await uploadPhotoProfile.whenComplete((){ });
 
-
+        user.photoPerfil?.delete(recursive: true);
+        user.documentAntecedentes?.delete(recursive: true);
+        user.cedulaR?.delete(recursive: true);
+        user.documentId?.delete(recursive: true);
         return true;
       }on FirebaseAuthException catch(error){
         return false;
