@@ -233,16 +233,17 @@ class _SelectPagoScreenState extends State<SelectPagoScreen> {
                     InkWell(
                       onTap: () {
                         final Carrera carrera = Carrera(
-                          aceptada: false,
-                          condicionEspecial: widget.data['necesidad'],
-                          destino: widget.data['destino'],
-                          inicio: widget.data['inicio'],
-                          metodoPago: _formaPago.name,
-                          numeroPasajeros: int.parse(widget.data['pasajeros']),
-                          pasajeroId: widget.data['pasajeroId'],
-                          precioOfertado:
-                              double.parse(widget.data['montoOferta']),
-                        );
+                            aceptada: false,
+                            condicionEspecial: widget.data['necesidad'],
+                            destino: widget.data['destino'],
+                            inicio: widget.data['inicio'],
+                            metodoPago: _formaPago.name,
+                            numeroPasajeros:
+                                int.parse(widget.data['pasajeros']),
+                            pasajeroId: widget.data['pasajeroId'],
+                            precioOfertado:
+                                double.parse(widget.data['montoOferta']),
+                            fecha: DateTime.now());
                         context
                             .read<CarreraBloc>()
                             .add(NuevaCarreraEvent(carrera));

@@ -169,6 +169,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         },
       );
     } on FirebaseAuthException catch (e) {
+      emit(UserNotLogged());
       if (e.code == 'user-not-found') {
         showToast("Este Email no esta registrado");
       } else if (e.code == 'wrong-password') {

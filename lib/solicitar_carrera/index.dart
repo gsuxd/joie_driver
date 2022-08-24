@@ -97,12 +97,6 @@ class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
             ),
             CustomTextField(
               validator: (v) {
-                if (v!.isEmpty) {
-                  return "Ingresa una dirección";
-                }
-                if (getlocationfromaddress(v) == null) {
-                  return "Ingresa una dirección válida";
-                }
                 return null;
               },
               hintText: "Dirección de destino",

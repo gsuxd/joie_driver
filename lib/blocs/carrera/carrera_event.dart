@@ -21,7 +21,7 @@ class NuevaCarreraEvent extends CarreraEvent {
   const NuevaCarreraEvent(this.carrera);
 
   @override
-  List<Object> get props => [carrera];
+  List<Object> get props => [carrera.inicio];
 }
 
 class AceptarCarreraEvent extends CarreraEvent {

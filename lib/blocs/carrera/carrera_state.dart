@@ -9,6 +9,8 @@ abstract class CarreraState extends Equatable {
 
 class CarreraInitial extends CarreraState {}
 
+class CarreraLoading extends CarreraState {}
+
 class CarreraEnEspera extends CarreraState {
   final Carrera carrera;
 

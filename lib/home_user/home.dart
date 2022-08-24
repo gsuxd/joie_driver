@@ -20,24 +20,9 @@ class HomeScreenUser extends StatefulWidget {
 }
 
 class _HomeScreenUserState extends State<HomeScreenUser> {
-  void _loadData() async {
-    final Location location = Location();
-    final data = await location.getLocation();
-    context.read<CarreraBloc>().add(
-          ListenCarrerasEvent(
-            LatLng(
-              data.latitude!,
-              data.longitude!,
-            ),
-          ),
-        );
-  }
-
   @override
   void initState() {
-    _loadData();
-    context.read<PositionBloc>().add(
-        GetPositionEvent((context.read<UserBloc>().state as UserLogged).user));
+    context.read<PositionBloc>().add(GetPositionEvent(context));
     super.initState();
   }
 
