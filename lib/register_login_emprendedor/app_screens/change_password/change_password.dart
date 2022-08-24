@@ -13,18 +13,14 @@ class ChangePasswordScreen extends StatefulWidget {
 }
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
-  _error() {
-    return const Text("Error");
-  }
-
   validarPassword() async {
     try {
       //recojo el email guardado en local
-      String email =
-          await encryptedSharedPreferences.getString('email');
+      String email = await encryptedSharedPreferences.getString('email');
       //verificamos que las credenciales sean corredctas (email y contraseña)
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: email, password: passwordController.text);
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: email, password: passwordController.text);
 
       //obtenemos el usuario
       User? user = userCredential.user;
@@ -36,9 +32,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           'passwd', newPasswordController.text.toString());
 
       showToast("Contraseña Actualizada con Exito!");
-      Navigator.push(context,MaterialPageRoute(
-          builder: (context) =>  const Ganancias()
-      ));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => const Ganancias()));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         showToast("Este Email no esta registrado");
@@ -95,19 +90,20 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               //En caso de que textError sea true, es decir, el usuario ha cometido alguna falta al intentar cambiar la contaseña, entonces mandará el valor de messageError con su texto respectivo
               : Center(
                   child: Column(
-                   crossAxisAlignment: CrossAxisAlignment.center,
-
-                    children: [
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                      messageError,
-                      style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold,),
-                        textAlign: TextAlign.center,
-                    ),
-  ]
-                  ),
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          messageError,
+                          style: const TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ]),
                 )),
           const SizedBox(
             height: 30,
@@ -127,35 +123,33 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             height: 50,
           ),
           Center(
-            child: btnContinue(()
-              async {
-                //Aca encontramos 3 condicionales para los campos de password. Este primer if nos dice que si alguno de los campos de texto está vacío entonces le dara a textError un valor de true (lo que indica que algo ha fallado por parte del usuario) y tambien cambiara el valor de messageError al error respectivo
-                if (passwordController.text == "" ||
-                    newPasswordController.text == "" ||
-                    confirmNewPasswordController.text == "") {
-                  textError = true;
-                  messageError = "Por favor complete todos los campos";
-                  //Aca tenemos la segunda condicional que dice que si la nueva contraseña y la de verificacion no son iguales entonces le dara a textError un valor de true (lo que indica que algo ha fallado por parte del usuario) y le dara a messageError el mensaje de error respectivo
-                } else if (newPasswordController.text !=
-                    confirmNewPasswordController.text) {
-                  textError = true;
-                  messageError = "Las Contraseñas no coinciden";
-                } else if (newPasswordController.text ==
-                    passwordController.text) {
-                  textError = true;
-                  messageError = "Las Nueva Contraseña no debe ser igual a la anterior";
-                }else if (newPasswordController.text.length < 8 ) {
-                  textError = true;
-                  messageError = "Las Nueva Contraseña debe tener al menos 8 caracteres";
-                }else {
-                  //En caso de que no hayan campos vacios y que las claves coincidan entonces todo marchara correctamente
-                  validarPassword();
+            child: btnContinue(() async {
+              //Aca encontramos 3 condicionales para los campos de password. Este primer if nos dice que si alguno de los campos de texto está vacío entonces le dara a textError un valor de true (lo que indica que algo ha fallado por parte del usuario) y tambien cambiara el valor de messageError al error respectivo
+              if (passwordController.text == "" ||
+                  newPasswordController.text == "" ||
+                  confirmNewPasswordController.text == "") {
+                textError = true;
+                messageError = "Por favor complete todos los campos";
+                //Aca tenemos la segunda condicional que dice que si la nueva contraseña y la de verificacion no son iguales entonces le dara a textError un valor de true (lo que indica que algo ha fallado por parte del usuario) y le dara a messageError el mensaje de error respectivo
+              } else if (newPasswordController.text !=
+                  confirmNewPasswordController.text) {
+                textError = true;
+                messageError = "Las Contraseñas no coinciden";
+              } else if (newPasswordController.text ==
+                  passwordController.text) {
+                textError = true;
+                messageError =
+                    "Las Nueva Contraseña no debe ser igual a la anterior";
+              } else if (newPasswordController.text.length < 8) {
+                textError = true;
+                messageError =
+                    "Las Nueva Contraseña debe tener al menos 8 caracteres";
+              } else {
+                //En caso de que no hayan campos vacios y que las claves coincidan entonces todo marchara correctamente
+                validarPassword();
+              }
 
-                }
-
-                setState(() {
-
-                });
+              setState(() {});
             }),
           ),
           const SizedBox(height: 20),

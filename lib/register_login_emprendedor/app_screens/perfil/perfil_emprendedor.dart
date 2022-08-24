@@ -34,7 +34,9 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
   Future getImage() async {
     Widget cargaImage = const CircularProgressIndicator();
     ImagePicker imegaTemp = ImagePicker();
-    var tempImage = await imegaTemp.pickImage(source: ImageSource.camera);
+    var tempImage = await imegaTemp.pickImage(
+        source: ImageSource.camera,
+    imageQuality: 70);
     phofilePhoto = File(tempImage!.path);
     if (phofilePhoto != null) {
       showDialog<String>(

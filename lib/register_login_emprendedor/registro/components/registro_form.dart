@@ -505,8 +505,8 @@ class _RegistroFormState extends State<RegistroForm> {
       autocorrect: false,
       keyboardType: const TextInputType.numberWithOptions(signed: true),
       decoration: InputDecoration(
-          hintText: "Ingresa el código de Lider",
-          labelText: "Código de Lider",
+          hintText: "Ingresa el código de socio",
+          labelText: "Código de socio",
           suffixIcon: Padding(
             padding: EdgeInsets.fromLTRB(
               0,
@@ -746,7 +746,7 @@ class _RegistroFormState extends State<RegistroForm> {
                 ),
 
               ),
-              const Text("¿No tienes Código\nde Lider?", style: TextStyle(fontWeight: FontWeight.bold),),
+              const Text("¿No tienes Código\nde Socio?", style: TextStyle(fontWeight: FontWeight.bold),),
             ],
           ),
           SvgPicture.asset("assets/icons/whatsapp.svg", height: 100,),

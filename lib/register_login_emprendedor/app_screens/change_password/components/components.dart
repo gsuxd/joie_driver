@@ -8,20 +8,17 @@ TextFormField inputText(hintText, controller) {
     controller: controller,
     decoration: InputDecoration(
       focusColor: Colors.grey,
-        //border: InputBorder.none,
-        enabledBorder: const UnderlineInputBorder(
-            borderSide: BorderSide(
-                color: Colors.grey
-            )
-        ),
-        //disabledBorder: InputBorder.none,
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: jBase
-          )
-        ),
-        hintText: hintText, hintStyle: const TextStyle(color: Colors.black12, fontWeight: FontWeight.bold),),
-    obscureText: isHiddenPassword = true,
+      //border: InputBorder.none,
+      enabledBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey)),
+      //disabledBorder: InputBorder.none,
+      focusedBorder:
+          const UnderlineInputBorder(borderSide: BorderSide(color: jBase)),
+      hintText: hintText,
+      hintStyle:
+          const TextStyle(color: Colors.black12, fontWeight: FontWeight.bold),
+    ),
+    obscureText: isHiddenPassword,
   );
 }
 
