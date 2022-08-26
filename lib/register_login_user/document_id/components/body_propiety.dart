@@ -224,6 +224,7 @@ class _Body extends ConsumerState<Body> {
               'phone' : user.phone,
               'address' : user.address,
               'code' : user.code,
+      'date_register' : DateTime.now(),
         })
         .then((value) => true)
         .catchError((error) => false);

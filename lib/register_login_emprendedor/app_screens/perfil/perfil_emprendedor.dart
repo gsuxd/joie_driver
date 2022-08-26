@@ -252,6 +252,7 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
 
                               if (snapshot.connectionState ==
                                   ConnectionState.done) {
+                                print(snapshot.data);
                                 //lo que se muestra cuando la carga se completa
                                 return Padding(
                                     padding: const EdgeInsets.all(10.0),
@@ -262,6 +263,22 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
                                         height: 170.0,
                                         width: 170.0,
                                         fit: BoxFit.cover,
+                                          loadingBuilder: (BuildContext context, Widget child,
+                                              ImageChunkEvent? loadingProgress){
+                                            if(loadingProgress?.expectedTotalBytes != loadingProgress?.cumulativeBytesLoaded){
+                                              return const SizedBox(
+                                                height: 170,
+                                                width: 170,
+                                                child: Padding(
+                                                  padding: EdgeInsets.all(50.0),
+                                                  child: CircularProgressIndicator(
+                                                    //value: (loadingProgress!.cumulativeBytesLoaded! / loadingProgress!.expectedTotalBytes!),
+                                                  ),
+                                                ),
+                                              );}else{
+                                              return child;
+                                            }
+                                          },
                                       ),
                                     ));
                               }

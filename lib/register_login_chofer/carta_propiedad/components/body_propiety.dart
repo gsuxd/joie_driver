@@ -235,6 +235,7 @@ class _Body extends ConsumerState<Body> {
               'type_bank' : user.typeBank,
               'bank' : user.bank,
               'date_ci' : user.dateCi,
+              'date_register' : DateTime.now(),
               'vehicle': {
                 'default' : {
                   'year': 0,
