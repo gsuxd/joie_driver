@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:joiedriver/register_login_emprendedor/app_screens/ganancias/body.dart';
 import 'package:joiedriver/register_login_emprendedor/app_screens/menu_drawable.dart';
 import '../appbar.dart';
+import '../share/share.dart';
 
 
 class CodeNotifyE extends ChangeNotifier {
@@ -52,7 +52,13 @@ class _Body extends ConsumerState<Ganancias> {
           CodeNotifyE  code = ref.watch(codeProviderE);
           return   Scaffold(
             appBar: appBarEmprendedor(title: 'CDE: ${code.code}', leading: leading(), accion: [ElevatedButton(
-                onPressed: (){},
+                onPressed: (){
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>  const ShareEmprendedor()
+                      ));
+                },
                 style: ElevatedButton.styleFrom(primary: Colors.transparent, elevation: 0, shadowColor: Colors.transparent),
 
                 child: SvgPicture.asset("assets/images/share.svg", height: 36, color: Colors.white,))]),
