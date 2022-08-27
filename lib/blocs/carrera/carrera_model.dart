@@ -1,5 +1,31 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+class Oferta {
+  final String chofer;
+  final String thumb;
+  final double calificacion;
+  final double precio;
+
+  Oferta(
+      {required this.chofer,
+      required this.thumb,
+      required this.calificacion,
+      required this.precio});
+
+  factory Oferta.fromJson(data) => Oferta(
+      chofer: data['chofer'],
+      thumb: data['thumb'],
+      calificacion: double.parse(data['calificacion']),
+      precio: double.parse(data['precio']));
+
+  toJson() => {
+        'chofer': chofer,
+        'thumb': thumb,
+        'calificacion': calificacion.toString(),
+        'precio': precio.toString()
+      };
+}
+
 class Carrera {
   final String pasajeroId;
   final int numeroPasajeros;
@@ -11,8 +37,9 @@ class Carrera {
   final LatLng inicio;
   final LatLng destino;
   final DateTime fecha;
+  final List<Oferta> ofertas;
 
-  const Carrera(
+  Carrera(
       {required this.aceptada,
       this.choferId,
       required this.numeroPasajeros,
@@ -22,7 +49,8 @@ class Carrera {
       required this.metodoPago,
       required this.inicio,
       required this.destino,
-      required this.fecha});
+      required this.fecha,
+      required this.ofertas});
 
   factory Carrera.fromJson(data) => Carrera(
         aceptada: data['aceptada'],
@@ -43,6 +71,9 @@ class Carrera {
           ),
         ),
         fecha: DateTime.parse(data['fecha']),
+        ofertas: (data['ofertas'] != null && data['ofertas'].length > 0)
+            ? data['ofertas'].map<Oferta>((e) => Oferta.fromJson(e)).toList()
+            : [],
       );
 
   toJson() => {
@@ -62,5 +93,6 @@ class Carrera {
           'lng': destino.longitude.toString()
         },
         'fecha': fecha.toIso8601String(),
+        'ofertas': ofertas.map((e) => e.toJson()).toList(),
       };
 }

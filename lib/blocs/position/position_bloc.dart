@@ -26,10 +26,12 @@ class PositionBloc extends Bloc<PositionEvent, PositionState> {
     try {
       await location.getLocation().then((value) {
         context.read<CarreraBloc>().add(
-              ListenCarrerasEvent(LatLng(
-                value.latitude!,
-                value.longitude!,
-              )),
+              ListenCarrerasEvent(
+                  LatLng(
+                    value.latitude!,
+                    value.longitude!,
+                  ),
+                  context),
             );
         emit(PositionObtained(value));
       });

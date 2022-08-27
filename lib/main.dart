@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:joiedriver/blocs/markers/markers_bloc.dart';
 import 'package:joiedriver/blocs/position/position_bloc.dart';
 import 'package:joiedriver/blocs/user/user_bloc.dart';
-import 'package:joiedriver/choose/choose.dart';
 import 'package:joiedriver/home/home.dart';
 import 'package:joiedriver/home_user/home.dart';
 import 'package:joiedriver/loadingScreen.dart';

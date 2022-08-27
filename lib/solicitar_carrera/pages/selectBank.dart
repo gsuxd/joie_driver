@@ -243,6 +243,7 @@ class _SelectPagoScreenState extends State<SelectPagoScreen> {
                             pasajeroId: widget.data['pasajeroId'],
                             precioOfertado:
                                 double.parse(widget.data['montoOferta']),
+                            ofertas: [],
                             fecha: DateTime.now());
                         context
                             .read<CarreraBloc>()
