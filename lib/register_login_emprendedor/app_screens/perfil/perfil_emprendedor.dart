@@ -19,7 +19,7 @@ class PerfilEmprendedor extends StatefulWidget {
 class _PerfilUsuarioState extends State<PerfilEmprendedor> {
   Future<DocumentSnapshot> getData() async {
     email = await encryptedSharedPreferences.getString('email');
-    imagesRef = storageRef.child(email);
+    imagesRef = storageRef.child("FileDev/"+email);
     return await users.doc(email).get();
   }
 
@@ -29,56 +29,55 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
     return await spaceRef?.getDownloadURL();
   }
 
-
-
   Future getImage() async {
     Widget cargaImage = const CircularProgressIndicator();
     ImagePicker imegaTemp = ImagePicker();
     var tempImage = await imegaTemp.pickImage(
-        source: ImageSource.camera,
-    imageQuality: 70);
+      source: ImageSource.camera,
+      imageQuality: 90,
+      maxHeight: 800,
+    );
     phofilePhoto = File(tempImage!.path);
     if (phofilePhoto != null) {
       showDialog<String>(
           context: context,
-          builder: (BuildContext context) =>  AlertDialog(
-            title: const Text('Cambiando foto de Perfil'),
-            content:
-                SizedBox(
-                  width: 200.0,
-                    height: 200.0,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children:  [
-                      const Text('Subiendo Foto'),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
-                      SizedBox(
-                        height: 100,
-                        width: 100,
-                          child: cargaImage,
-                        ),
-                    ],
-                  ),
-                )
-          )
-      );
+          builder: (BuildContext context) => AlertDialog(
+              title: const Text('Cambiando foto de Perfil'),
+              content: SizedBox(
+                width: 200.0,
+                height: 200.0,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text('Subiendo Foto'),
+                    const SizedBox(
+                      height: 20.0,
+                    ),
+                    SizedBox(
+                      height: 100,
+                      width: 100,
+                      child: cargaImage,
+                    ),
+                  ],
+                ),
+              )));
       await upload();
-      cargaImage = SvgPicture.asset("assets/icons/tipodecuenta.svg", color: Colors.greenAccent,);
+      cargaImage = SvgPicture.asset(
+        "assets/icons/tipodecuenta.svg",
+        color: Colors.greenAccent,
+      );
       setState(() {
         Navigator.pop(context);
         showDialog<String>(
             context: context,
-            builder: (BuildContext context) =>  AlertDialog(
+            builder: (BuildContext context) => AlertDialog(
                 title: const Text('Cambiando foto de Perfil'),
-                content:
-                SizedBox(
+                content: SizedBox(
                   width: 200.0,
                   height: 200.0,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children:  [
+                    children: [
                       const Text('Subiendo Foto'),
                       const SizedBox(
                         height: 20.0,
@@ -90,9 +89,7 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
                       ),
                     ],
                   ),
-                )
-            )
-        );
+                )));
       });
     }
   }
@@ -101,8 +98,8 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
     try {
       Reference img3 = FirebaseStorage.instance
           .ref()
-          .child(email)
-          .child('/ProfilePhoto.jpg');
+          .child("FileDev/"+email)
+          .child('ProfilePhoto.jpg');
       UploadTask uploadTaskProfilePhoto = img3.putFile(phofilePhoto!);
       await uploadTaskProfilePhoto.whenComplete(() {});
       phofilePhoto?.delete(recursive: true);
@@ -115,25 +112,26 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
   Future<void> updateUser() {
     return users
         .doc(email)
-        .update({'city': _controllerTextCity.text, 'address': _controllerTextAddress.text})
+        .update({
+          'city': _controllerTextCity.text,
+          'address': _controllerTextAddress.text
+        })
         .then((value) => Fluttertoast.showToast(
-        msg: "Actualización Exitosa!",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.blue,
-        textColor: Colors.white,
-        fontSize: 16.0
-    ))
-        .catchError((error) =>Fluttertoast.showToast(
-        msg: "$error",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.blue,
-        textColor: Colors.white,
-        fontSize: 16.0
-    ));
+            msg: "Actualización Exitosa!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.blue,
+            textColor: Colors.white,
+            fontSize: 16.0))
+        .catchError((error) => Fluttertoast.showToast(
+            msg: "$error",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.blue,
+            textColor: Colors.white,
+            fontSize: 16.0));
   }
 
   final TextEditingController _controllerTextCity = TextEditingController();
@@ -147,9 +145,13 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
   final profilePhoto = "ProfilePhoto.jpg";
   String urlImage = "";
 
-  CollectionReference users =
-      FirebaseFirestore.instance.collection('usersEmprendedor');
+  //Produccion
+  //CollectionReference users =
+  //    FirebaseFirestore.instance.collection('usersEmprendedor');
 
+  //Desarrollo
+  CollectionReference users =
+      FirebaseFirestore.instance.collection('usersEmprendedorDev');
 
   @override
   Widget build(BuildContext context) {
@@ -252,7 +254,6 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
 
                               if (snapshot.connectionState ==
                                   ConnectionState.done) {
-                                print(snapshot.data);
                                 //lo que se muestra cuando la carga se completa
                                 return Padding(
                                     padding: const EdgeInsets.all(10.0),
@@ -263,32 +264,38 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
                                         height: 170.0,
                                         width: 170.0,
                                         fit: BoxFit.cover,
-                                          loadingBuilder: (BuildContext context, Widget child,
-                                              ImageChunkEvent? loadingProgress){
-                                            if(loadingProgress?.expectedTotalBytes != loadingProgress?.cumulativeBytesLoaded){
-                                              return const SizedBox(
-                                                height: 170,
-                                                width: 170,
-                                                child: Padding(
-                                                  padding: EdgeInsets.all(50.0),
-                                                  child: CircularProgressIndicator(
+                                        loadingBuilder: (BuildContext context,
+                                            Widget child,
+                                            ImageChunkEvent? loadingProgress) {
+                                          if (loadingProgress
+                                                  ?.expectedTotalBytes !=
+                                              loadingProgress
+                                                  ?.cumulativeBytesLoaded) {
+                                            return const SizedBox(
+                                              height: 170,
+                                              width: 170,
+                                              child: Padding(
+                                                padding: EdgeInsets.all(50.0),
+                                                child: CircularProgressIndicator(
                                                     //value: (loadingProgress!.cumulativeBytesLoaded! / loadingProgress!.expectedTotalBytes!),
-                                                  ),
-                                                ),
-                                              );}else{
-                                              return child;
-                                            }
-                                          },
+                                                    ),
+                                              ),
+                                            );
+                                          } else {
+                                            return child;
+                                          }
+                                        },
                                       ),
                                     ));
                               }
+
                               //lo que se muestra mientras carga
-                              return const SizedBox(
+                              return SizedBox(
                                 height: 170,
                                 width: 170,
                                 child: Padding(
-                                  padding: EdgeInsets.all(50.0),
-                                  child: CircularProgressIndicator(),
+                                  padding: const EdgeInsets.all(50.0),
+                                  child: Container(),
                                 ),
                               );
                             },
@@ -332,15 +339,16 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
                   const SizedBox(
                     height: 25.0,
                   ),
-
                   item(data['gender'].toString().toUpperCase(),
                       "assets/images/genero.svg"),
                   const SizedBox(
                     height: 25.0,
                   ),
                   item(email, "assets/images/correo.svg"),
-                  cityFormField(_controllerTextCity, "Ingresa tu Ciudad", "Ciudad", "assets/icons/city.svg"),
-                  cityFormField(_controllerTextAddress, "Ingresa tu Dirección", "Dirección", "assets/icons/direccion.svg"),
+                  cityFormField(_controllerTextCity, "Ingresa tu Ciudad",
+                      "Ciudad", "assets/icons/city.svg"),
+                  cityFormField(_controllerTextAddress, "Ingresa tu Dirección",
+                      "Dirección", "assets/icons/direccion.svg"),
                   const SizedBox(
                     height: 10.0,
                   ),
@@ -375,29 +383,25 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
     );
   }
 
-  Padding cityFormField(TextEditingController controller, String? hint, String? label, String icon) {
-    return
-      Padding(
-        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+  Padding cityFormField(TextEditingController controller, String? hint,
+      String? label, String icon) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20.0, right: 20.0),
       child: TextFormField(
-
         style: textStyleGreyNameCity(),
         textInputAction: TextInputAction.done,
         controller: controller,
         cursorColor: Colors.grey,
-        onEditingComplete: (){
+        onEditingComplete: () {
           updateUser();
         },
-
-        onChanged: (value) {
-
-        },
+        onChanged: (value) {},
         keyboardType: TextInputType.streetAddress,
         autocorrect: true,
-        decoration:  InputDecoration(
+        decoration: InputDecoration(
           border: InputBorder.none,
           enabledBorder: InputBorder.none,
-            disabledBorder: InputBorder.none,
+          disabledBorder: InputBorder.none,
           focusedBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(0)),
             borderSide: BorderSide(
@@ -405,17 +409,17 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
               width: 0.0,
             ),
           ),
-            hintStyle: textStyleGreyName(),
-            hintText: hint,
-            prefixIcon: Padding(
-              padding: const EdgeInsets.only(left: 0.0, right: 10.0),
-              child: SvgPicture.asset(
-                icon,
-                height: 10,
-              ),
+          hintStyle: textStyleGreyName(),
+          hintText: hint,
+          prefixIcon: Padding(
+            padding: const EdgeInsets.only(left: 0.0, right: 10.0),
+            child: SvgPicture.asset(
+              icon,
+              height: 10,
             ),
-            ),
+          ),
+        ),
       ),
-      );
+    );
   }
 }

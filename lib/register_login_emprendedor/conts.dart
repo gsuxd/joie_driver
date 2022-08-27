@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../components/states/states.dart';
+import 'app_screens/ganancias/ganancias.dart';
 import 'size_config.dart';
 
 //Colores Generales de la App
@@ -288,7 +289,11 @@ Future<bool?> showToast(String message) {
 IconButton back(BuildContext context) {
   return IconButton(
       onPressed: () {
-        Navigator.pop(context);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>  const Ganancias()
+            ));
       },
       icon: const Icon(
         Icons.keyboard_arrow_left,

@@ -224,7 +224,13 @@ class _Body extends ConsumerState<Body> {
 
   Future<bool> userRegisterData() async {
     String addEmail = user.email;
-    CollectionReference users = FirebaseFirestore.instance.collection('usersEmprendedor');
+
+    //Produccion
+    //CollectionReference users = FirebaseFirestore.instance.collection('usersEmprendedor');
+
+    //Desarrollo
+    CollectionReference users = FirebaseFirestore.instance.collection('usersEmprendedorDev');
+
     return await users.doc(addEmail)
         .set({
       'name': user.name.toUpperCase(),
@@ -251,16 +257,27 @@ class _Body extends ConsumerState<Body> {
   Future<bool> upload() async {
     try{
 
-      Reference img3 = FirebaseStorage.instance.ref().child(user.email).child('/ProfilePhoto.jpg');
-      Reference img4 = FirebaseStorage.instance.ref().child(user.email).child('/Cedula.jpg');
-      Reference img5 = FirebaseStorage.instance.ref().child(user.email).child('/CedulaR.jpg');
+      //Produccion
+      //Reference img3 = FirebaseStorage.instance.ref().child(user.email).child('/ProfilePhoto.jpg');
+      //Reference img4 = FirebaseStorage.instance.ref().child(user.email).child('/Cedula.jpg');
+      //Reference img5 = FirebaseStorage.instance.ref().child(user.email).child('/CedulaR.jpg');
+
+      //Desarrollo
+      Reference img3 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/ProfilePhoto.jpg');
+      Reference img4 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/Cedula.jpg');
+      Reference img5 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/CedulaR.jpg');
 
       UploadTask uploadTaskProfilePhoto = img3.putFile(user.photoPerfil!);
       UploadTask uploadTaskCedula = img4.putFile(user.cedula!);
       UploadTask uploadTaskCedulaR = img5.putFile(user.cedulaR!);
 
       if(user.documentAntecedentes != null){
-        Reference doc1 = FirebaseStorage.instance.ref().child(user.email).child('/Antecent.pdf');
+        //Produccion
+        //Reference doc1 = FirebaseStorage.instance.ref().child(user.email).child('/Antecent.pdf');
+
+        //Desarrollo
+        Reference doc1 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/Antecent.pdf');
+
         UploadTask uploadTaskAntecedent = doc1.putFile(user.documentAntecedentes!);
         await uploadTaskAntecedent.whenComplete((){ });
       }

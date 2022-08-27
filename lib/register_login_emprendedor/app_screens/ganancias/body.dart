@@ -30,7 +30,8 @@ class _Body extends ConsumerState<BodyGanancias> {
   }
 
   final List<ItemGanancia> ganaciasList = [];
-
+  String PRD = "usersEmprendedor";
+  String DEV = "usersEmprendedorDev";
   Future getDataGanancasListInit() async {
     DateTime mesAcutal = DateTime(
       DateTime.now().year,
@@ -41,7 +42,7 @@ class _Body extends ConsumerState<BodyGanancias> {
       0,
     );
     await FirebaseFirestore.instance
-        .collection('usersEmprendedor/' + email + "/comisiones")
+        .collection('$DEV/' + email + "/comisiones")
         .where('date', isGreaterThan: mesAcutal)
         .orderBy('date', descending: true)
         .limit(1)
@@ -72,7 +73,7 @@ class _Body extends ConsumerState<BodyGanancias> {
         0,
       );
       await FirebaseFirestore.instance
-          .collection('usersEmprendedor/' + email + "/comisiones")
+          .collection('$DEV/' + email + "/comisiones")
           .where('date', isGreaterThan: mesAcutal)
           .orderBy('date', descending: true)
           .startAfterDocument(start)
@@ -109,7 +110,7 @@ class _Body extends ConsumerState<BodyGanancias> {
       0,
     );
     await FirebaseFirestore.instance
-        .collection('usersEmprendedor/' + email + "/comisiones")
+        .collection('$DEV/' + email + "/comisiones")
         .where('date', isGreaterThan: mesAcutal)
         .get()
         .then((QuerySnapshot querySnapshot) {
@@ -126,10 +127,17 @@ class _Body extends ConsumerState<BodyGanancias> {
   QueryDocumentSnapshot? endDoc;
   String email = "None";
   double sum = 0;
+
   EncryptedSharedPreferences encryptedSharedPreferences =
       EncryptedSharedPreferences();
+
+  //Produccion
+  //CollectionReference users =
+      //FirebaseFirestore.instance.collection('usersEmprendedor');
+
+  //Desarrollo
   CollectionReference users =
-      FirebaseFirestore.instance.collection('usersEmprendedor');
+  FirebaseFirestore.instance.collection('usersEmprendedorDev');
 
   @override
   Widget build(BuildContext context) {

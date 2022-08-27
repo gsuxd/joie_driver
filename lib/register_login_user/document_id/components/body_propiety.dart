@@ -256,7 +256,8 @@ class _Body extends ConsumerState<Body> {
 
   Future getImage () async {
     ImagePicker imegaTemp = ImagePicker();
-    var tempImage = await imegaTemp.pickImage(source: ImageSource.camera, imageQuality: 70);
+    var tempImage = await imegaTemp.pickImage(source: ImageSource.camera, imageQuality: 80,
+      maxHeight: 1000,);
     cedulaR =  File(tempImage!.path);
     imageView.setImage(cambiarmage());
   }
