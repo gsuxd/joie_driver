@@ -2,6 +2,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Oferta {
   final String chofer;
+  final String choferId;
   final String thumb;
   final double calificacion;
   final double precio;
@@ -9,18 +10,21 @@ class Oferta {
   Oferta(
       {required this.chofer,
       required this.thumb,
+      required this.choferId,
       required this.calificacion,
       required this.precio});
 
   factory Oferta.fromJson(data) => Oferta(
       chofer: data['chofer'],
       thumb: data['thumb'],
+      choferId: data['choferId'],
       calificacion: double.parse(data['calificacion']),
       precio: double.parse(data['precio']));
 
   toJson() => {
         'chofer': chofer,
         'thumb': thumb,
+        'choferId': choferId,
         'calificacion': calificacion.toString(),
         'precio': precio.toString()
       };
