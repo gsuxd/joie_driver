@@ -1,3 +1,4 @@
+import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import "package:flutter/material.dart";
 import '../../conts.dart';
 import '../appbar.dart';
@@ -11,6 +12,22 @@ class ShareEmprendedor extends StatefulWidget {
 }
 
 class _ShareEmprendedor extends State<ShareEmprendedor> {
+
+  @override
+  void initState()  {
+    super.initState();
+    getData();
+  }
+
+  Future<void> getData() async {
+
+    codeI = await encryptedSharedPreferences.getString('code');
+  }
+
+  String codeI = "";
+
+  EncryptedSharedPreferences encryptedSharedPreferences =
+  EncryptedSharedPreferences();
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +63,10 @@ class _ShareEmprendedor extends State<ShareEmprendedor> {
                 child: ShareButton(),
               ),
               const SizedBox(height: 20),
-              const SizedBox(
+               SizedBox(
                 height: 50,
                 width: 300,
-                child: ShareButtonDriver(),
+                child: referir(),
               ),
             ],
           ),
@@ -58,16 +75,7 @@ class _ShareEmprendedor extends State<ShareEmprendedor> {
     );
   }
 
-
-}
-
-class ShareButtonDriver extends StatelessWidget {
-  const ShareButtonDriver({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
+  ElevatedButton referir(){
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
             elevation: 0,
@@ -76,9 +84,11 @@ class ShareButtonDriver extends StatelessWidget {
             shadowColor: Colors.grey,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30))),
-        onPressed: () {},
+        onPressed: () {
+          Share.share('Registrate con mi código de referido y gana,\n $codeI \n https://play.google.com/store/apps/details?id=com.ciddras.joiedriver', subject: 'Instala JoieDriver');
+        },
         child: const Text(
-          'Referir un conductor',
+          'Compartir Código',
           style: TextStyle(
             fontSize: 18,
             color: Color(0xff0087f5),
@@ -86,7 +96,9 @@ class ShareButtonDriver extends StatelessWidget {
           textAlign: TextAlign.center,
         ));
   }
+
 }
+
 
 class ShareButton extends StatelessWidget {
   const ShareButton({
