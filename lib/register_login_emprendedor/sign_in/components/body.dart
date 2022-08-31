@@ -4,7 +4,6 @@ import '../../../components/no_account_emprendedor.dart';
 import '../../size_config.dart';
 import '../../conts.dart';
 import 'log_in_form.dart';
-import 'social_cards.dart';
 
 class BodySign extends StatelessWidget {
   const BodySign({Key? key}) : super(key: key);
@@ -49,23 +48,23 @@ class BodySign extends StatelessWidget {
               SizedBox(
                 height: SizeConfig.screenHeight * 0.02,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SocialCard(
-                    press: () {},
-                    icon: twitter,
-                  ),
-                  SocialCard(
-                    press: () {},
-                    icon: facebook,
-                  ),
-                  SocialCard(
-                    press: () {},
-                    icon: google,
-                  ),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     SocialCard(
+              //       press: () {},
+              //       icon: twitter,
+              //     ),
+              //     SocialCard(
+              //       press: () {},
+              //       icon: facebook,
+              //     ),
+              //     SocialCard(
+              //       press: (){},
+              //       icon: google,
+              //     ),
+              //   ],
+              // ),
               const NoAccountEmprendedor(),
             ],
           ),
@@ -73,4 +72,5 @@ class BodySign extends StatelessWidget {
       ),
     );
   }
+
 }
