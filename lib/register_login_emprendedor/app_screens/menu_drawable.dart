@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:joiedriver/register_login_emprendedor/app_screens/perfil/perfil_emprendedor.dart';
+import 'package:joiedriver/register_login_emprendedor/app_screens/test_login.dart';
 import '../../colors.dart';
 import '../../main.dart';
 import 'asistencia_tecnica/asistencia_tecnica.dart';
@@ -20,7 +21,7 @@ Drawer menuEmprendedor({required BuildContext context}) {
         itemMenu(context: context, image: "ganancias.svg", title: "Ganancias", page: const Ganancias()),
         itemMenu(context: context, image: "perfil_menu.svg", title: "Perfil", page:  PerfilEmprendedor()),
         itemMenu(context: context, image: "cuenta_bancaria.svg", title: "Datos Bancarios", page: BancoEmprendedor()),
-        itemMenu(context: context, image: "ajustes.svg", title: "Ajustes", page: ChangePasswordScreen()),
+        itemMenu(context: context, image: "ajustes.svg", title: "Ajustes", page: const SignInDemo()),
         itemMenu(context: context, image: "asistencia_tecnica_menu.svg", title: "Asistencia Técnica", page: const AsisTecnicaEmprendedor()),
         cerrarSession(context: context, image: "cerrar_sesion.svg", title: "Cerrar Sesión", page: const MyHomePage(title: 'JoieDriver',)),
       ],
