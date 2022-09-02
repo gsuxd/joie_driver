@@ -9,6 +9,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:joiedriver/register_login_chofer/conts.dart';
 import 'package:joiedriver/register_login_chofer/splash/splash_screen.dart';
 import 'package:joiedriver/register_login_chofer/theme.dart';
+import 'package:joiedriver/register_login_emprendedor/app_screens/auth_biometric.dart';
 import 'package:joiedriver/register_login_emprendedor/app_screens/ganancias/ganancias.dart';
 import 'package:joiedriver/singletons/user_data.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -198,7 +199,7 @@ class _MyHomePageState extends State<MyHomePage> {
           if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
             if(google == "true"){
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const Ganancias()));
+                  MaterialPageRoute(builder: (context) => const AuthBiometric()));
               return;
             }
             try {
@@ -206,7 +207,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   .signInWithEmailAndPassword(email: email, password: passwd);
               initScreen = false;
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const Ganancias()));
+                  MaterialPageRoute(builder: (context) => const AuthBiometric()));
             } on FirebaseAuthException catch (e) {
               if (e.code == 'user-not-found') {
                 //showToast("Este Email no esta registrado");

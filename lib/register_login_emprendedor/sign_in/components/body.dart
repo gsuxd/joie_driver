@@ -2,7 +2,9 @@ import 'package:archive/archive.dart';
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:local_auth/local_auth.dart';
 import '../../../components/no_account_emprendedor.dart';
 import '../../../components/social_cards.dart';
 import '../../app_screens/ganancias/ganancias.dart';
@@ -102,7 +104,7 @@ class BodySign extends StatelessWidget {
         context: context,
         builder: (BuildContext context) => AlertDialog(
           backgroundColor: Colors.transparent,
-            title: const Text('Iniciando  Sesión'),
+            elevation: 0,
             content: SizedBox(
               width: 200.0,
               height: 200.0,
@@ -128,7 +130,6 @@ class BodySign extends StatelessWidget {
 
 
     UserCredential user =  await FirebaseAuth.instance.signInWithCredential(credential);
-    print(user.user?.email);
     if(user.user != null ){
       Iterable<String>? binarys = user.user?.email.toString().codeUnits.map((int strInt) => strInt.toRadixString(2));
       Crc32 hash =  Crc32();
