@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('En Desarrollo'),
       ),
-      drawer: const NavigationDrawer(),
+      //drawer: const NavigationDrawer(),
       body:  ComparteYGana(codeLogin),
     );
   }

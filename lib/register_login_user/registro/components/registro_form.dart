@@ -451,6 +451,7 @@ class _RegistroFormState extends State<RegistroForm> {
         items: generoList.map((String gender) {
           return DropdownMenuItem(value: gender, child: Row(children: [Text(gender)]));
         }).toList(),
+        underline: const SizedBox(),
         onChanged: (value) {
           setState(() {
             vista = value.toString();
