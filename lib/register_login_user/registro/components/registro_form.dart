@@ -21,18 +21,17 @@ class RegistroForm extends StatefulWidget {
 
 class _RegistroFormState extends State<RegistroForm> {
   bool isHiddenPassword = true;
-  TextEditingController _controllerTextName = TextEditingController();
-  TextEditingController _controllerTextLastName = TextEditingController();
-  TextEditingController _controllerTextPassword = TextEditingController();
-  TextEditingController _controllerTextPhone = TextEditingController();
-  TextEditingController _controllerTextAddress = TextEditingController();
+  final TextEditingController _controllerTextName = TextEditingController();
+  final TextEditingController _controllerTextLastName = TextEditingController();
+  final TextEditingController _controllerTextPassword = TextEditingController();
+  final TextEditingController _controllerTextPhone = TextEditingController();
+  final TextEditingController _controllerTextAddress = TextEditingController();
 
 
   String? _controllerTextDate;
   String? sexo;
   final _formKey = GlobalKey<FormState>();
   final _email = TextEditingController();
-  @override
   void addError({required String error}) {
     if (!errors.contains(error)) {
       setState(() {
@@ -41,7 +40,6 @@ class _RegistroFormState extends State<RegistroForm> {
     }
   }
 
-  @override
   void removeError({required String error}) {
     if (errors.contains(error)) {
       setState(() {
@@ -83,7 +81,7 @@ class _RegistroFormState extends State<RegistroForm> {
             press: () async {
               _controllerTextPassword.text = _controllerTextPassword.text.replaceAll(" ", "");
               _email.text = _email.text.replaceAll(" ", "");
-              if (_formKey.currentState!.validate() && errors.length < 1  ) {
+              if (_formKey.currentState!.validate() && errors.isEmpty  ) {
                 //escribir datos a sincronizar
 
               if( sexo != null && _controllerTextDate != null){
@@ -91,7 +89,6 @@ class _RegistroFormState extends State<RegistroForm> {
                 try {
                   var result = await  InternetAddress.lookup('google.com');
                   if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-                    print('connected');
                     try {
                       UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
                           email: _email.text.toString(),
@@ -99,17 +96,12 @@ class _RegistroFormState extends State<RegistroForm> {
                       );
                     } on FirebaseAuthException catch (e) {
                       if (e.code == 'user-not-found') {
-                        print('El usuario no esta registrado');
-
-
                         //se genera el codigo de referido
                         Iterable<String> binarys = _email.text.codeUnits.map((int strInt) => strInt.toRadixString(2));
-                        Crc32 hash = new Crc32();
+                        Crc32 hash =  Crc32();
                         for (var i in binarys) {
                           hash.add([int.parse(i)]);
                         }
-
-                        print(hash.hash);
 
                         RegisterUser user = RegisterUser(
                             name: _controllerTextName.text,
@@ -131,13 +123,11 @@ class _RegistroFormState extends State<RegistroForm> {
                             MaterialPageRoute(
                                 builder: (context) => ProfilePhoto(user)));
                       } else if (e.code == 'wrong-password') {
-                        print('El usuario ya esta Registrado');
                         showToast("El Email Ya Esta Registrado.\nIntente Iniciar Sesion o \nRecuperar la Contraseña");
                       }
                     }
                   }
-                } on SocketException catch (e) { 
-                  print('not connected');
+                } on SocketException catch (e) {
                   showToast("Debes tener acceso a internet para registrarte");
                 }
               }else{
@@ -448,51 +438,14 @@ class _RegistroFormState extends State<RegistroForm> {
       isHiddenPassword = !isHiddenPassword;
     });
   }
-  TextFormField nickNameFormField() {
-    return TextFormField(
-
-      onSaved: (newValue) => nickName = newValue,
-      // onChanged: (value) {
-      //   if (value.isNotEmpty && errors.contains(nickNameError)) {
-      //     removeError(error: nickNameError);
-      //     return;
-      //   }
-      //   return;
-      // },
-      // validator: (value) {
-      //   if (value!.isEmpty && !errors.contains(nickNameError)) {
-      //     addError(error: nickNameError);
-      //     return "";
-      //   }
-      //
-      //   return null;
-      // },
-      autocorrect: true,
-      decoration: InputDecoration(
-          hintText: "Ingresa Codigo de referido (opcional)",
-          labelText: "Codigo de Referido",
-          suffixIcon: Padding(
-            padding: EdgeInsets.fromLTRB(
-              0,
-              getPropertieScreenWidth(18),
-              getPropertieScreenWidth(18),
-              getPropertieScreenWidth(18),
-            ),
-            child: Icon(
-              Icons.code,
-              size: getPropertieScreenWidth(18),
-            ),
-          )),
-    );
-  }
 
   Container generFormField() {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        //border: Border.all(color: jBase),
-        //borderRadius: BorderRadius.circular(40),
+      decoration:  BoxDecoration(
+        border: Border.all(color: jBase),
+        borderRadius: BorderRadius.circular(40),
       ),
       child: DropdownButton(
         items: generoList.map((String gender) {
@@ -506,8 +459,8 @@ class _RegistroFormState extends State<RegistroForm> {
         },
         hint:
 
-        Container(
-          width: MediaQuery.of(context).size.width-54,
+        SizedBox(
+          width: MediaQuery.of(context).size.width-65,
           child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -615,7 +568,7 @@ class _RegistroFormState extends State<RegistroForm> {
         suffixIcon: Padding(
           padding: const EdgeInsets.all(13),
           child: Container(
-            margin: EdgeInsets.only(right: 1),
+            margin: const EdgeInsets.only(right: 1),
             width: 2,
             height: 2,
             child: SvgPicture.asset(
@@ -638,7 +591,6 @@ class _RegistroFormState extends State<RegistroForm> {
       // (e?.day ?? 0) == 1 ? 'Por favor ingrese la fecha correcta' : null,
       validator: (date) {
         var diferencia = date?.difference(DateTime.now());
-        print(diferencia?.inDays.toString());
         if(diferencia?.inDays.toInt() != null){
           if(diferencia!.inDays.toInt().abs() < 6573){
             return 'Debes ser mayor de edad para trabajar con nosotros';
@@ -648,7 +600,6 @@ class _RegistroFormState extends State<RegistroForm> {
         return null;
       },
       onDateSelected: (DateTime value) {
-        print(value);
         _controllerTextDate = value.toString();
       },
     );

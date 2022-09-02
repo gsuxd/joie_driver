@@ -30,8 +30,8 @@ class _Body extends ConsumerState<BodyGanancias> {
   }
 
   final List<ItemGanancia> ganaciasList = [];
-  String PRD = "usersEmprendedor";
-  String DEV = "usersEmprendedorDev";
+  String server = "usersEmprendedor";
+  //String server = "usersEmprendedorDev";
   Future getDataGanancasListInit() async {
     DateTime mesAcutal = DateTime(
       DateTime.now().year,
@@ -42,7 +42,7 @@ class _Body extends ConsumerState<BodyGanancias> {
       0,
     );
     await FirebaseFirestore.instance
-        .collection('$DEV/' + email + "/comisiones")
+        .collection('$server/' + email + "/comisiones")
         .where('date', isGreaterThan: mesAcutal)
         .orderBy('date', descending: true)
         .limit(1)
@@ -73,7 +73,7 @@ class _Body extends ConsumerState<BodyGanancias> {
         0,
       );
       await FirebaseFirestore.instance
-          .collection('$DEV/' + email + "/comisiones")
+          .collection('$server/' + email + "/comisiones")
           .where('date', isGreaterThan: mesAcutal)
           .orderBy('date', descending: true)
           .startAfterDocument(start)
@@ -110,7 +110,7 @@ class _Body extends ConsumerState<BodyGanancias> {
       0,
     );
     await FirebaseFirestore.instance
-        .collection('$DEV/' + email + "/comisiones")
+        .collection('$server/' + email + "/comisiones")
         .where('date', isGreaterThan: mesAcutal)
         .get()
         .then((QuerySnapshot querySnapshot) {
@@ -132,12 +132,12 @@ class _Body extends ConsumerState<BodyGanancias> {
       EncryptedSharedPreferences();
 
   //Produccion
-  //CollectionReference users =
-      //FirebaseFirestore.instance.collection('usersEmprendedor');
+  CollectionReference users =
+      FirebaseFirestore.instance.collection('usersEmprendedor');
 
   //Desarrollo
-  CollectionReference users =
-  FirebaseFirestore.instance.collection('usersEmprendedorDev');
+  // CollectionReference users =
+  // FirebaseFirestore.instance.collection('usersEmprendedorDev');
 
   @override
   Widget build(BuildContext context) {

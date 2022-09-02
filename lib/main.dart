@@ -190,11 +190,17 @@ class _MyHomePageState extends State<MyHomePage> {
       String email = await encryptedSharedPreferences.getString('email');
       String code = await encryptedSharedPreferences.getString('code');
       String passwd = await encryptedSharedPreferences.getString('passwd');
+      String google = await encryptedSharedPreferences.getString('google');
 
       if (typeUser == "emprendedor"  || typeUser == "chofer") {
         try {
           var result = await InternetAddress.lookup('google.com');
           if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+            if(google == "true"){
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Ganancias()));
+              return;
+            }
             try {
               await FirebaseAuth.instance
                   .signInWithEmailAndPassword(email: email, password: passwd);

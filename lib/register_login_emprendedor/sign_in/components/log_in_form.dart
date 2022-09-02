@@ -108,6 +108,7 @@ class _SignInForm extends State<SignInForm> {
                       await encryptedSharedPreferences.setString('email', _email.text.toString());
                       await encryptedSharedPreferences.setString('passwd', _password.text.toString());
                       await encryptedSharedPreferences.setString('typeuser', "emprendedor");
+                      await encryptedSharedPreferences.setString('google', "false");
                       Navigator.push(
                           context,
                           MaterialPageRoute(

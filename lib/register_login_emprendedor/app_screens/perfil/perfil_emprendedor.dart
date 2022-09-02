@@ -19,7 +19,7 @@ class PerfilEmprendedor extends StatefulWidget {
 class _PerfilUsuarioState extends State<PerfilEmprendedor> {
   Future<DocumentSnapshot> getData() async {
     email = await encryptedSharedPreferences.getString('email');
-    imagesRef = storageRef.child("FileDev/"+email);
+    imagesRef = storageRef.child(server+email);
     return await users.doc(email).get();
   }
 
@@ -98,7 +98,7 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
     try {
       Reference img3 = FirebaseStorage.instance
           .ref()
-          .child("FileDev/"+email)
+          .child(server+email)
           .child('ProfilePhoto.jpg');
       UploadTask uploadTaskProfilePhoto = img3.putFile(phofilePhoto!);
       await uploadTaskProfilePhoto.whenComplete(() {});
@@ -146,12 +146,14 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
   String urlImage = "";
 
   //Produccion
-  //CollectionReference users =
-  //    FirebaseFirestore.instance.collection('usersEmprendedor');
+  CollectionReference users =
+     FirebaseFirestore.instance.collection('usersEmprendedor');
 
   //Desarrollo
-  CollectionReference users =
-      FirebaseFirestore.instance.collection('usersEmprendedorDev');
+  // CollectionReference users =
+  //     FirebaseFirestore.instance.collection('usersEmprendedorDev');
+  String server = "";
+  //String server = "FileDev/";
 
   @override
   Widget build(BuildContext context) {

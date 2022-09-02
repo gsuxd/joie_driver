@@ -226,10 +226,10 @@ class _Body extends ConsumerState<Body> {
     String addEmail = user.email;
 
     //Produccion
-    //CollectionReference users = FirebaseFirestore.instance.collection('usersEmprendedor');
+    CollectionReference users = FirebaseFirestore.instance.collection('usersEmprendedor');
 
     //Desarrollo
-    CollectionReference users = FirebaseFirestore.instance.collection('usersEmprendedorDev');
+    //CollectionReference users = FirebaseFirestore.instance.collection('usersEmprendedorDev');
 
     return await users.doc(addEmail)
         .set({
@@ -258,14 +258,14 @@ class _Body extends ConsumerState<Body> {
     try{
 
       //Produccion
-      //Reference img3 = FirebaseStorage.instance.ref().child(user.email).child('/ProfilePhoto.jpg');
-      //Reference img4 = FirebaseStorage.instance.ref().child(user.email).child('/Cedula.jpg');
-      //Reference img5 = FirebaseStorage.instance.ref().child(user.email).child('/CedulaR.jpg');
+      Reference img3 = FirebaseStorage.instance.ref().child(user.email).child('/ProfilePhoto.jpg');
+      Reference img4 = FirebaseStorage.instance.ref().child(user.email).child('/Cedula.jpg');
+      Reference img5 = FirebaseStorage.instance.ref().child(user.email).child('/CedulaR.jpg');
 
       //Desarrollo
-      Reference img3 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/ProfilePhoto.jpg');
-      Reference img4 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/Cedula.jpg');
-      Reference img5 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/CedulaR.jpg');
+      // Reference img3 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/ProfilePhoto.jpg');
+      // Reference img4 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/Cedula.jpg');
+      // Reference img5 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/CedulaR.jpg');
 
       UploadTask uploadTaskProfilePhoto = img3.putFile(user.photoPerfil!);
       UploadTask uploadTaskCedula = img4.putFile(user.cedula!);
@@ -273,10 +273,10 @@ class _Body extends ConsumerState<Body> {
 
       if(user.documentAntecedentes != null){
         //Produccion
-        //Reference doc1 = FirebaseStorage.instance.ref().child(user.email).child('/Antecent.pdf');
+        Reference doc1 = FirebaseStorage.instance.ref().child(user.email).child('/Antecent.pdf');
 
         //Desarrollo
-        Reference doc1 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/Antecent.pdf');
+        // Reference doc1 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/Antecent.pdf');
 
         UploadTask uploadTaskAntecedent = doc1.putFile(user.documentAntecedentes!);
         await uploadTaskAntecedent.whenComplete((){ });
