@@ -260,9 +260,9 @@ class _BancoFormState extends State<BancoForm> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(8),
-      decoration: const BoxDecoration(
-          //border: Border.all(color: jBase),
-          //borderRadius: BorderRadius.circular(40),
+      decoration:  BoxDecoration(
+          border: Border.all(color: jBase),
+          borderRadius: BorderRadius.circular(40),
           ),
       child: DropdownButton(
         items: banco.map((String bancos) {
