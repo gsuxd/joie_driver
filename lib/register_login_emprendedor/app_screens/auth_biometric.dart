@@ -5,8 +5,6 @@ import 'package:local_auth/local_auth.dart';
 import '../../register_login_emprendedor/conts.dart';
 import 'ganancias/ganancias.dart';
 
-
-
 class AuthBiometric extends ConsumerStatefulWidget {
   const AuthBiometric({Key? key}) : super(key: key);
   @override
@@ -14,8 +12,6 @@ class AuthBiometric extends ConsumerStatefulWidget {
 }
 
 class _Body extends ConsumerState<AuthBiometric> {
-
-
   @override
   void initState()  {
     super.initState();

@@ -224,7 +224,6 @@ class _MyHomePageState extends State<MyHomePage> {
           showToast("Sin Conexión");
         }
       }
-
       if(initScreen){
         Navigator.push(
             context,

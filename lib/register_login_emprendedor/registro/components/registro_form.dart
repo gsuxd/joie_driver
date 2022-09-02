@@ -583,7 +583,6 @@ class _RegistroFormState extends State<RegistroForm> {
           addError(error: addressError);
           return;
         }
-
         return null;
       },
       keyboardType: TextInputType.streetAddress,

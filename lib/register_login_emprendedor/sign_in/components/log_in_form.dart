@@ -199,7 +199,6 @@ class _SignInForm extends State<SignInForm> {
             errors.contains(emailError)) {
           removeError(error: emailError);
           setState(() {
-
           });
         }
         return;

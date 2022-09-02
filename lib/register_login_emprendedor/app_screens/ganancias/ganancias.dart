@@ -31,22 +31,17 @@ class Ganancias extends ConsumerStatefulWidget {
 }
 
 class _Body extends ConsumerState<Ganancias> {
-  
-  
   @override
   void initState()  {
     super.initState();
     getData();
   }
 
-
-
   Future<void> getData() async {
     final code = ref.read(codeProviderE);
     String codeI = await encryptedSharedPreferences.getString('code');
     code.setCode(codeI);
   }
-
 
   EncryptedSharedPreferences encryptedSharedPreferences =
   EncryptedSharedPreferences();
