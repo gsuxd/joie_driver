@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "331133342890-hq191t2k6o22es61r0n58278hmccge0v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ciddras.joiedriver",
+            "certificate_hash": "44e62e632857adf8e7e1a4df90eada3cbe942315"
+          }
+        },
+        {
           "client_id": "331133342890-q0ldg2fnn9etp27gvo1655q9qnj7r4lq.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -119,6 +127,42 @@
         "mobilesdk_app_id": "1:331133342890:android:46d7f41ac7b5b77cc3acd3",
         "android_client_info": {
           "package_name": "com.joieweb.joiedriverweb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331133342890-q0ldg2fnn9etp27gvo1655q9qnj7r4lq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAl5RZMSeQEBYHhpH2tbM05-TkPH2Sj18E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331133342890-q0ldg2fnn9etp27gvo1655q9qnj7r4lq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "331133342890-61jdltrpuio7i2tdsc69vunf53bhsgp0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.joieDriver"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331133342890:android:dbfba940eb3b1941c3acd3",
+        "android_client_info": {
+          "package_name": "joie.admin.driver"
         }
       },
       "oauth_client": [

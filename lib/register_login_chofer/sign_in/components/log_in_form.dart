@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:archive/archive.dart';
+import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../../components/default_button_chofer.dart';
@@ -17,6 +18,7 @@ class SignInForm extends StatefulWidget {
 }
 
 class _SignInForm extends State<SignInForm> {
+  EncryptedSharedPreferences encryptedSharedPreferences = EncryptedSharedPreferences();
   bool isHiddenPassword = true;
   final List<String> errors = [];
   final _formKey = GlobalKey<FormState>();
@@ -102,6 +104,10 @@ class _SignInForm extends State<SignInForm> {
                       for (var i in binarys) {
                         hash.add([int.parse(i)]);
                       }
+                      await encryptedSharedPreferences.setString('code', hash.hash.toString());
+                      await encryptedSharedPreferences.setString('email', _email.text.toString());
+                      await encryptedSharedPreferences.setString('passwd', _password.text.toString());
+                      await encryptedSharedPreferences.setString('typeuser', "chofer");
                       Navigator.push(
                           context,
                           MaterialPageRoute(

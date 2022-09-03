@@ -1,3 +1,4 @@
+import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:joiedriver/register_login_user/registro/user_data_register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -57,6 +58,7 @@ class Body extends ConsumerStatefulWidget {
 
 class _Body extends ConsumerState<Body> {
 
+  EncryptedSharedPreferences encryptedSharedPreferences = EncryptedSharedPreferences();
 
   @override
   void initState() {
@@ -194,6 +196,9 @@ class _Body extends ConsumerState<Body> {
     try{
       final FirebaseAuth auth = FirebaseAuth.instance;
       await auth.createUserWithEmailAndPassword(email: user.email, password: user.password);
+      await encryptedSharedPreferences.setString('email', user.email);
+      await encryptedSharedPreferences.setString('passwd', user.password);
+      await encryptedSharedPreferences.setString('typeuser', "pasajero");
       return true;
     }on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -219,6 +224,7 @@ class _Body extends ConsumerState<Body> {
               'phone' : user.phone,
               'address' : user.address,
               'code' : user.code,
+      'date_register' : DateTime.now(),
         })
         .then((value) => true)
         .catchError((error) => false);
@@ -238,7 +244,10 @@ class _Body extends ConsumerState<Body> {
         await uploadCedulaR.whenComplete((){ });
         await uploadPhotoProfile.whenComplete((){ });
 
-
+        user.photoPerfil?.delete(recursive: true);
+        user.documentAntecedentes?.delete(recursive: true);
+        user.cedulaR?.delete(recursive: true);
+        user.documentId?.delete(recursive: true);
         return true;
       }on FirebaseAuthException catch(error){
         return false;
@@ -247,7 +256,8 @@ class _Body extends ConsumerState<Body> {
 
   Future getImage () async {
     ImagePicker imegaTemp = ImagePicker();
-    var tempImage = await imegaTemp.pickImage(source: ImageSource.camera);
+    var tempImage = await imegaTemp.pickImage(source: ImageSource.camera, imageQuality: 80,
+      maxHeight: 1000,);
     cedulaR =  File(tempImage!.path);
     imageView.setImage(cambiarmage());
   }

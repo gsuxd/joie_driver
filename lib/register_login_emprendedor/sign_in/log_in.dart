@@ -8,7 +8,6 @@ class LognInScreenEmprendedor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context, ) {
-    
     SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
@@ -16,13 +15,13 @@ class LognInScreenEmprendedor extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: const Icon(Icons.keyboard_arrow_left)),
+            icon: const Icon(Icons.keyboard_arrow_left, size: 30,)),
         title: const Text(
           "Iniciar Sesión",
         ),
         centerTitle: true,
       ),
-      body: const BodySign(),
+      body:  BodySign(),
     );
   }
 }

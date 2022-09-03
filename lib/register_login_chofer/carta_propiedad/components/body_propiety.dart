@@ -1,3 +1,4 @@
+import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:joiedriver/register_login_chofer/registro/user_data_register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -47,6 +48,7 @@ final screenProvider = ChangeNotifierProvider((ref) => ScreenNotify());
 final imageProvider = ChangeNotifierProvider((ref) => ImageNotify());
 
 class Body extends ConsumerStatefulWidget {
+
   RegisterUser user;
 
    Body({Key? key, required this.user}) : super(key: key);
@@ -55,7 +57,7 @@ class Body extends ConsumerStatefulWidget {
 }
 
 class _Body extends ConsumerState<Body> {
-
+  EncryptedSharedPreferences encryptedSharedPreferences = EncryptedSharedPreferences();
   @override
   void initState() {
     super.initState();
@@ -197,6 +199,10 @@ class _Body extends ConsumerState<Body> {
     try{
       final FirebaseAuth auth = FirebaseAuth.instance;
       await auth.createUserWithEmailAndPassword(email: user.email, password: user.password);
+      await encryptedSharedPreferences.setString('code', user.code);
+      await encryptedSharedPreferences.setString('email', user.email);
+      await encryptedSharedPreferences.setString('passwd', user.password);
+      await encryptedSharedPreferences.setString('typeuser', "chofer");
       return true;
     }on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -229,6 +235,7 @@ class _Body extends ConsumerState<Body> {
               'type_bank' : user.typeBank,
               'bank' : user.bank,
               'date_ci' : user.dateCi,
+              'date_register' : DateTime.now(),
               'vehicle': {
                 'default' : {
                   'year': 0,
@@ -272,6 +279,15 @@ class _Body extends ConsumerState<Body> {
         await uploadTaskCedulaR.whenComplete((){ });
         await uploadTaskLicencia.whenComplete((){ });
 
+        user.photoPerfil?.delete(recursive: true);
+        user.documentAntecedentes?.delete(recursive: true);
+        user.cedulaR?.delete(recursive: true);
+        user.cedula?.delete(recursive: true);
+        user.licencia?.delete(recursive: true);
+        user.documentTarjetaPropiedad?.delete(recursive: true);
+        user.documentVehicle?.delete(recursive: true);
+
+
         return true;
       }on FirebaseAuthException catch(error){
         return false;
@@ -280,7 +296,8 @@ class _Body extends ConsumerState<Body> {
 
   Future getImage () async {
     ImagePicker imegaTemp = ImagePicker();
-    var tempImage = await imegaTemp.pickImage(source: ImageSource.camera);
+    var tempImage = await imegaTemp.pickImage(source: ImageSource.camera, imageQuality: 80,
+      maxHeight: 1000,);
     imagePropiedad =  File(tempImage!.path);
     imageView.setImage(cambiarmage());
   }

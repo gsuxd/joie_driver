@@ -75,7 +75,8 @@ class _Body extends State<Body> {
 
   Future getImage () async {
     ImagePicker imegaTemp = ImagePicker();
-    var tempImage = await imegaTemp.pickImage(source: ImageSource.camera);
+    var tempImage = await imegaTemp.pickImage(source: ImageSource.camera, imageQuality: 80,
+      maxHeight: 1000,);
     imagePropiedad =  File(tempImage!.path);
     setState(()  {
 

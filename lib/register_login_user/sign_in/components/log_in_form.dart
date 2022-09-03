@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../../home/home.dart';
@@ -16,6 +17,7 @@ class SignInForm extends StatefulWidget {
 }
 
 class _SignInForm extends State<SignInForm> {
+  EncryptedSharedPreferences encryptedSharedPreferences = EncryptedSharedPreferences();
   bool isHiddenPassword = true;
   final List<String> errors = [];
   final _formKey = GlobalKey<FormState>();
@@ -23,7 +25,6 @@ class _SignInForm extends State<SignInForm> {
   final _password = TextEditingController();
   bool remerber = false;
 
-  @override
   void addError({required String error}) {
     if (!errors.contains(error)) {
       setState(() {
@@ -99,6 +100,10 @@ class _SignInForm extends State<SignInForm> {
                           email: _email.text.toString(),
                           password: _password.text.toString()
                       );
+
+                      await encryptedSharedPreferences.setString('email', _email.text.toString());
+                      await encryptedSharedPreferences.setString('passwd', _password.text.toString());
+                      await encryptedSharedPreferences.setString('typeuser', "pasajero");
                       Navigator.push(
                           context,
                           MaterialPageRoute(

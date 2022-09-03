@@ -101,17 +101,18 @@ class _RegistroFormState extends State<RegistroForm> {
               if( sexo != null && _controllerTextDate != null){
                 if(_controllerTextReferenceCode.text.isEmpty){
                   //_controllerTextReferenceCode.text = "3050593811";
-                  showDialog<String>(
-                    context: context,
-                    builder: (BuildContext context) => AlertDialog(
-                      content: alert(),
-                      contentPadding: const EdgeInsets.all(10.0),
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(40.0))
-                      ),
-                      elevation: 48,
-                    ),
-                  );
+                  // showDialog<String>(
+                  //   context: context,
+                  //   builder: (BuildContext context) => AlertDialog(
+                  //     content: alert(),
+                  //     contentPadding: const EdgeInsets.all(10.0),
+                  //     shape: const RoundedRectangleBorder(
+                  //         borderRadius: BorderRadius.all(Radius.circular(40.0))
+                  //     ),
+                  //     elevation: 48,
+                  //   ),
+                  // );
+                  showToast("Ingrese un Código de Referido");
                 }else{
                   try {
                     var result = await  InternetAddress.lookup('google.com');
@@ -157,12 +158,12 @@ class _RegistroFormState extends State<RegistroForm> {
                             numberCi: null,
                             typeBank: null, city: _controllerTextCity.text,
                           );
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //       //builder: (context) => ProfilePhoto(user)));
-                          //         builder: (context) =>  DatosBanco(user)));
-                          processGenerateCodeAndSendEmail(context: context, email: _email.text.replaceAll(" ", ""), username: _controllerTextName.text + " " + _controllerTextLastName.text);
+                           Navigator.push(
+                               context,
+                               MaterialPageRoute(
+                                 //builder: (context) => ProfilePhoto(user)));
+                                   builder: (context) =>  DatosBanco(user)));
+                          //processGenerateCodeAndSendEmail(context: context, email: _email.text.replaceAll(" ", ""), username: _controllerTextName.text + " " + _controllerTextLastName.text);
                         } else if (e.code == 'wrong-password') {
                           showToast("El Email Ya Esta Registrado.\nIntente Iniciar Sesion o \nRecuperar la Contraseña");
                         }
@@ -512,8 +513,8 @@ class _RegistroFormState extends State<RegistroForm> {
       autocorrect: false,
       keyboardType: const TextInputType.numberWithOptions(signed: true),
       decoration: InputDecoration(
-          hintText: "Ingresa el código de Lider",
-          labelText: "Código de Lider",
+          hintText: "Ingresa el código de socio",
+          labelText: "Código de socio",
           suffixIcon: Padding(
             padding: EdgeInsets.fromLTRB(
               0,
@@ -533,11 +534,12 @@ class _RegistroFormState extends State<RegistroForm> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(8),
-      decoration: const BoxDecoration(
-        //border: Border.all(color: jBase),
-        //borderRadius: BorderRadius.circular(40),
+      decoration:  BoxDecoration(
+        border: Border.all(color: jBase),
+        borderRadius: BorderRadius.circular(40),
       ),
       child: DropdownButton(
+        underline: const SizedBox(),
         items: generoList.map((String gender) {
           return DropdownMenuItem(value: gender, child: Row(children: [Text(gender)]));
         }).toList(),
@@ -550,7 +552,7 @@ class _RegistroFormState extends State<RegistroForm> {
         hint:
 
         SizedBox(
-          width: MediaQuery.of(context).size.width-62,
+          width: MediaQuery.of(context).size.width-65,
           child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -837,7 +839,7 @@ class _RegistroFormState extends State<RegistroForm> {
               ),
 
               ),
-              const Text("¿No tienes Código\nde Lider?", style: TextStyle(fontWeight: FontWeight.bold),),
+              const Text("¿No tienes Código\nde socio?", style: TextStyle(fontWeight: FontWeight.bold),),
             ],
           ),
           SvgPicture.asset("assets/icons/whatsapp.svg", height: 100,),

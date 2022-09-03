@@ -3,11 +3,12 @@ import 'package:archive/archive.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../../components/default_button_emprendedor.dart';
-import '../../../home/home.dart';
+import '../../app_screens/ganancias/ganancias.dart';
 import '../../size_config.dart';
 import '../components/error_form.dart';
 import '../../conts.dart';
 import '/register_login_emprendedor/sign_in/components/fogot.dart';
+import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({Key? key}) : super(key: key);
@@ -17,6 +18,7 @@ class SignInForm extends StatefulWidget {
 }
 
 class _SignInForm extends State<SignInForm> {
+  EncryptedSharedPreferences encryptedSharedPreferences = EncryptedSharedPreferences();
   bool isHiddenPassword = true;
   final List<String> errors = [];
   final _formKey = GlobalKey<FormState>();
@@ -102,10 +104,16 @@ class _SignInForm extends State<SignInForm> {
                       for (var i in binarys) {
                         hash.add([int.parse(i)]);
                       }
+                      await encryptedSharedPreferences.setString('code', hash.hash.toString());
+                      await encryptedSharedPreferences.setString('email', _email.text.toString());
+                      await encryptedSharedPreferences.setString('passwd', _password.text.toString());
+                      await encryptedSharedPreferences.setString('typeuser', "emprendedor");
+                      await encryptedSharedPreferences.setString('google', "false");
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>  HomeScreen(hash.hash.toString())));
+                              //builder: (context) =>  HomeScreen(hash.hash.toString())));
+                              builder: (context) =>  const Ganancias()));
                     } on FirebaseAuthException catch (e) {
                       if (e.code == 'user-not-found') {
                         showToast("Este Email no esta registrado");
@@ -117,7 +125,7 @@ class _SignInForm extends State<SignInForm> {
                     }
                   }
                 }on SocketException catch (e) {
-                  showToast("Debes tener acceso a internet para registrarte\n" + e.toString());
+                  showToast("Debes tener acceso a internet para registrarte");
                 }
                 }
               }),
@@ -191,7 +199,6 @@ class _SignInForm extends State<SignInForm> {
             errors.contains(emailError)) {
           removeError(error: emailError);
           setState(() {
-
           });
         }
         return;

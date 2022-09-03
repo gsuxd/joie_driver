@@ -260,9 +260,9 @@ class _BancoFormState extends State<BancoForm> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(8),
-      decoration: const BoxDecoration(
-          //border: Border.all(color: jBase),
-          //borderRadius: BorderRadius.circular(40),
+      decoration:  BoxDecoration(
+          border: Border.all(color: jBase),
+          borderRadius: BorderRadius.circular(40),
           ),
       child: DropdownButton(
         items: banco.map((String bancos) {
@@ -283,7 +283,7 @@ class _BancoFormState extends State<BancoForm> {
             }else if(value == davivienda){
               name = "Davivienda";
             }else if (value == avvillas) {
-              name = 'Bnaco AV Villas';
+              name = 'Banco AV Villas';
             } else
             if (value == bancamia) {
               name = 'Bancamía';

@@ -1,3 +1,4 @@
+import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:joiedriver/register_login_emprendedor/registro/user_data_register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -13,6 +14,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:joiedriver/register_login_emprendedor/app_screens/ganancias/ganancias.dart';
 
 class ImageNotify extends ChangeNotifier {
   Widget _image = SvgPicture.asset(antePen, height: SizeConfig.screenHeight * 0.50);
@@ -55,7 +57,7 @@ class Body extends ConsumerStatefulWidget {
 }
 
 class _Body extends ConsumerState<Body> {
-
+  EncryptedSharedPreferences encryptedSharedPreferences = EncryptedSharedPreferences();
   @override
   void initState() {
     super.initState();
@@ -175,7 +177,7 @@ class _Body extends ConsumerState<Body> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           if(snapshot.data){
-            return HomeScreen(user.code);
+            return Ganancias();
           }else{
             return const OpError(stackTrace: null,);
           }
@@ -204,6 +206,10 @@ class _Body extends ConsumerState<Body> {
     try{
       final FirebaseAuth auth = FirebaseAuth.instance;
       await auth.createUserWithEmailAndPassword(email: user.email, password: user.password);
+      await encryptedSharedPreferences.setString('code', user.code);
+      await encryptedSharedPreferences.setString('email', user.email);
+      await encryptedSharedPreferences.setString('passwd', user.password);
+      await encryptedSharedPreferences.setString('typeuser', "emprendedor");
       return true;
     }on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -218,7 +224,13 @@ class _Body extends ConsumerState<Body> {
 
   Future<bool> userRegisterData() async {
     String addEmail = user.email;
+
+    //Produccion
     CollectionReference users = FirebaseFirestore.instance.collection('usersEmprendedor');
+
+    //Desarrollo
+    //CollectionReference users = FirebaseFirestore.instance.collection('usersEmprendedorDev');
+
     return await users.doc(addEmail)
         .set({
       'name': user.name.toUpperCase(),
@@ -236,6 +248,7 @@ class _Body extends ConsumerState<Body> {
       'type_bank' : user.typeBank,
       'bank' : user.bank,
       'date_ci' : user.dateCi,
+      'date_register' : DateTime.now(),
     })
         .then((value) => true)
         .catchError((error) => false);
@@ -244,16 +257,27 @@ class _Body extends ConsumerState<Body> {
   Future<bool> upload() async {
     try{
 
+      //Produccion
       Reference img3 = FirebaseStorage.instance.ref().child(user.email).child('/ProfilePhoto.jpg');
       Reference img4 = FirebaseStorage.instance.ref().child(user.email).child('/Cedula.jpg');
       Reference img5 = FirebaseStorage.instance.ref().child(user.email).child('/CedulaR.jpg');
+
+      //Desarrollo
+      // Reference img3 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/ProfilePhoto.jpg');
+      // Reference img4 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/Cedula.jpg');
+      // Reference img5 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/CedulaR.jpg');
 
       UploadTask uploadTaskProfilePhoto = img3.putFile(user.photoPerfil!);
       UploadTask uploadTaskCedula = img4.putFile(user.cedula!);
       UploadTask uploadTaskCedulaR = img5.putFile(user.cedulaR!);
 
       if(user.documentAntecedentes != null){
+        //Produccion
         Reference doc1 = FirebaseStorage.instance.ref().child(user.email).child('/Antecent.pdf');
+
+        //Desarrollo
+        // Reference doc1 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/Antecent.pdf');
+
         UploadTask uploadTaskAntecedent = doc1.putFile(user.documentAntecedentes!);
         await uploadTaskAntecedent.whenComplete((){ });
       }
@@ -261,6 +285,12 @@ class _Body extends ConsumerState<Body> {
       await uploadTaskProfilePhoto.whenComplete((){ });
       await uploadTaskCedula.whenComplete((){ });
       await uploadTaskCedulaR.whenComplete((){ });
+
+    user.photoPerfil?.delete(recursive: true);
+    user.documentAntecedentes?.delete(recursive: true);
+      user.cedulaR?.delete(recursive: true);
+      user.cedula?.delete(recursive: true);
+
       return true;
     }on FirebaseAuthException catch(error){
       return false;

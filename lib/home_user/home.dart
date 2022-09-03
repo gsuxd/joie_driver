@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreenUser> {
       appBar: AppBar(
         title: const Text('En Desarrollo'),
       ),
-      drawer: const NavigationDrawer(),
+      //drawer: const NavigationDrawer(),
       body: ComparteYGana(),
     );
   }
