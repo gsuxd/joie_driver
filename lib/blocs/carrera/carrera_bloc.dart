@@ -84,16 +84,17 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
         .child("${carrera.pasajeroId}/ProfilePhoto.jpg")
         .getDownloadURL();
 
-    showModalBottomSheet(
-        context: context,
-        builder: (_) => NuevaCarreraModal(
-              carrera: carrera,
-              distance: distance,
-              choferIcon: choferIcon,
-              iconPasajero: NetworkImage(iconPasajero),
-              location: LatLng(location.latitude!, location.longitude!),
-              polypoints: polypoints,
-            ));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => NuevaCarreraModal(
+                  carrera: carrera,
+                  distance: distance,
+                  choferIcon: choferIcon,
+                  iconPasajero: NetworkImage(iconPasajero),
+                  location: LatLng(location.latitude!, location.longitude!),
+                  polypoints: polypoints,
+                )));
   }
 
   void _handleSnapshot(val) {
