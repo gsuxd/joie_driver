@@ -766,8 +766,8 @@ class _RegistroFormState extends State<RegistroForm> {
   }
 
   _launch(url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
     } else {
       if (kDebugMode) {
         print("Not supported");

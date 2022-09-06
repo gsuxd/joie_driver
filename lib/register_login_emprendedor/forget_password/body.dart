@@ -22,7 +22,7 @@ class Body extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       fontSize: getPropertieScreenWidth(18))),
               Text(
-                "Por favor, ingresa tu correo \ny te enviaremos un código de verificación. ",
+                "Por favor, ingresa tu correo \ny te enviaremos un link de recuperación ",
                 style: TextStyle(fontSize: getPropertieScreenWidth(14)),
                 textAlign: TextAlign.center,
               ),

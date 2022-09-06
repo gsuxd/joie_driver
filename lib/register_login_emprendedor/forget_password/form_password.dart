@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../components/default_button.dart';
 import '../../components/error_form.dart';
 import '../conts.dart';
+import '../forget_password_sucess/forget_password.dart';
 import '../size_config.dart';
 
 
@@ -17,6 +19,7 @@ class _ForgotFormPasswordState extends State<ForgotFormPassword> {
 
   final List<String> errors = [];
   late String email;
+  TextEditingController emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +28,7 @@ class _ForgotFormPasswordState extends State<ForgotFormPassword> {
         child: Column(children: [
           //TODO: Validador de Forma
           TextFormField(
+            controller: emailController,
             onSaved: (newValue) => email = newValue!,
             onChanged: (value) {
               if (value.isNotEmpty && errors.contains(emailNull)) {
@@ -71,7 +75,7 @@ class _ForgotFormPasswordState extends State<ForgotFormPassword> {
                   ),
                 )),
           ),
-      
+
           SizedBox(
             height: getPropertieScreenHeight(30),
           ),
@@ -85,10 +89,25 @@ class _ForgotFormPasswordState extends State<ForgotFormPassword> {
             text: 'Continuar',
             press: () {
               if (_formKey.currentState!.validate()) {
-                //Validar y reenviar para resetear contraseña
+                sendEmail();
               }
             },
           ),
         ]));
+  }
+
+  Future sendEmail () async{
+    try {
+      final FirebaseAuth auth = FirebaseAuth.instance;
+      String emailAddress = emailController.text;
+      await auth.sendPasswordResetEmail(email: emailAddress);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const ForgotPasswordScreenSucess()));
+
+    } on FirebaseAuthException catch (error) {
+      showToast(error.toString());
+    }
   }
 }

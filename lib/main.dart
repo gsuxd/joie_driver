@@ -10,7 +10,6 @@ import 'package:joiedriver/register_login_chofer/conts.dart';
 import 'package:joiedriver/register_login_chofer/splash/splash_screen.dart';
 import 'package:joiedriver/register_login_chofer/theme.dart';
 import 'package:joiedriver/register_login_emprendedor/app_screens/auth_biometric.dart';
-import 'package:joiedriver/register_login_emprendedor/app_screens/ganancias/ganancias.dart';
 import 'package:joiedriver/singletons/user_data.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_player/video_player.dart';
@@ -18,7 +17,6 @@ import 'colors.dart';
 import 'generated/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
-import 'home/home.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,7 +38,6 @@ Future<void> main() async {
       child: MyApp(),
     ));
   });
-
   //runApp(const MyApp());
 }
 
