@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import '../../register_login_emprendedor/conts.dart';
 import 'ganancias/ganancias.dart';
+import 'package:local_auth_android/local_auth_android.dart';
+import 'package:local_auth_ios/local_auth_ios.dart';
 
 class AuthBiometric extends ConsumerStatefulWidget {
   const AuthBiometric({Key? key}) : super(key: key);
@@ -26,9 +28,22 @@ class _Body extends ConsumerState<AuthBiometric> {
     if(canAuthenticate){
       try {
         final bool didAuthenticate = await auth.authenticate(
-            localizedReason: 'Please authenticate to show account balance',
-            options: const AuthenticationOptions(biometricOnly: true));
-        print("Autenticacion");
+
+            localizedReason: 'Autentíquese para mostrar su cuenta',
+            authMessages: const [
+
+              IOSAuthMessages(
+                cancelButton: 'No Graciass',
+              ),
+
+              AndroidAuthMessages(
+                signInTitle: 'Se requiere autenticación biométrica',
+                cancelButton: 'Cancelar',
+              ),
+            ],
+            options: const AuthenticationOptions(
+              biometricOnly: true,
+            ));
         if(!didAuthenticate){
           // Navigator.push(
           //     context,
@@ -41,6 +56,9 @@ class _Body extends ConsumerState<AuthBiometric> {
                   builder: (context) =>  const Ganancias()));
         }
       } on PlatformException catch (e) {
+        showToast(
+            "Tu dispositivo no Tiene habailitada la Autenticación Biometrica"
+        );
         // Navigator.push(
         //     context,
         //     MaterialPageRoute(

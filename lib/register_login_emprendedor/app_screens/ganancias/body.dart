@@ -43,7 +43,7 @@ class _Body extends ConsumerState<BodyGanancias> {
     );
     await FirebaseFirestore.instance
         .collection('$server/' + email + "/comisiones")
-        .where('date', isGreaterThan: mesAcutal)
+        //.where('date', isGreaterThan: mesAcutal)
         .orderBy('date', descending: true)
         .limit(1)
         .get()
@@ -74,7 +74,7 @@ class _Body extends ConsumerState<BodyGanancias> {
       );
       await FirebaseFirestore.instance
           .collection('$server/' + email + "/comisiones")
-          .where('date', isGreaterThan: mesAcutal)
+          //.where('date', isGreaterThan: mesAcutal)
           .orderBy('date', descending: true)
           .startAfterDocument(start)
           .limit(10)
