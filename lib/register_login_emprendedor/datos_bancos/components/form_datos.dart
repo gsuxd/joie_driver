@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -10,6 +11,7 @@ import '../../conts.dart';
 
 
 class BancoForm extends StatefulWidget {
+
   RegisterUser user;
   BancoForm(this.user, {Key? key}) : super(key: key);
 
@@ -19,6 +21,7 @@ class BancoForm extends StatefulWidget {
 }
 
 class _BancoFormState extends State<BancoForm> {
+  bool validationCedula = true;
   RegisterUser user;
   _BancoFormState(this.user);
 
@@ -62,20 +65,42 @@ class _BancoFormState extends State<BancoForm> {
         spaceMedium(),
         ButtonDefEmprendedor(
           text: 'Siguiente',
-          press: (){
-            user.nameComplete = controllerTextName.text;
-            user.numberBank = controllerTextNumber.text;
-            user.numberCi = controllerTextCedula.text;
-            user.bank = bancoChofer;
-            user.typeBank = tipoCuenta2;
-            user.dateCi = controllerTextDate;
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProfilePhoto(user)));
+          press: () async {
+            await getDataCi();
+            if(validationCedula){
+              user.nameComplete = controllerTextName.text;
+              user.numberBank = controllerTextNumber.text;
+              user.numberCi = controllerTextCedula.text;
+              user.bank = bancoChofer;
+              user.typeBank = tipoCuenta2;
+              user.dateCi = controllerTextDate;
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ProfilePhoto(user)));
+            }else{
+              showToast("El número de Cédula ya esta Registrado con otro Email");
+            }
+
         },)
       ],
     );
+  }
+
+  Future getDataCi() async {
+
+    await FirebaseFirestore.instance
+        .collection("/usersEmprendedor")
+        .where('number_ci', isEqualTo: controllerTextCedula.text)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+        validationCedula = false;
+        return;
+      }
+      validationCedula = true;
+
+    });
   }
 
   SizedBox spaceMedium() {
@@ -265,6 +290,7 @@ class _BancoFormState extends State<BancoForm> {
           borderRadius: BorderRadius.circular(40),
           ),
       child: DropdownButton(
+        underline: Container(),
         items: banco.map((String bancos) {
           return DropdownMenuItem(
               value: bancos, child: Row(children: [SvgPicture.asset(bancos, height: 20,)]));
@@ -356,13 +382,15 @@ class _BancoFormState extends State<BancoForm> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(8),
-      decoration: const BoxDecoration(
-          //border: Border.all(color: jBase),
-          //borderRadius: BorderRadius.circular(40),
+      decoration:  BoxDecoration(
+          border: Border.all(color: jBase),
+          borderRadius: BorderRadius.circular(40),
           ),
       child: DropdownButton(
+        underline: Container(),
         items: tipoCuenta.map((String tipoCuentaV) {
           return DropdownMenuItem(
+
               value: tipoCuentaV, child: Row(children: [Text(tipoCuentaV)]));
         }).toList(),
 

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -8,23 +9,25 @@ import '../../../register_login_chofer/registro/user_data_register.dart';
 import '../../../register_login_chofer/profile_photo/profile_photo.dart';
 import '../../conts.dart';
 
-
 class BancoForm extends StatefulWidget {
   RegisterUser user;
-  BancoForm(this.user, {Key? key}) : super(key: key);
 
+  BancoForm(this.user, {Key? key}) : super(key: key);
 
   @override
   State<BancoForm> createState() => _BancoFormState(user);
 }
 
 class _BancoFormState extends State<BancoForm> {
+  bool validationCedula = true;
   RegisterUser user;
+
   _BancoFormState(this.user);
 
   final List<String> errors = [];
   String? tipoCuenta2;
   String? bancoChofer;
+
   void addError({required String error}) {
     if (!errors.contains(error)) {
       setState(() {
@@ -62,20 +65,39 @@ class _BancoFormState extends State<BancoForm> {
         spaceMedium(),
         ButtonDefChofer(
           text: 'Siguiente',
-          press: (){
-            user.nameComplete = controllerTextName.text;
-            user.numberBank = controllerTextNumber.text;
-            user.numberCi = controllerTextCedula.text;
-            user.bank = bancoChofer;
-            user.typeBank = tipoCuenta2;
-            user.dateCi = controllerTextDate;
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProfilePhoto(user)));
-        },)
+          press: () async {
+            await getDataCi();
+            if (validationCedula) {
+              user.nameComplete = controllerTextName.text;
+              user.numberBank = controllerTextNumber.text;
+              user.numberCi = controllerTextCedula.text;
+              user.bank = bancoChofer;
+              user.typeBank = tipoCuenta2;
+              user.dateCi = controllerTextDate;
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ProfilePhoto(user)));
+            } else {
+              showToast(
+                  "El número de Cédula ya esta Registrado con otro Email");
+            }
+          },
+        )
       ],
     );
+  }
+
+  Future getDataCi() async {
+    await FirebaseFirestore.instance
+        .collection("/users")
+        .where('number_ci', isEqualTo: controllerTextCedula.text)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+        validationCedula = false;
+        return;
+      }
+      validationCedula = true;
+    });
   }
 
   SizedBox spaceMedium() {
@@ -260,71 +282,64 @@ class _BancoFormState extends State<BancoForm> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(8),
-      decoration:  BoxDecoration(
-          border: Border.all(color: jBase),
-          borderRadius: BorderRadius.circular(40),
-          ),
+      decoration: BoxDecoration(
+        border: Border.all(color: jBase),
+        borderRadius: BorderRadius.circular(40),
+      ),
       child: DropdownButton(
+        underline: Container(),
         items: banco.map((String bancos) {
           return DropdownMenuItem(
-              value: bancos, child: Row(children: [SvgPicture.asset(bancos, height: 20,)]));
+              value: bancos,
+              child: Row(children: [
+                SvgPicture.asset(
+                  bancos,
+                  height: 20,
+                )
+              ]));
         }).toList(),
         onChanged: (value) {
           setState(() {
             String name = "Selecciona tu Banco";
-            if(value == bancolombia){
+            if (value == bancolombia) {
               name = "Bancolombia";
-            }else if(value == bbva){
+            } else if (value == bbva) {
               name = "BBVA";
-            }else if(value == bogotaBank){
+            } else if (value == bogotaBank) {
               name = "Banco de Bogotá";
-            }else if(value == colpatria){
+            } else if (value == colpatria) {
               name = "ColPatria";
-            }else if(value == davivienda){
+            } else if (value == davivienda) {
               name = "Davivienda";
-            }else if (value == avvillas) {
+            } else if (value == avvillas) {
               name = 'Bnaco AV Villas';
-            } else
-            if (value == bancamia) {
+            } else if (value == bancamia) {
               name = 'Bancamía';
-            } else
-            if (value == bancoAgrario) {
+            } else if (value == bancoAgrario) {
               name = 'Banco Agrario';
-            } else
-            if (value == bancoCajaSocial) {
+            } else if (value == bancoCajaSocial) {
               name = 'Banco Caja Social';
-            } else
-            if (value == bancoCoopCentral) {
+            } else if (value == bancoCoopCentral) {
               name = 'Banco Cooperativo Coopcentral';
-            }else
-            if (value == credifinanciera) {
+            } else if (value == credifinanciera) {
               name = 'Banco Credifinaciera';
-            }else
-            if (value == bancodeOccidente) {
+            } else if (value == bancodeOccidente) {
               name = 'Banco de Occidente';
-            }else
-            if (value == falabella) {
+            } else if (value == falabella) {
               name = 'Banco Falabella';
-            }else
-            if (value == finandia) {
+            } else if (value == finandia) {
               name = 'Banco Finandina';
-            }else
-            if (value == itau) {
+            } else if (value == itau) {
               name = 'Banco Itaú';
-            }else
-            if (value == pichincha) {
+            } else if (value == pichincha) {
               name = 'Banco Pichincha';
-            }else
-            if (value == bpc) {
+            } else if (value == bpc) {
               name = 'Banco Popular de Colombia';
-            }else
-            if (value == bancoW) {
+            } else if (value == bancoW) {
               name = 'BancoW';
-            }else
-            if (value == bancoOmeva) {
+            } else if (value == bancoOmeva) {
               name = 'Bancoomeva';
-            }else
-            if (value == bancoldex) {
+            } else if (value == bancoldex) {
               name = 'Bancoldex';
             }
             vistaCuenta = name;
@@ -356,11 +371,12 @@ class _BancoFormState extends State<BancoForm> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(8),
-      decoration: const BoxDecoration(
-          //border: Border.all(color: jBase),
-          //borderRadius: BorderRadius.circular(40),
+      decoration:  BoxDecoration(
+          border: Border.all(color: jBase),
+          borderRadius: BorderRadius.circular(40),
           ),
       child: DropdownButton(
+        underline: Container(),
         items: tipoCuenta.map((String tipoCuentaV) {
           return DropdownMenuItem(
               value: tipoCuentaV, child: Row(children: [Text(tipoCuentaV)]));
