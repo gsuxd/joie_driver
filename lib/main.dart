@@ -30,10 +30,9 @@ Future<void> main() async {
           BlocProvider(
             create: (context) => MarkersBloc(),
           ),
-          if (FirebaseAuth.instance.currentUser != null)
-            BlocProvider(
-              create: (context) => CarreraBloc(),
-            ),
+          BlocProvider(
+            create: (context) => CarreraBloc(),
+          ),
         ],
         child: const MyApp(),
       ),
@@ -93,7 +92,7 @@ class MyHomePage extends StatelessWidget {
         }
         if (state is UserLogged) {
           switch (state.user.type) {
-            case "choferes":
+            case "chofer":
               return const HomeScreen();
             default:
               return const HomeScreenUser();

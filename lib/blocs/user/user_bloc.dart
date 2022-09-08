@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:joiedriver/home_user/home.dart';
 import 'package:joiedriver/register_login_user/conts.dart';
 import 'package:joiedriver/singletons/carro_data.dart';
@@ -43,7 +42,23 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     }
     final UserData user =
         UserData.fromJson(jsonDecode(prefs.getString("user")!));
-    emit(UserLogged(user));
+    late DocumentReference<Map<String, dynamic>> userSnapshot;
+    switch (user.type) {
+      case 'chofer':
+        userSnapshot =
+            FirebaseFirestore.instance.collection("users").doc(user.email);
+        break;
+      case 'emprendedor':
+        userSnapshot = FirebaseFirestore.instance
+            .collection("usersEmprendedor")
+            .doc(user.email);
+        break;
+      default:
+        userSnapshot = FirebaseFirestore.instance
+            .collection("usersPasajeros")
+            .doc(user.email);
+    }
+    emit(UserLogged(user, userSnapshot));
   }
 
   void _handleLogin(LoginUserEvent event, Emitter<UserState> emit) async {
@@ -86,7 +101,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             );
             value.reference.update({"active": true});
             userSnapshot = value.reference;
-            emit(UserLogged(u));
+            emit(UserLogged(u, value.reference));
             prefs.setString("user", jsonEncode(u.toJson()));
             Navigator.of(event.context).pushReplacement(
                 MaterialPageRoute(builder: (_) => const HomeScreenUser()));
@@ -105,7 +120,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                     referralsCode: value['code'],
                     email: FirebaseAuth.instance.currentUser!.email!,
                     genero: value['gender'],
-                    type: "usersPasajeros",
+                    type: "pasajero",
                     profilePicture: await FirebaseStorage.instance
                         .ref()
                         .child(
@@ -113,7 +128,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                         .getDownloadURL(),
                   );
                   emit(
-                    UserLogged(u),
+                    UserLogged(u, value.reference),
                   );
                   prefs.setString(
                     "user",
@@ -139,7 +154,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                           referralsCode: value['code'],
                           email: FirebaseAuth.instance.currentUser!.email!,
                           genero: value['gender'],
-                          type: "usersPasajeros",
+                          type: "emprendedor",
                           profilePicture: await FirebaseStorage.instance
                               .ref()
                               .child(
@@ -147,7 +162,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                               .getDownloadURL(),
                         );
                         emit(
-                          UserLogged(u),
+                          UserLogged(u, value.reference),
                         );
                         prefs.setString(
                           "user",

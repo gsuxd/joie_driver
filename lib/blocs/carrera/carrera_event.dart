@@ -44,13 +44,12 @@ class CancelarCarreraEvent extends CarreraEvent {
 }
 
 class OfertarCarreraEvent extends CarreraEvent {
-  final String carreraId;
+  final String pasajeroId;
   final String? precioOferta;
-
-  const OfertarCarreraEvent(this.carreraId, this.precioOferta);
+  const OfertarCarreraEvent(this.pasajeroId, this.precioOferta);
 
   @override
-  List<Object> get props => [carreraId];
+  List<Object> get props => [pasajeroId];
 }
 
 class ComenzarCarreraEvent extends CarreraEvent {

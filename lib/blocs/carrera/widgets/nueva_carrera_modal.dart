@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:joiedriver/blocs/carrera/carrera_model.dart';
 import 'package:joiedriver/colors.dart';
 import 'package:joiedriver/helpers/calculate_distance.dart';
+
+import '../carrera_bloc.dart';
 
 class NuevaCarreraModal extends StatefulWidget {
   const NuevaCarreraModal(
@@ -13,6 +16,8 @@ class NuevaCarreraModal extends StatefulWidget {
       required this.distance,
       required this.polypoints,
       required this.location,
+      required this.aPoint,
+      required this.bPoint,
       required this.choferIcon,
       required this.iconPasajero})
       : super(key: key);
@@ -23,6 +28,8 @@ class NuevaCarreraModal extends StatefulWidget {
   final LatLng location;
   final BitmapDescriptor choferIcon;
   final ImageProvider<Object> iconPasajero;
+  final BitmapDescriptor aPoint;
+  final BitmapDescriptor bPoint;
 
   @override
   State<NuevaCarreraModal> createState() => _NuevaCarreraModalState();
@@ -46,37 +53,37 @@ class _NuevaCarreraModalState extends State<NuevaCarreraModal> {
       case 'bbva':
         metodoPago = SvgPicture.asset(
           'assets/images/bbva.svg',
-          height: 30,
+          height: 20,
         );
         break;
       case 'bancolombia':
         metodoPago = SvgPicture.asset(
           'assets/images/bancolombia.svg',
-          height: 30,
+          height: 20,
         );
         break;
       case 'davivienda':
         metodoPago = SvgPicture.asset(
-          'assets/images/davivienda.svg',
-          height: 30,
+          'assets/images/Davivienda.svg',
+          height: 20,
         );
         break;
       case 'colpatria':
         metodoPago = SvgPicture.asset(
-          'assets/images/davivienda.svg',
-          height: 30,
+          'assets/images/colpatria.svg',
+          height: 20,
         );
         break;
       case 'bancoDeBogota':
         metodoPago = SvgPicture.asset(
           'assets/images/bogotabank.svg',
-          height: 30,
+          height: 20,
         );
         break;
       case 'nequi':
         metodoPago = SvgPicture.asset(
           'assets/images/nequi.svg',
-          height: 30,
+          height: 20,
         );
         break;
       default:
@@ -98,17 +105,33 @@ class _NuevaCarreraModalState extends State<NuevaCarreraModal> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10).copyWith(left: 25, right: 25),
           child: Column(
             children: [
               _CustomMap(
-                  carrera: widget.carrera,
-                  choferIcon: widget.choferIcon,
-                  distance: widget.distance,
-                  polypoints: widget.polypoints,
-                  location: widget.location),
+                carrera: widget.carrera,
+                choferIcon: widget.choferIcon,
+                distance: widget.distance,
+                polypoints: widget.polypoints,
+                location: widget.location,
+                aPoint: widget.aPoint,
+                bPoint: widget.bPoint,
+              ),
               const SizedBox(
                 height: 20,
               ),
@@ -193,7 +216,10 @@ class _NuevaCarreraModalState extends State<NuevaCarreraModal> {
                 height: 13,
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  context.read<CarreraBloc>().add(OfertarCarreraEvent(
+                      widget.carrera.pasajeroId, _pricesList[selectedIndex]));
+                },
                 child: Container(
                   padding:
                       const EdgeInsets.all(15).copyWith(left: 25, right: 25),
@@ -205,37 +231,36 @@ class _NuevaCarreraModalState extends State<NuevaCarreraModal> {
                       style: _text.copyWith(color: Colors.white, fontSize: 20)),
                 ),
               ),
-              Container(
-                margin: const EdgeInsets.only(left: 60, top: 7),
-                child: Row(
-                  children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Método de pago: ',
+                    style: _text.copyWith(
+                        color: blue, fontWeight: FontWeight.w700),
+                  ),
+                  if (metodoPago is String) ...[
                     Text(
-                      'Método de pago: ',
+                      metodoPago,
                       style: _text.copyWith(
                           color: blue, fontWeight: FontWeight.w700),
                     ),
-                    if (metodoPago is String) ...[
-                      Text(
-                        metodoPago,
-                        style: _text.copyWith(
-                            color: blue, fontWeight: FontWeight.w700),
-                      ),
-                    ] else ...[
-                      Text(
-                        "Transferencia bancaria por:",
-                        style: _text.copyWith(
-                            color: blue, fontWeight: FontWeight.w700),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(15)
-                            .copyWith(left: 25, right: 25),
+                  ] else ...[
+                    Text(
+                      "Transferencia bancaria por",
+                      style: _text.copyWith(
+                          color: blue, fontWeight: FontWeight.w700),
+                    ),
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.only(left: 5),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(25)),
                         child: metodoPago,
-                      )
-                    ]
-                  ],
-                ),
+                      ),
+                    )
+                  ]
+                ],
               ),
               const SizedBox(
                 height: 13,
@@ -283,7 +308,9 @@ class _CustomMap extends StatelessWidget {
       required this.choferIcon,
       required this.distance,
       required this.polypoints,
-      required this.location})
+      required this.location,
+      required this.aPoint,
+      required this.bPoint})
       : super(key: key);
 
   final Carrera carrera;
@@ -291,6 +318,8 @@ class _CustomMap extends StatelessWidget {
   final PolylineResult polypoints;
   final LatLng location;
   final BitmapDescriptor choferIcon;
+  final BitmapDescriptor aPoint;
+  final BitmapDescriptor bPoint;
 
   @override
   Widget build(BuildContext context) {
@@ -315,7 +344,7 @@ class _CustomMap extends StatelessWidget {
         polylines: {
           Polyline(
             polylineId: const PolylineId("road"),
-            color: Colors.red,
+            color: Colors.blue,
             points: polypoints.points
                 .map((e) => LatLng(e.latitude, e.longitude))
                 .toList(),
@@ -325,8 +354,9 @@ class _CustomMap extends StatelessWidget {
           Marker(
               markerId: const MarkerId('inicio'),
               position: carrera.inicio,
+              icon: aPoint,
               infoWindow: InfoWindow(
-                  title: 'Inicio',
+                  title: 'nicio',
                   snippet:
                       "${calculateDistance(location, carrera.inicio).toStringAsFixed(2)}KM")),
           Marker(
@@ -337,6 +367,7 @@ class _CustomMap extends StatelessWidget {
           Marker(
               markerId: const MarkerId('fin'),
               position: carrera.destino,
+              icon: bPoint,
               infoWindow: InfoWindow(
                   title: 'Destino',
                   snippet:

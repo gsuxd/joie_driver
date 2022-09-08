@@ -5,7 +5,7 @@ class Oferta {
   final String choferId;
   final String thumb;
   final double calificacion;
-  final double precio;
+  final String precio;
 
   Oferta(
       {required this.chofer,
@@ -19,14 +19,14 @@ class Oferta {
       thumb: data['thumb'],
       choferId: data['choferId'],
       calificacion: double.parse(data['calificacion']),
-      precio: double.parse(data['precio']));
+      precio: data['precio']);
 
   toJson() => {
         'chofer': chofer,
         'thumb': thumb,
         'choferId': choferId,
         'calificacion': calificacion.toString(),
-        'precio': precio.toString()
+        'precio': precio
       };
 }
 
@@ -42,6 +42,7 @@ class Carrera {
   final LatLng destino;
   final DateTime fecha;
   final List<Oferta> ofertas;
+  final bool cancelada;
 
   Carrera(
       {required this.aceptada,
@@ -54,7 +55,8 @@ class Carrera {
       required this.inicio,
       required this.destino,
       required this.fecha,
-      required this.ofertas});
+      required this.ofertas,
+      this.cancelada = false});
 
   factory Carrera.fromJson(data) => Carrera(
         aceptada: data['aceptada'],
@@ -64,6 +66,7 @@ class Carrera {
         precioOfertado: double.parse(data['precioOfertado']),
         condicionEspecial: data['condicionEspecial'],
         metodoPago: data['metodoPago'],
+        cancelada: data['cancelada'],
         inicio: LatLng(double.parse(data['inicio']['lat']),
             double.parse(data['inicio']['lng'])),
         destino: LatLng(
@@ -80,7 +83,7 @@ class Carrera {
             : [],
       );
 
-  toJson() => {
+  Map<String, dynamic> toJson() => {
         'aceptada': aceptada,
         'choferId': choferId,
         'numeroPasajeros': numeroPasajeros.toString(),
@@ -88,6 +91,7 @@ class Carrera {
         'precioOfertado': precioOfertado.toString(),
         'condicionEspecial': condicionEspecial,
         'metodoPago': metodoPago,
+        'cancelada': cancelada,
         'inicio': {
           'lat': inicio.latitude.toString(),
           'lng': inicio.longitude.toString()
