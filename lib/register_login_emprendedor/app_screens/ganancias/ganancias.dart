@@ -1,14 +1,11 @@
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:joiedriver/register_login_emprendedor/app_screens/ganancias/body.dart';
 import 'package:joiedriver/register_login_emprendedor/app_screens/menu_drawable.dart';
-import '../../sign_in/log_in.dart';
 import '../appbar.dart';
 import '../share/share.dart';
-import 'package:local_auth/local_auth.dart';
 
 
 class CodeNotifyE extends ChangeNotifier {

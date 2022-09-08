@@ -1,6 +1,8 @@
+import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:joiedriver/home/home.dart';
 import 'package:local_auth/local_auth.dart';
 import '../../register_login_emprendedor/conts.dart';
 import 'ganancias/ganancias.dart';
@@ -14,6 +16,8 @@ class AuthBiometric extends ConsumerStatefulWidget {
 }
 
 class _Body extends ConsumerState<AuthBiometric> {
+  EncryptedSharedPreferences encryptedSharedPreferences =
+  EncryptedSharedPreferences();
   @override
   void initState()  {
     super.initState();
@@ -50,10 +54,20 @@ class _Body extends ConsumerState<AuthBiometric> {
           //     MaterialPageRoute(
           //         builder: (context) =>  const LognInScreenEmprendedor()));
         }else{
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>  const Ganancias()));
+          String typeUser = await encryptedSharedPreferences.getString('typeuser');
+          String codeLogin = await encryptedSharedPreferences.getString('code');
+          if(typeUser == "emprendedor"){
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>  const Ganancias()));
+          }else{
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>   HomeScreen(codeLogin)));
+          }
+
         }
       } on PlatformException catch (e) {
         showToast(

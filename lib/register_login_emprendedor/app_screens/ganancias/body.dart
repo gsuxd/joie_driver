@@ -149,15 +149,18 @@ class _Body extends ConsumerState<BodyGanancias> {
           if (snapshot.hasError) {
             return Row(
               mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
                   width: MediaQuery.of(context).size.width,
                   decoration: const BoxDecoration(
                     color: Colors.redAccent,
                   ),
-                  child: Center(
-                      child: Text("Verifica tu Conexión",
-                          style: textStyleBlack())),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [Text("Verifica tu Conexión",
+                          style: textStyleBlack())]
+                  ),
                 )
               ],
             );
@@ -166,15 +169,20 @@ class _Body extends ConsumerState<BodyGanancias> {
           if (snapshot.hasData && !snapshot.data!.exists) {
             return Row(
               mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
                   width: MediaQuery.of(context).size.width,
                   decoration: const BoxDecoration(
                     color: Colors.redAccent,
                   ),
-                  child: Center(
-                      child: Text("Error al obtener los datos",
-                          style: textStyleBlack())),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Error al obtener los datos", textAlign: TextAlign.center,
+                          style: textStyleBlack())
+                      ]
+                  ),
                 )
               ],
             );
