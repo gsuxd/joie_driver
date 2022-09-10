@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:archive/archive.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:joiedriver/register_login_emprendedor/registro/user_data_register.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,6 +23,7 @@ class RegistroForm extends StatefulWidget {
 }
 
 class _RegistroFormState extends State<RegistroForm> {
+  bool validationParent = false;
   bool isHiddenPassword = true;
   final TextEditingController _controllerTextName = TextEditingController();
   final TextEditingController _controllerTextLastName = TextEditingController();
@@ -119,43 +121,51 @@ class _RegistroFormState extends State<RegistroForm> {
                         );
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'user-not-found') {
-                          //se genera el codigo de referido
-                          Iterable<String> binarys = _email.text.codeUnits.map((int strInt) => strInt.toRadixString(2));
-                          Crc32 hash =  Crc32();
-                          for (var i in binarys) {
-                            hash.add([int.parse(i)]);
+
+                          await getDataCi();
+                          if(validationParent){
+                            //se genera el codigo de referido
+                            Iterable<String> binarys = _email.text.codeUnits.map((int strInt) => strInt.toRadixString(2));
+                            Crc32 hash =  Crc32();
+                            for (var i in binarys) {
+                              hash.add([int.parse(i)]);
+                            }
+
+                            RegisterUser user = RegisterUser(
+                              name: _controllerTextName.text,
+                              lastName: _controllerTextLastName.text,
+                              email: _email.text.replaceAll(" ", ""),
+                              address: _controllerTextAddress.text,
+                              city: _controllerTextCity.text,
+                              referenceCode: _controllerTextReferenceCode.text,
+                              phone: _controllerTextPhone.text.replaceAll(" ", ""),
+                              placa: _controllerTextPlaca.text,
+                              marca: _controllerTextMarca.text,
+                              date: _controllerTextDate!,
+                              password: _controllerTextPassword.text.replaceAll(" ", ""),
+                              documentAntecedentes: null,
+                              genero: sexo!,
+                              code: hash.hash.toString(),
+                              photoPerfil: null,
+                              cedula: null,
+                              cedulaR: null,
+                              bank: null,
+                              numberBank: null,
+                              dateCi: null,
+                              nameComplete: null,
+                              numberCi: null,
+                              typeBank: null,
+                            );
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  //builder: (context) => ProfilePhoto(user)));
+                                    builder: (context) =>  DatosBanco(user)));
+                          }else{
+                            showToast("Debes Ingresar un Código de Socio Válido");
                           }
 
-                          RegisterUser user = RegisterUser(
-                            name: _controllerTextName.text,
-                            lastName: _controllerTextLastName.text,
-                            email: _email.text.replaceAll(" ", ""),
-                            address: _controllerTextAddress.text,
-                            city: _controllerTextCity.text,
-                            referenceCode: _controllerTextReferenceCode.text,
-                            phone: _controllerTextPhone.text.replaceAll(" ", ""),
-                            placa: _controllerTextPlaca.text,
-                            marca: _controllerTextMarca.text,
-                            date: _controllerTextDate!,
-                            password: _controllerTextPassword.text.replaceAll(" ", ""),
-                            documentAntecedentes: null,
-                            genero: sexo!,
-                            code: hash.hash.toString(),
-                            photoPerfil: null,
-                            cedula: null,
-                            cedulaR: null,
-                            bank: null,
-                            numberBank: null,
-                            dateCi: null,
-                            nameComplete: null,
-                            numberCi: null,
-                            typeBank: null,
-                          );
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                //builder: (context) => ProfilePhoto(user)));
-                                  builder: (context) =>  DatosBanco(user)));
+
                         } else if (e.code == 'wrong-password') {
                           showToast("El Email Ya Esta Registrado.\nIntente Iniciar Sesion o \nRecuperar la Contraseña");
                         }
@@ -180,6 +190,32 @@ class _RegistroFormState extends State<RegistroForm> {
       ]),
     );
   }
+
+  Future getDataCi() async {
+    validationParent = false;
+    await FirebaseFirestore.instance
+        .collection("/usersEmprendedor")
+        .where('code', isEqualTo: _controllerTextReferenceCode.text)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+        validationParent = true;
+        return;
+      }
+    });
+
+    await FirebaseFirestore.instance
+        .collection("/users")
+        .where('code', isEqualTo: _controllerTextReferenceCode.text)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+        validationParent = true;
+        return;
+      }
+    });
+  }
+
 
   SizedBox spaceMedium() {
     return SizedBox(

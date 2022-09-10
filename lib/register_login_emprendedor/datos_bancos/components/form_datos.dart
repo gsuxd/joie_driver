@@ -88,7 +88,7 @@ class _BancoFormState extends State<BancoForm> {
   }
 
   Future getDataCi() async {
-
+    validationCedula = true;
     await FirebaseFirestore.instance
         .collection("/usersEmprendedor")
         .where('number_ci', isEqualTo: controllerTextCedula.text)
@@ -98,9 +98,20 @@ class _BancoFormState extends State<BancoForm> {
         validationCedula = false;
         return;
       }
-      validationCedula = true;
-
     });
+
+    await FirebaseFirestore.instance
+        .collection("/users")
+        .where('number_ci', isEqualTo: controllerTextCedula.text)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+        validationCedula = false;
+        return;
+      }
+    });
+
+
   }
 
   SizedBox spaceMedium() {
