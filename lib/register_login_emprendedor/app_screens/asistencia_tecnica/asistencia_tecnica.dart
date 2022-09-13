@@ -34,7 +34,6 @@ class _PedidosState extends State<AsisTecnicaEmprendedor> {
   Future getData() async {
     email = await encryptedSharedPreferences.getString('email');
     email = email.substring(0, email.length-4);
-    print(email);
   }
   String email = "None";
   EncryptedSharedPreferences encryptedSharedPreferences =

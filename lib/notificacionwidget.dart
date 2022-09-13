@@ -1,9 +1,6 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
-
 import 'colors.dart';
 import 'listamensajes.dart';
 
@@ -12,7 +9,7 @@ class NotificacionWidget extends StatelessWidget {
   final DateTime fecha;
   final String usuario;
 
-  NotificacionWidget(this.id_chat,this.fecha, this.usuario);
+  NotificacionWidget(this.id_chat,this.fecha, this.usuario, {Key? key}) : super(key: key);
   Color caja = blue;
 
   @override
@@ -38,17 +35,17 @@ class NotificacionWidget extends StatelessWidget {
                            width: 16,
                            color: Colors.blue,
                          ),
-                         Text("Asistencia Tecnica", style: TextStyle(color: blue, fontFamily: "Monserrat", ),)
+                         const Text("Asistencia Tecnica", style: TextStyle(color: blue, fontFamily: "Monserrat", ),)
                        ],
                      ),
                       Container(width: MediaQuery.of(context).size.width - 310,),
                       Row(
                         children: [
-                          Text(DateFormat('kk:mm  dd/MM/yyyy').format(fecha).toString(), style: TextStyle(color: Colors.grey, fontFamily: "Monserrat", ),),
+                          Text(DateFormat('kk:mm  dd/MM/yyyy').format(fecha).toString(), style: const TextStyle(color: Colors.grey, fontFamily: "Monserrat", ),),
                           Container(width: 5,),
                           GestureDetector(
                             onTap: (){},
-                            child: Icon(Icons.cancel_sharp, color: Colors.red,),
+                            child: const Icon(Icons.cancel_sharp, color: Colors.red,),
                           ),
                           Container(width: 5,),
                         ],
@@ -62,7 +59,7 @@ class NotificacionWidget extends StatelessWidget {
                     children: [
                       Container(width: 15,),
 
-                      Text("Reporte en tramite", style: TextStyle(color: Colors.black87, fontFamily: "Monserrat", ),)
+                      const Text("Reporte en tramite", style: TextStyle(color: Colors.black87, fontFamily: "Monserrat", ),)
                     ],
                   ),
 
@@ -73,7 +70,7 @@ class NotificacionWidget extends StatelessWidget {
                         children: [
                           Container(width: 15,),
 
-                          Text("Hemos revisado su reporte", style: TextStyle(color: Colors.black54, fontFamily: "Monserrat", ),)
+                          const Text("Hemos revisado su reporte", style: TextStyle(color: Colors.black54, fontFamily: "Monserrat", ),)
                         ],
                       ),
                       Container(width: MediaQuery.of(context).size.width - 240,),
@@ -86,7 +83,7 @@ class NotificacionWidget extends StatelessWidget {
                                   MaterialPageRoute(
                                       builder: (context) => ListaMensajes( id_chat, usuario)));
                             },
-                            child:Text("Ver", style: TextStyle(color: blue, fontFamily: "Monserrat", ),),
+                            child:const Text("Ver", style: TextStyle(color: blue, fontFamily: "Monserrat", ),),
                           ),
                           Container(width: 5,),
 
@@ -100,7 +97,7 @@ class NotificacionWidget extends StatelessWidget {
                     height: 2,
                     width: MediaQuery.of(context).size.width,
                     color: Colors.black87,
-                    margin: EdgeInsets.only(top: 5, bottom: 5.0),
+                    margin: const EdgeInsets.only(top: 5, bottom: 5.0),
                   )
                 ]
             ),

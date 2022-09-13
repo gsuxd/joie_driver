@@ -21,8 +21,8 @@ class ListaNotificacionesUsuario extends StatefulWidget {
 class ListaNotificacionesUsuarioState
     extends State<ListaNotificacionesUsuario> {
   String usuario = "UsuarioPrueba";
-  ScrollController _scrollController = ScrollController();
-  TextEditingController _mensajeController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  final TextEditingController _mensajeController = TextEditingController();
   Color color_icon_inicio = blue;
   Color color_icon_historial = blue;
   Color color_icon_perfil = blue;
