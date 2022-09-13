@@ -1,10 +1,15 @@
-//Importamos las librerias necesarias
+import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
 import '../../../colors.dart';
+import '../../../components/button_cancel.dart';
 import '../../../components/default_button.dart';
 import '../../../register_login_emprendedor/conts.dart';
 import '../appbar.dart';
+import 'package:joiedriver/reporte.dart';
+import 'package:joiedriver/reporte_dao.dart';
+
+import '../ganancias/ganancias.dart';
 
 
 //Creamos la clase AsisTec
@@ -17,10 +22,25 @@ class AsisTecnicaEmprendedor extends StatefulWidget {
 }
 
 class _PedidosState extends State<AsisTecnicaEmprendedor> {
-  Color colorIconIngresos = blueDark;
-  String state = "Asistencia";
+
+  @override
+  void initState()  {
+    // TODO: implement initState
+    super.initState();
+     getData();
+
+  }
+
+  Future getData() async {
+    email = await encryptedSharedPreferences.getString('email');
+    email = email.substring(0, email.length-4);
+    print(email);
+  }
+  String email = "None";
+  EncryptedSharedPreferences encryptedSharedPreferences =
+  EncryptedSharedPreferences();
   final TextEditingController _controllerText = TextEditingController();
-  int solicitudPedido = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,6 +69,7 @@ class _PedidosState extends State<AsisTecnicaEmprendedor> {
                 children: [
                     //width: MediaQuery.of(context).size.width - 40,
                     TextFormField(
+                      controller: _controllerText,
                       maxLines: 5,
                       scrollPhysics: const ScrollPhysics(),
                       style:  textStyleGreyName(),
@@ -61,6 +82,54 @@ class _PedidosState extends State<AsisTecnicaEmprendedor> {
                     child: ButtonDef(
                         text: "enviar",
                         press: () {
+                          if(_controllerText.text.isEmpty){
+                            showToast("La Descripción esa Vacía");
+                          }else{
+
+                            showDialog<String>(
+
+                                context: context,
+                                builder: (BuildContext context) => AlertDialog(
+                                    title: const Text('¿Seguro que desea Enviar una Solicitud?'),
+
+                                    content: SizedBox(
+                                      width: 200.0,
+                                      height: 200.0,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          const SizedBox(height: 20,),
+                                          ButtonDef(text: "Enviar",
+                                          press: (){
+                                            final _reporte = Reporte(
+                                              email,
+                                              "Emprendedor",
+                                              "Asistencia Ténica",
+                                              _controllerText.text,
+                                              DateTime.now(),
+                                            );
+                                            ReporteDao reporteDao = ReporteDao();
+                                            reporteDao.guardarReporteEmprendedor(_reporte, email);
+                                            _controllerText.clear();
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => const Ganancias()));
+                                          },
+                                          ),
+                                          const SizedBox(height: 10,),
+                                          ButtonDefCancel(
+                                            text: "Cancelar",
+                                            press: (){
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                          const SizedBox(height: 20,),
+                                        ],
+                                      ),
+                                    )));
+                          }
 
                         }),
                   ),

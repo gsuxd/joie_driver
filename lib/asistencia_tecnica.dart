@@ -4,7 +4,6 @@ import 'package:joiedriver/reporte.dart';
 import 'package:joiedriver/reporte_dao.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
-
 import 'colors.dart';
 import 'main.dart';
 import 'mapa_principal_usuario.dart';
