@@ -21,7 +21,24 @@ class _Body extends ConsumerState<AuthBiometric> {
   @override
   void initState()  {
     super.initState();
-    huellaAuth();
+    //huellaAuth();
+    irAprincipal();
+  }
+
+  Future<void> irAprincipal() async {
+    String typeUser = await encryptedSharedPreferences.getString('typeuser');
+    String codeLogin = await encryptedSharedPreferences.getString('code');
+    if(typeUser == "emprendedor"){
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>  const Ganancias()));
+    }else{
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>   HomeScreen(codeLogin)));
+    }
   }
 
   Future huellaAuth() async{
@@ -87,11 +104,11 @@ class _Body extends ConsumerState<AuthBiometric> {
     return Consumer(
         builder: (context, ref, child) {
           CodeNotifyE  code = ref.watch(codeProviderE);
-          return    Scaffold(
+          return    const Scaffold(
             body: Center(
-              child: IconButton(
-                  onPressed: huellaAuth,
-                  icon: const Icon(Icons.fingerprint_rounded), color: jBase, iconSize: 56,),
+              // child: IconButton(
+              //     onPressed: huellaAuth,
+              //     icon: const Icon(Icons.fingerprint_rounded), color: jBase, iconSize: 56,),
             ),
           );
         }

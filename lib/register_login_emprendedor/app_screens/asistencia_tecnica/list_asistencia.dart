@@ -1,11 +1,13 @@
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import "package:flutter/material.dart";
+import '../../../colors.dart';
 import '../../../notificacion_usuario.dart';
 import '../../../notificaciones_usuario_dao.dart';
 import '../../../notificacionwidget.dart';
 import '../../../register_login_emprendedor/conts.dart';
 import '../appbar.dart';
+import 'asistencia_tecnica.dart';
 
 
 //Creamos la clase AsisTec
@@ -23,11 +25,9 @@ class _List extends State<ListAsisTecnicaEmprendedor> {
   void initState()  {
     // TODO: implement initState
     super.initState();
-    getData();
-
   }
 
-  Future getData() async {
+  Future<bool> getData() async {
     email = await encryptedSharedPreferences.getString('email');
     email = email.substring(0, email.length-4);
     return true;
@@ -43,14 +43,81 @@ class _List extends State<ListAsisTecnicaEmprendedor> {
     WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollHaciaAbajo());
     return Scaffold(
       appBar: appBarEmprendedor(
-          accion: [], leading: back(context), title: 'Solicitudes'),
+          accion: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  primary: jBase,
+                  elevation: 0
+              ),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>  const AsisTecnicaEmprendedor()
+                    ));
+              },
+              child: const Icon(Icons.add_circle_outline, size: 30,),
+            ),
+          ], leading: back(context), title: 'Solicitudes'),
       backgroundColor: Colors.white,
-      body: Padding(
-          padding: const EdgeInsets.only(
-              top: 10.0, bottom: 10.0, left: 0.0, right: 0.0),
-          child: Column(children: [
-            _getListaMensajes(),
-          ])),
+      body:  FutureBuilder<bool?>(
+        future: getData(),
+        builder: (BuildContext context,
+            AsyncSnapshot<bool?> snapshot) {
+          if (snapshot.hasError) {
+            return Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: const BoxDecoration(
+                    color: Colors.redAccent,
+                  ),
+                  child: Center(
+                      child: Text("Verifica tu Conexión",
+                          style: textStyleBlack())),
+                )
+              ],
+            );
+          }
+
+          if (snapshot.hasData && snapshot.data == null) {
+            return Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: const BoxDecoration(
+                    color: Colors.redAccent,
+                  ),
+                  child: Center(
+                      child: Text(
+                          "Error al obtener los datos",
+                          style: textStyleBlack())),
+                )
+              ],
+            );
+          }
+
+          if (snapshot.connectionState ==
+              ConnectionState.done) {
+            //lo que se muestra cuando la carga se completa
+            return Padding(
+                padding: const EdgeInsets.only(
+                    top: 10.0, bottom: 10.0, left: 0.0, right: 0.0),
+                child: Column(children: [
+                  _getListaMensajes(),
+                ]));
+          }
+
+          //lo que se muestra mientras carga
+          return const SizedBox(
+            height: 170,
+            width: 170,
+            child: CircularProgressIndicator(    ),
+          );
+        },
+      ),
     );
   }
 

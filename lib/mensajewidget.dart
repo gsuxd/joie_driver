@@ -15,8 +15,8 @@ class MensajeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (usuario != "UsuarioPrueba") {
-      caja = Colors.blueGrey;
+    if (usuario == "asistente") {
+      caja = Colors.blueGrey.shade300;
       alineacion = CrossAxisAlignment.start;
       return sms2();
     } else {

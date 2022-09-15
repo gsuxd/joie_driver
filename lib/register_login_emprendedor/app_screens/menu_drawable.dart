@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:joiedriver/register_login_emprendedor/app_screens/perfil/perfil_emprendedor.dart';
-import 'package:joiedriver/register_login_emprendedor/app_screens/test_login.dart';
 import '../../colors.dart';
 import '../../main.dart';
-import 'asistencia_tecnica/asistencia_tecnica.dart';
 import 'asistencia_tecnica/list_asistencia.dart';
 import 'banco/bancos_data.dart';
 import 'change_password/change_password.dart';

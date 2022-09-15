@@ -1,6 +1,7 @@
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
+import 'package:joiedriver/register_login_emprendedor/app_screens/asistencia_tecnica/list_asistencia.dart';
 import '../../../colors.dart';
 import '../../../components/button_cancel.dart';
 import '../../../components/default_button.dart';
@@ -44,7 +45,16 @@ class _PedidosState extends State<AsisTecnicaEmprendedor> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBarEmprendedor(
-          accion: [], leading: back(context), title: 'Asistencia Técnica'),
+          accion: [], leading: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            primary: jBase,
+            elevation: 0
+        ),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: const Icon(Icons.arrow_back_ios, size: 30,),
+      ), title: 'Asistencia Técnica'),
       backgroundColor: Colors.white,
       body:
         ListView(
@@ -114,7 +124,7 @@ class _PedidosState extends State<AsisTecnicaEmprendedor> {
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                    builder: (context) => const Ganancias()));
+                                                    builder: (context) => const ListAsisTecnicaEmprendedor()));
                                           },
                                           ),
                                           const SizedBox(height: 10,),
