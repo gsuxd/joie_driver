@@ -21,20 +21,18 @@ class CarreraEnCursoBloc
       Emitter<CarreraEnCursoState> emit) async {
     emit(CarreraEnCursoLoading());
     context = event.context;
-    await for (var e in context.read<UserBloc>().userSnapshot.snapshots()) {
-      final carreras =
-          (e.get('carrerasCercanas') as List).map((e) => Carrera.fromJson(e));
-      for (var carrera in carreras) {
-        if (carrera.pasajeroId ==
-            (context.read<UserBloc>().state as UserLogged).user.email) {
+    await for (var e in event.carreraRef.snapshots()) {
+      final carrera = Carrera.fromJson(e.data());
+      if (carrera.pasajeroId ==
+          (context.read<UserBloc>().state as UserLogged).user.email) {
+        continue;
+      } else if (carrera.choferId ==
+          (context.read<UserBloc>().state as UserLogged).user.email) {
+        if (carrera.cancelada) {
+          emit(CarreraEnCursoCancelada(carrera));
           break;
-        } else if (carrera.choferId ==
-            (context.read<UserBloc>().state as UserLogged).user.email) {
-          if (carrera.cancelada) {
-            emit(CarreraEnCursoCancelada(carrera));
-            break;
-          }
         }
+        emit(CarreraEnCursoChofer(carreraRef: e.reference, carrera: carrera));
       }
     }
   }

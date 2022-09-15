@@ -47,10 +47,10 @@ class CancelarCarreraEvent extends CarreraEvent {
 }
 
 class OfertarCarreraEvent extends CarreraEvent {
-  final String pasajeroId;
+  final DocumentReference<Map<String, dynamic>> carreraRef;
   final String? precioOferta;
-  const OfertarCarreraEvent(this.pasajeroId, this.precioOferta);
+  const OfertarCarreraEvent(this.carreraRef, this.precioOferta);
 
   @override
-  List<Object> get props => [pasajeroId];
+  List<Object> get props => [carreraRef.id];
 }

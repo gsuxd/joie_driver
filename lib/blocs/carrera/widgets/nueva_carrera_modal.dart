@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -13,6 +14,7 @@ class NuevaCarreraModal extends StatefulWidget {
   const NuevaCarreraModal(
       {Key? key,
       required this.carrera,
+      required this.carreraRef,
       required this.distance,
       required this.polypoints,
       required this.location,
@@ -23,6 +25,7 @@ class NuevaCarreraModal extends StatefulWidget {
       : super(key: key);
 
   final Carrera carrera;
+  final DocumentReference<Map<String, dynamic>> carreraRef;
   final double distance;
   final PolylineResult polypoints;
   final LatLng location;
@@ -218,7 +221,7 @@ class _NuevaCarreraModalState extends State<NuevaCarreraModal> {
               InkWell(
                 onTap: () {
                   context.read<CarreraBloc>().add(OfertarCarreraEvent(
-                      widget.carrera.pasajeroId, _pricesList[selectedIndex]));
+                      widget.carreraRef, _pricesList[selectedIndex]));
                 },
                 child: Container(
                   padding:

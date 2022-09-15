@@ -54,12 +54,8 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
       OfertarCarreraEvent event, Emitter<CarreraState> emit) async {
     emit(CarreraLoading());
     final user = (context.read<UserBloc>().state as UserLogged).user;
-    final carrera = await FirebaseFirestore.instance
-        .collection('carreras')
-        .where('pasajeroId', isEqualTo: event.pasajeroId)
-        .get();
     try {
-      await carrera.docs.last.reference.update({
+      await event.carreraRef.update({
         'ofertas': FieldValue.arrayUnion([
           Oferta(
                   chofer: user.name,
@@ -71,7 +67,7 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
         ])
       });
       Navigator.of(context).pop();
-      carrera.docs.last.reference.snapshots().listen(_handleSnapshotOferta);
+      event.carreraRef.snapshots().listen(_handleSnapshotOferta);
     } catch (e) {
       print(e);
     }
@@ -79,9 +75,9 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
   }
 
   void _handleSnapshotOferta(DocumentSnapshot<Map<String, dynamic>> e) {
-    final _ = Carrera.fromJson(e.data());
-    if (_.aceptada &&
-        _.choferId ==
+    final carrera = Carrera.fromJson(e.data());
+    if (carrera.aceptada &&
+        carrera.choferId ==
             (context.read<UserBloc>().state as UserLogged).user.email) {
       Navigator.of(context).push(
         MaterialPageRoute(
@@ -89,6 +85,7 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
             create: (_) => CarreraEnCursoBloc(),
             child: CarreraEnCursoPage(
               carreraRef: e.reference,
+              carrera: carrera,
             ),
           ),
         ),
@@ -122,7 +119,8 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
     return result;
   }
 
-  void _showModal(Carrera carrera) async {
+  void _showModal(Carrera carrera,
+      DocumentReference<Map<String, dynamic>> carreraRef) async {
     final polypoints = await getPolyPoints(carrera.inicio, carrera.destino);
     final distance = calculateDistance(carrera.inicio, carrera.destino);
     final location =
@@ -154,6 +152,7 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
       MaterialPageRoute(
         builder: (_) => NuevaCarreraModal(
           carrera: carrera,
+          carreraRef: carreraRef,
           distance: distance,
           choferIcon: choferIcon,
           iconPasajero: NetworkImage(iconPasajero),
@@ -189,7 +188,7 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
           return;
         }
         _carrerasCercanasCount = carreras.length;
-        _showModal(x);
+        _showModal(x, carreras.last.reference);
       }
     }
   }
