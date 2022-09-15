@@ -8,12 +8,12 @@ abstract class CarreraEnCursoEvent extends Equatable {
 }
 
 class CargarCarreraEnCursoEvent extends CarreraEnCursoEvent {
-  final String idPasajero;
+  final DocumentReference<Map<String, dynamic>> carreraRef;
   final BuildContext context;
-  const CargarCarreraEnCursoEvent(this.idPasajero, this.context);
+  const CargarCarreraEnCursoEvent(this.carreraRef, this.context);
 
   @override
-  List<Object> get props => [idPasajero];
+  List<Object> get props => [carreraRef.id];
 }
 
 class CancelarCarreraEnCursoEvent extends CarreraEnCursoEvent {

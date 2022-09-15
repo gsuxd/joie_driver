@@ -248,9 +248,7 @@ class _SelectPagoScreenState extends State<SelectPagoScreen> {
                             fecha: DateTime.now());
                         context
                             .read<CarreraBloc>()
-                            .add(NuevaCarreraEvent(carrera));
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => const WaitingScreen()));
+                            .add(NuevaCarreraEvent(carrera, context));
                       },
                       child: Container(
                         decoration: BoxDecoration(

@@ -18,20 +18,23 @@ class ListenCarrerasEvent extends CarreraEvent {
 
 class NuevaCarreraEvent extends CarreraEvent {
   final Carrera carrera;
+  final BuildContext context;
 
-  const NuevaCarreraEvent(this.carrera);
+  const NuevaCarreraEvent(this.carrera, this.context);
 
   @override
   List<Object> get props => [carrera.inicio];
 }
 
-class AceptarCarreraEvent extends CarreraEvent {
-  final String carreraId;
+class AceptarOfertaEvent extends CarreraEvent {
+  final DocumentReference<Map<String, dynamic>> carreraRef;
+  final String choferId;
+  final BuildContext context;
 
-  const AceptarCarreraEvent(this.carreraId);
+  const AceptarOfertaEvent(this.carreraRef, this.choferId, this.context);
 
   @override
-  List<Object> get props => [carreraId];
+  List<Object> get props => [carreraRef.id];
 }
 
 class CancelarCarreraEvent extends CarreraEvent {
@@ -50,13 +53,4 @@ class OfertarCarreraEvent extends CarreraEvent {
 
   @override
   List<Object> get props => [pasajeroId];
-}
-
-class ComenzarCarreraEvent extends CarreraEvent {
-  final String carreraId;
-
-  const ComenzarCarreraEvent(this.carreraId);
-
-  @override
-  List<Object> get props => [carreraId];
 }

@@ -2,14 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:joiedriver/blocs/carrera/carrera_model.dart';
 import 'package:joiedriver/blocs/position/position_bloc.dart';
 
-import '../blocs/carrera/carrera_model.dart';
-
 class CarreraEnCursoPagePasajero extends StatefulWidget {
-  const CarreraEnCursoPagePasajero({Key? key, required this.choferId})
+  const CarreraEnCursoPagePasajero({Key? key, required this.carreraRef})
       : super(key: key);
-  final String choferId;
+  final DocumentReference<Map<String, dynamic>> carreraRef;
 
   @override
   State<CarreraEnCursoPagePasajero> createState() =>
@@ -20,13 +19,14 @@ class _CarreraEnCursoPagePasajeroState
     extends State<CarreraEnCursoPagePasajero> {
   // ignore: prefer_final_fields
   bool _isLoading = true;
-  late Marker _chofer;
+  Marker? _chofer;
   void _load(BuildContext context) async {
     setState(() {
       _isLoading = true;
     });
+    final _ = Carrera.fromJson((await widget.carreraRef.get()).data()!);
     final chofer =
-        FirebaseFirestore.instance.doc('users/${widget.choferId}').snapshots();
+        FirebaseFirestore.instance.doc('users/${_.choferId}').snapshots();
     await for (var e in chofer) {
       setState(() async {
         if (!_isLoading) {
@@ -56,7 +56,6 @@ class _CarreraEnCursoPagePasajeroState
         child: Column(
           children: [
             const Text('Carrera en curso'),
-            Text('Chofer: ${widget.choferId}'),
             if (_isLoading && _chofer != null)
               GoogleMap(
                 initialCameraPosition: CameraPosition(
@@ -69,7 +68,9 @@ class _CarreraEnCursoPagePasajeroState
                           .longitude!),
                   zoom: 15,
                 ),
-                markers: {_chofer},
+                markers: {
+                  _chofer!,
+                },
               ),
           ],
         ),

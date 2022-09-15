@@ -1,13 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:joiedriver/blocs/carrera/carrera_model.dart';
 
 import 'bloc/carrera_en_curso_bloc.dart';
 
 class CarreraEnCursoPage extends StatefulWidget {
-  const CarreraEnCursoPage({Key? key, required this.carrera}) : super(key: key);
+  const CarreraEnCursoPage({Key? key, required this.carreraRef})
+      : super(key: key);
 
-  final Carrera carrera;
+  final DocumentReference<Map<String, dynamic>> carreraRef;
 
   @override
   State<CarreraEnCursoPage> createState() => _CarreraEnCursoPageState();
@@ -18,7 +19,7 @@ class _CarreraEnCursoPageState extends State<CarreraEnCursoPage> {
   void initState() {
     context
         .read<CarreraEnCursoBloc>()
-        .add(CargarCarreraEnCursoEvent(widget.carrera.pasajeroId, context));
+        .add(CargarCarreraEnCursoEvent(widget.carreraRef, context));
     super.initState();
   }
 

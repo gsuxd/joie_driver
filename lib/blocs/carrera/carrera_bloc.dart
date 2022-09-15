@@ -9,8 +9,11 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:joiedriver/blocs/position/position_bloc.dart';
 import 'package:joiedriver/blocs/user/user_bloc.dart';
+import 'package:joiedriver/carrera_en_curso/bloc/carrera_en_curso_bloc.dart';
 import 'package:joiedriver/carrera_en_curso/carrera_en_curso_chofer.dart';
+import 'package:joiedriver/carrera_en_curso/carrera_en_curso_pasajero.dart';
 import 'package:joiedriver/helpers/calculate_distance.dart';
+import 'package:joiedriver/solicitar_carrera/pages/waiting_screen.dart';
 
 import 'carrera_model.dart';
 import 'widgets/nueva_carrera_modal.dart';
@@ -23,9 +26,29 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
     on<ListenCarrerasEvent>(_handleListen);
     on<NuevaCarreraEvent>(_handleNuevaCarrera);
     on<OfertarCarreraEvent>(_handleOfertarCarrera);
+    on<AceptarOfertaEvent>(_handleAceptarOferta);
   }
 
   late BuildContext context;
+
+  void _handleAceptarOferta(
+      AceptarOfertaEvent event, Emitter<CarreraState> emit) async {
+    emit(CarreraLoading());
+    await event.carreraRef
+        .update({'choferId': event.choferId, 'aceptada': true});
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(event.choferId)
+        .update({
+      'active': false,
+    });
+    emit(CarreraEnCurso());
+
+    Navigator.of(event.context).push(MaterialPageRoute(
+        builder: (context) => CarreraEnCursoPagePasajero(
+              carreraRef: event.carreraRef,
+            )));
+  }
 
   void _handleOfertarCarrera(
       OfertarCarreraEvent event, Emitter<CarreraState> emit) async {
@@ -35,26 +58,55 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
         .collection('carreras')
         .where('pasajeroId', isEqualTo: event.pasajeroId)
         .get();
-    carrera.docs.last.reference.update({
-      'ofertas': FieldValue.arrayUnion([
-        Oferta(
-            chofer: user.name,
-            thumb: user.profilePicture,
-            choferId: user.email,
-            calificacion: 4,
-            precio: event.precioOferta!)
-      ])
-    });
+    try {
+      await carrera.docs.last.reference.update({
+        'ofertas': FieldValue.arrayUnion([
+          Oferta(
+                  chofer: user.name,
+                  thumb: user.profilePicture,
+                  choferId: user.email,
+                  calificacion: 4,
+                  precio: event.precioOferta!)
+              .toJson()
+        ])
+      });
+      Navigator.of(context).pop();
+      carrera.docs.last.reference.snapshots().listen(_handleSnapshotOferta);
+    } catch (e) {
+      print(e);
+    }
     emit(CarreraInitial());
+  }
+
+  void _handleSnapshotOferta(DocumentSnapshot<Map<String, dynamic>> e) {
+    final _ = Carrera.fromJson(e.data());
+    if (_.aceptada &&
+        _.choferId ==
+            (context.read<UserBloc>().state as UserLogged).user.email) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => CarreraEnCursoBloc(),
+            child: CarreraEnCursoPage(
+              carreraRef: e.reference,
+            ),
+          ),
+        ),
+      );
+    }
   }
 
   void _handleNuevaCarrera(
       NuevaCarreraEvent event, Emitter<CarreraState> emit) async {
+    emit(CarreraLoading());
     final Carrera carrera = event.carrera;
-    await FirebaseFirestore.instance
+    final context = event.context;
+    final ref = await FirebaseFirestore.instance
         .collection('carreras')
         .add(carrera.toJson());
     emit(CarreraEnEspera(carrera));
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => WaitingScreen(carreraRef: ref)));
   }
 
   int _carrerasCercanasCount = 0;
@@ -134,12 +186,6 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
           return;
         }
         if (x.aceptada) {
-          if (x.choferId == FirebaseAuth.instance.currentUser!.email) {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => CarreraEnCursoPage(
-                      carrera: x,
-                    )));
-          }
           return;
         }
         _carrerasCercanasCount = carreras.length;
