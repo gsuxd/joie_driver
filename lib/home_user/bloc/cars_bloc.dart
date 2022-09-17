@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
@@ -23,11 +21,15 @@ class CarsBloc extends Bloc<CarsEvent, CarsState> {
         .where("active", isEqualTo: true)
         .get();
     if (docs.docs.isEmpty) {
-      emit(const CarsLoaded(<Marker>[]));
+      emit(
+        const CarsLoaded(<Marker>[]),
+      );
       return;
     }
     for (var element in docs.docs) {
-      futures.add(element.reference.snapshots());
+      futures.add(
+        element.reference.snapshots(),
+      );
     }
     final List<Marker> cars = [];
     for (var element in futures) {
@@ -41,17 +43,22 @@ class CarsBloc extends Bloc<CarsEvent, CarsState> {
             LatLng(
                 data!["location"]["latitude"], data["location"]["longitude"]));
         if (distance > 60) {
-          emit(CarsLoaded(cars));
+          emit(
+            CarsLoaded(cars),
+          );
           continue;
         }
         cars.add(
           Marker(
-              markerId: MarkerId(x.id),
-              icon: await BitmapDescriptor.fromAssetImage(
-                  const ImageConfiguration(size: Size(12, 12)),
-                  "assets/images/coches-en-el-mapa.png"),
-              position: LatLng(
-                  data["location"]["latitude"], data["location"]["longitude"])),
+            markerId: MarkerId(x.id),
+            icon: await BitmapDescriptor.fromAssetImage(
+                const ImageConfiguration(size: Size(12, 12)),
+                "assets/images/coches-en-el-mapa.png"),
+            position: LatLng(
+              data["location"]["latitude"],
+              data["location"]["longitude"],
+            ),
+          ),
         );
         emit(CarsLoaded(cars));
       }

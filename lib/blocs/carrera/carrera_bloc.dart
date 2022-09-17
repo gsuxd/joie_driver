@@ -42,12 +42,14 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
         .update({
       'active': false,
     });
-    emit(CarreraEnCurso());
-
-    Navigator.of(event.context).push(MaterialPageRoute(
-        builder: (context) => CarreraEnCursoPagePasajero(
-              carreraRef: event.carreraRef,
-            )));
+    emit(
+      CarreraEnCurso(
+        event.carreraRef,
+        Carrera.fromJson(
+          (await event.carreraRef.get()).data(),
+        ),
+      ),
+    );
   }
 
   void _handleOfertarCarrera(
@@ -167,7 +169,7 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
 
   void _handleSnapshot(QuerySnapshot<Map<String, dynamic>> val) {
     final carreras = val.docs;
-    if (carreras.length != _carrerasCercanasCount) {
+    if (carreras.isNotEmpty && carreras.length != _carrerasCercanasCount) {
       final x = Carrera.fromJson(carreras.last);
       final distance = calculateDistance(
           x.inicio,

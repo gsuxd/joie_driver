@@ -11,7 +11,6 @@ import '../../../components/default_button.dart';
 import '../../../components/error_form.dart';
 import 'package:date_field/date_field.dart';
 
-
 class RegistroForm extends StatefulWidget {
   const RegistroForm({Key? key}) : super(key: key);
 
@@ -25,7 +24,6 @@ class _RegistroFormState extends State<RegistroForm> {
   TextEditingController _controllerTextPassword = TextEditingController();
   TextEditingController _controllerTextPhone = TextEditingController();
   TextEditingController _controllerTextAddress = TextEditingController();
-
 
   String? _controllerTextDate;
   String? sexo;
@@ -80,72 +78,78 @@ class _RegistroFormState extends State<RegistroForm> {
         ButtonDef(
             text: 'Continuar',
             press: () async {
-              _controllerTextPassword.text = _controllerTextPassword.text.replaceAll(" ", "");
+              _controllerTextPassword.text =
+                  _controllerTextPassword.text.replaceAll(" ", "");
               _email.text = _email.text.replaceAll(" ", "");
-              if (_formKey.currentState!.validate() && errors.length < 1  ) {
+              if (_formKey.currentState!.validate() && errors.length < 1) {
                 //escribir datos a sincronizar
 
-              if( sexo != null && _controllerTextDate != null){
+                if (sexo != null && _controllerTextDate != null) {
+                  try {
+                    var result = await InternetAddress.lookup('google.com');
+                    if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                      print('connected');
+                      try {
+                        UserCredential userCredential = await FirebaseAuth
+                            .instance
+                            .signInWithEmailAndPassword(
+                                email: _email.text.toString(),
+                                password: "SuperSecretPassword!7770#");
+                      } on FirebaseAuthException catch (e) {
+                        if (e.code == 'user-not-found') {
+                          print('El usuario no esta registrado');
 
-                try {
-                  var result = await  InternetAddress.lookup('google.com');
-                  if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-                    print('connected');
-                    try {
-                      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: _email.text.toString(),
-                          password: "SuperSecretPassword!7770#"
-                      );
-                    } on FirebaseAuthException catch (e) {
-                      if (e.code == 'user-not-found') {
-                        print('El usuario no esta registrado');
+                          //se genera el codigo de referido
+                          Iterable<String> binarys = _email.text.codeUnits
+                              .map((int strInt) => strInt.toRadixString(2));
+                          Crc32 hash = new Crc32();
+                          for (var i in binarys) {
+                            hash.add([int.parse(i)]);
+                          }
 
+                          print(hash.hash);
 
-                        //se genera el codigo de referido
-                        Iterable<String> binarys = _email.text.codeUnits.map((int strInt) => strInt.toRadixString(2));
-                        Crc32 hash = new Crc32();
-                        for (var i in binarys) {
-                          hash.add([int.parse(i)]);
-                        }
-
-                        print(hash.hash);
-
-                        RegisterUser user = RegisterUser(
+                          RegisterUser user = RegisterUser(
                             name: _controllerTextName.text,
                             lastName: _controllerTextLastName.text,
                             email: _email.text.replaceAll(" ", ""),
                             address: _controllerTextAddress.text,
-                            phone: _controllerTextPhone.text.replaceAll(" ", ""),
+                            phone:
+                                _controllerTextPhone.text.replaceAll(" ", ""),
                             date: _controllerTextDate!,
-                            password: _controllerTextPassword.text.replaceAll(" ", ""),
+                            password: _controllerTextPassword.text
+                                .replaceAll(" ", ""),
                             documentId: null,
                             photoPerfil: null,
                             documentAntecedentes: null,
                             genero: sexo!,
                             code: hash.hash.toString(),
                             cedulaR: null,
-                        );
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ProfilePhoto(user)));
-                      } else if (e.code == 'wrong-password') {
-                        print('El usuario ya esta Registrado');
-                        showToast("El Email Ya Esta Registrado.\nIntente Iniciar Sesion o \nRecuperar la Contraseña");
+                          );
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ProfilePhoto(user)));
+                        } else if (e.code == 'wrong-password') {
+                          print('El usuario ya esta Registrado');
+                          showToast(
+                              "El Email Ya Esta Registrado.\nIntente Iniciar Sesion o \nRecuperar la Contraseña");
+                        } else {
+                          print(e);
+                        }
                       }
                     }
+                  } on SocketException catch (e) {
+                    print('not connected');
+                    showToast("Debes tener acceso a internet para registrarte");
                   }
-                } on SocketException catch (e) { 
-                  print('not connected');
-                  showToast("Debes tener acceso a internet para registrarte");
+                } else {
+                  if (sexo == null) {
+                    showToast("Por favor Ingrese su Genero");
+                  } else if (_controllerTextDate == null) {
+                    showToast("Por favor Ingrese su fecha de nacimiento");
+                  }
                 }
-              }else{
-                if(sexo == null){
-                 showToast("Por favor Ingrese su Genero");
-                }else if(_controllerTextDate == null){
-                  showToast( "Por favor Ingrese su fecha de nacimiento");
-                }
-              }
                 //Navigator.pushNamed(context, CompleteProfile.routeName);
               }
             })
@@ -155,14 +159,14 @@ class _RegistroFormState extends State<RegistroForm> {
 
   SizedBox spaceMedium() {
     return SizedBox(
-        height: getPropertieScreenHeight(30),
-      );
+      height: getPropertieScreenHeight(30),
+    );
   }
 
   SizedBox space() {
     return SizedBox(
-        height: getPropertieScreenHeight(15),
-      );
+      height: getPropertieScreenHeight(15),
+    );
   }
 
 //Métodos de Confirmación y validación de cada forma
@@ -209,7 +213,7 @@ class _RegistroFormState extends State<RegistroForm> {
   TextFormField nombreFormField() {
     return TextFormField(
       textInputAction: TextInputAction.next,
-      controller:_controllerTextName ,
+      controller: _controllerTextName,
       onSaved: (newValue) => firstName = newValue,
       onChanged: (value) {
         if (value.isNotEmpty && errors.contains(nameNull)) {
@@ -293,15 +297,11 @@ class _RegistroFormState extends State<RegistroForm> {
       onChanged: (value) {
         if (value.isNotEmpty && errors.contains(emailNull)) {
           removeError(error: emailNull);
-          setState(() {
-
-          });
+          setState(() {});
         } else if (emailValidator.hasMatch(value) &&
             errors.contains(emailError)) {
           removeError(error: emailError);
-          setState(() {
-
-          });
+          setState(() {});
         }
         return;
       },
@@ -439,7 +439,6 @@ class _RegistroFormState extends State<RegistroForm> {
 
   TextFormField nickNameFormField() {
     return TextFormField(
-
       onSaved: (newValue) => nickName = newValue,
       // onChanged: (value) {
       //   if (value.isNotEmpty && errors.contains(nickNameError)) {
@@ -480,12 +479,13 @@ class _RegistroFormState extends State<RegistroForm> {
       width: double.infinity,
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        //border: Border.all(color: jBase),
-        //borderRadius: BorderRadius.circular(40),
-      ),
+          //border: Border.all(color: jBase),
+          //borderRadius: BorderRadius.circular(40),
+          ),
       child: DropdownButton(
         items: generoList.map((String gender) {
-          return DropdownMenuItem(value: gender, child: Row(children: [Text(gender)]));
+          return DropdownMenuItem(
+              value: gender, child: Row(children: [Text(gender)]));
         }).toList(),
         onChanged: (value) {
           setState(() {
@@ -493,20 +493,17 @@ class _RegistroFormState extends State<RegistroForm> {
             sexo = value.toString();
           });
         },
-        hint:
-
-        Container(
-          width: MediaQuery.of(context).size.width-54,
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(vista),
-                SvgPicture.asset(
-                  genero,
-                  width: 15,
-                  color: Colors.grey,
-                ),
-              ]),
+        hint: Container(
+          width: MediaQuery.of(context).size.width - 54,
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Text(vista),
+            SvgPicture.asset(
+              genero,
+              width: 15,
+              color: Colors.grey,
+            ),
+          ]),
         ),
         focusColor: jBase,
 
@@ -597,7 +594,6 @@ class _RegistroFormState extends State<RegistroForm> {
     );
   }
 
-
   DateTimeFormField dateTimeFormField() {
     return DateTimeFormField(
       decoration: InputDecoration(
@@ -628,11 +624,10 @@ class _RegistroFormState extends State<RegistroForm> {
       validator: (date) {
         var diferencia = date?.difference(DateTime.now());
         print(diferencia?.inDays.toString());
-        if(diferencia?.inDays.toInt() != null){
-          if(diferencia!.inDays.toInt().abs() < 6573){
+        if (diferencia?.inDays.toInt() != null) {
+          if (diferencia!.inDays.toInt().abs() < 6573) {
             return 'Debes ser mayor de edad para trabajar con nosotros';
           }
-
         }
         return null;
       },

@@ -220,8 +220,10 @@ class _NuevaCarreraModalState extends State<NuevaCarreraModal> {
               ),
               InkWell(
                 onTap: () {
-                  context.read<CarreraBloc>().add(OfertarCarreraEvent(
-                      widget.carreraRef, _pricesList[selectedIndex]));
+                  if (context.read<CarreraBloc>().state is! CarreraLoading) {
+                    context.read<CarreraBloc>().add(OfertarCarreraEvent(
+                        widget.carreraRef, _pricesList[selectedIndex]));
+                  }
                 },
                 child: Container(
                   padding:
@@ -359,7 +361,7 @@ class _CustomMap extends StatelessWidget {
               position: carrera.inicio,
               icon: aPoint,
               infoWindow: InfoWindow(
-                  title: 'nicio',
+                  title: 'Inicio',
                   snippet:
                       "${calculateDistance(location, carrera.inicio).toStringAsFixed(2)}KM")),
           Marker(
