@@ -1,4 +1,3 @@
-import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -13,21 +12,30 @@ class CarreraEnCursoBloc
     extends Bloc<CarreraEnCursoEvent, CarreraEnCursoState> {
   CarreraEnCursoBloc() : super(CarreraEnCursoInitial()) {
     on<CargarCarreraEnCursoEvent>(_handleCargarCarrera);
+    on<CancelarCarreraEnCursoEvent>(_handleCancelCarrera);
   }
 
-  late BuildContext context;
+  late BuildContext _context;
+
+  void _handleCancelCarrera(CancelarCarreraEnCursoEvent event,
+      Emitter<CarreraEnCursoState> emit) async {
+    await event.carreraRef.update({
+      'cancelada': true,
+    });
+    Navigator.of(_context).pop();
+  }
 
   void _handleCargarCarrera(CargarCarreraEnCursoEvent event,
       Emitter<CarreraEnCursoState> emit) async {
     emit(CarreraEnCursoLoading());
-    context = event.context;
+    _context = event.context;
     await for (var e in event.carreraRef.snapshots()) {
       final carrera = Carrera.fromJson(e.data());
       if (carrera.pasajeroId ==
-          (context.read<UserBloc>().state as UserLogged).user.email) {
+          (_context.read<UserBloc>().state as UserLogged).user.email) {
         continue;
       } else if (carrera.choferId ==
-          (context.read<UserBloc>().state as UserLogged).user.email) {
+          (_context.read<UserBloc>().state as UserLogged).user.email) {
         if (carrera.cancelada) {
           emit(CarreraEnCursoCancelada(carrera));
           break;

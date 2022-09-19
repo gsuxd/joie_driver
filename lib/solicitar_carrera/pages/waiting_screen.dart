@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,15 +31,30 @@ class _WaitingScreenState extends State<WaitingScreen> {
     }
   }
 
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _choferSub;
+
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>
+      _listenSnapshots() {
+    return widget.carreraRef.snapshots().listen(_handleSnapshot, onError: (e) {
+      _choferSub = _listenSnapshots();
+    });
+  }
+
   void _loadData(Carrera carrera) async {
     if (_initialized != true) {
       _initialized = true;
-      widget.carreraRef.snapshots().listen(_handleSnapshot);
+      _choferSub = _listenSnapshots();
     }
   }
 
   final List<Oferta> _ofertas = [];
   bool _initialized = false;
+
+  @override
+  void dispose() {
+    _choferSub?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

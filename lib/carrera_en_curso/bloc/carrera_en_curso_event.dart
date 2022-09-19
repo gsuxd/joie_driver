@@ -18,8 +18,10 @@ class CargarCarreraEnCursoEvent extends CarreraEnCursoEvent {
 
 class CancelarCarreraEnCursoEvent extends CarreraEnCursoEvent {
   final Carrera carrera;
+  final DocumentReference<Map<String, dynamic>> carreraRef;
 
-  const CancelarCarreraEnCursoEvent(this.carrera);
+  const CancelarCarreraEnCursoEvent(
+      {required this.carrera, required this.carreraRef});
 
   @override
   List<Object> get props => [carrera.pasajeroId];

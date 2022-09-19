@@ -69,11 +69,23 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
         ])
       });
       Navigator.of(context).pop();
-      event.carreraRef.snapshots().listen(_handleSnapshotOferta);
+      _carrerasOfertada
+          .add(event.carreraRef.snapshots().listen(_handleSnapshotOferta));
     } catch (e) {
       print(e);
     }
     emit(CarreraInitial());
+  }
+
+  final List<StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>>
+      _carrerasOfertada = [];
+
+  @override
+  Future<void> close() async {
+    for (var element in _carrerasOfertada) {
+      element.cancel();
+    }
+    return super.close();
   }
 
   void _handleSnapshotOferta(DocumentSnapshot<Map<String, dynamic>> e) {
@@ -195,11 +207,17 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
     }
   }
 
+  void _listenCollection() {
+    final collection =
+        FirebaseFirestore.instance.collection('carreras').snapshots();
+    collection.listen(_handleSnapshot, onError: (err) {
+      _listenCollection();
+    });
+  }
+
   void _handleListen(
       ListenCarrerasEvent event, Emitter<CarreraState> emit) async {
-    final userCollection =
-        FirebaseFirestore.instance.collection('carreras').snapshots();
     context = event.context;
-    userCollection.listen(_handleSnapshot);
+    _listenCollection();
   }
 }
