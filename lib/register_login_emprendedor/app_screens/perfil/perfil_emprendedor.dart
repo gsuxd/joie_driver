@@ -190,9 +190,9 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
                     decoration: const BoxDecoration(
                       color: Colors.redAccent,
                     ),
-                    child: Center(
+
                         child: Text("Error al obtener los datos",
-                            style: textStyleBlack())),
+                            style: textStyleBlack()),
                   )
                 ],
               );
@@ -418,6 +418,7 @@ class _PerfilUsuarioState extends State<PerfilEmprendedor> {
             child: SvgPicture.asset(
               icon,
               height: 10,
+              color: Colors.black54,
             ),
           ),
         ),

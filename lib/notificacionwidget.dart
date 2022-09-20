@@ -45,7 +45,7 @@ class NotificacionWidget extends StatelessWidget {
                ],),
              Row(
                children: const [
-                 SizedBox(height: 10.0,),
+                 SizedBox(height: 15.0,),
                ],),
              Row(
                mainAxisAlignment: MainAxisAlignment.spaceBetween,
