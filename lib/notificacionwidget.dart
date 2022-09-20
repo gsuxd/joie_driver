@@ -45,7 +45,7 @@ class NotificacionWidget extends StatelessWidget {
                ],),
              Row(
                children: const [
-                 Text("Reporte en tramite", style: TextStyle(color: Colors.black87, fontFamily: "Monserrat", ),)
+                 SizedBox(height: 10.0,),
                ],),
              Row(
                mainAxisAlignment: MainAxisAlignment.spaceBetween,

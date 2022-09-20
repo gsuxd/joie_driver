@@ -48,6 +48,7 @@ class _Body extends ConsumerState<Ganancias> {
         builder: (context, ref, child) {
           CodeNotifyE  code = ref.watch(codeProviderE);
           return   Scaffold(
+
             appBar: appBarEmprendedor(title: 'CDE: ${code.code}', leading: leading(), accion: [ElevatedButton(
                 onPressed: (){
                   Navigator.push(

@@ -90,10 +90,9 @@ class _List extends State<ListAsisTecnicaEmprendedor> {
                   decoration: const BoxDecoration(
                     color: Colors.redAccent,
                   ),
-                  child: Center(
-                      child: Text(
+                  child: Text(
                           "Error al obtener los datos",
-                          style: textStyleBlack())),
+                          style: textStyleBlack()),
                 )
               ],
             );
@@ -129,8 +128,9 @@ class _List extends State<ListAsisTecnicaEmprendedor> {
 
    _getListaMensajes()  {
     return Expanded(
-        flex: 1,
+        flex: 0,
         child: FirebaseAnimatedList(
+          reverse: true,
           shrinkWrap: true,
           controller: _scrollController,
           query: notificacionDAO.getMensajesEmprendedor(email),

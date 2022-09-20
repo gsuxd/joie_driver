@@ -15,23 +15,20 @@ class Body extends StatelessWidget {
         child: Padding(
           padding:
               EdgeInsets.symmetric(horizontal: SizeConfig.screenWidth * 0.04),
-          child: Column(
+          child: ListView(
             children: [
-              Text("Olvide mi contraseña",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: getPropertieScreenWidth(18))),
+              Image.asset("assets/images/puppy_forget.jpg", width: MediaQuery.of(context).size.width,),
               Text(
                 "Por favor, ingresa tu correo \ny te enviaremos un link de recuperación ",
                 style: TextStyle(fontSize: getPropertieScreenWidth(14)),
                 textAlign: TextAlign.center,
               ),
               SizedBox(
-                height: SizeConfig.screenHeight * 0.1,
+                height: SizeConfig.screenHeight * 0.05,
               ),
               const ForgotFormPassword(),
               SizedBox(
-                height: SizeConfig.screenHeight * 0.1,
+                height: SizeConfig.screenHeight * 0.05,
               ),
               const NoAccountChofer(),
             ],

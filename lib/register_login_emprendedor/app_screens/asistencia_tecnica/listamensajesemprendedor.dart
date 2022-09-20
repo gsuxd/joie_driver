@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import '../../../colors.dart';
 import '../../../mensaje.dart';
 import '../../../mensaje_dao.dart';

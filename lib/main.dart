@@ -77,6 +77,12 @@ class MyApp extends StatelessWidget {
           bodyText2: TextStyle(color: Color.fromARGB(255, 6, 38, 63)),
         ),
       ),
+
+      darkTheme: ThemeData(
+        //Se indica que el tema tiene un brillo oscuro
+        brightness: Brightness.dark,
+        primarySwatch: Colors.blue,
+      ),
       home: const MyHomePage(
         title: 'JoieDriver',
       ),

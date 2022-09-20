@@ -22,9 +22,9 @@ class SocialCard extends StatelessWidget {
       onTap: press,
       child: Container(
         alignment: Alignment.center,
-        padding: EdgeInsets.all(getPropertieScreenWidth(12)),
-        height: getPropertieScreenHeight(60),
-        width: getPropertieScreenWidth(60),
+        padding: EdgeInsets.all(getPropertieScreenWidth(6)),
+        height: getPropertieScreenHeight(80),
+        width: getPropertieScreenWidth(80),
         child: SvgPicture.asset(
           icon,
           color: jSec,

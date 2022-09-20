@@ -57,6 +57,7 @@ class _ShareEmprendedor extends State<ShareEmprendedor> {
               ),
               const SizedBox(height: 20),
               Image.asset('assets/images/recomendar-aplicacion.jpg'),
+              const SizedBox(height: 20),
               const SizedBox(
                 height: 50,
                 width: 300,

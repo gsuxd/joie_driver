@@ -82,13 +82,13 @@ class _ForgotFormPasswordState extends State<ForgotFormPassword> {
           //TODO: Forma de Error
           FormError(errors: errors),
           SizedBox(
-            height: SizeConfig.screenHeight * 0.09,
+            height: SizeConfig.screenHeight * 0.04,
           ),
           //TODO: Boton de Contraseña
           ButtonDef(
             text: 'Continuar',
             press: () {
-              if (_formKey.currentState!.validate()) {
+              if (_formKey.currentState!.validate() && emailController.text.isNotEmpty) {
                 sendEmail();
               }
             },
