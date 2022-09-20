@@ -7,16 +7,12 @@ class LognInScreenUser extends StatelessWidget {
   const LognInScreenUser({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, ) {
-    
+  Widget build(
+    BuildContext context,
+  ) {
     SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.keyboard_arrow_left)),
         title: const Text(
           "Iniciar Sesión",
         ),

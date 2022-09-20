@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:joiedriver/blocs/carrera/carrera_bloc.dart';
 import 'package:joiedriver/blocs/carrera/carrera_model.dart';
+import 'package:joiedriver/solicitar_carrera/pages/waiting_screen.dart';
 
 enum FormasPago {
   efectivo,
@@ -233,18 +234,21 @@ class _SelectPagoScreenState extends State<SelectPagoScreen> {
                     InkWell(
                       onTap: () {
                         final Carrera carrera = Carrera(
-                          aceptada: false,
-                          condicionEspecial: widget.data['necesidad'],
-                          destino: widget.data['destino'],
-                          inicio: widget.data['inicio'],
-                          metodoPago: _formaPago.name,
-                          numeroPasajeros: widget.data['pasajeros'],
-                          pasajeroId: widget.data['pasajeroId'],
-                          precioOfertado: widget.data['montoOferta'],
-                        );
+                            aceptada: false,
+                            condicionEspecial: widget.data['necesidad'],
+                            destino: widget.data['destino'],
+                            inicio: widget.data['inicio'],
+                            metodoPago: _formaPago.name,
+                            numeroPasajeros:
+                                int.parse(widget.data['pasajeros']),
+                            pasajeroId: widget.data['pasajeroId'],
+                            precioOfertado:
+                                double.parse(widget.data['montoOferta']),
+                            ofertas: [],
+                            fecha: DateTime.now());
                         context
                             .read<CarreraBloc>()
-                            .add(NuevaCarreraEvent(carrera));
+                            .add(NuevaCarreraEvent(carrera, context));
                       },
                       child: Container(
                         decoration: BoxDecoration(

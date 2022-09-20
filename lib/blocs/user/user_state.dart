@@ -14,8 +14,9 @@ class UserLoading extends UserState {}
 
 class UserLogged extends UserState {
   final UserData user;
+  final DocumentReference<Map<String, dynamic>> documentReference;
 
-  UserLogged(this.user);
+  UserLogged(this.user, this.documentReference);
 
   @override
   List<Object> get props => [user];

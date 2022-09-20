@@ -8,28 +8,33 @@ abstract class CarreraEvent extends Equatable {
 }
 
 class ListenCarrerasEvent extends CarreraEvent {
-  const ListenCarrerasEvent();
+  final LatLng location;
+  final BuildContext context;
+  const ListenCarrerasEvent(this.location, this.context);
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [location.latitude, location.longitude];
 }
 
 class NuevaCarreraEvent extends CarreraEvent {
   final Carrera carrera;
+  final BuildContext context;
 
-  const NuevaCarreraEvent(this.carrera);
+  const NuevaCarreraEvent(this.carrera, this.context);
 
   @override
-  List<Object> get props => [carrera];
+  List<Object> get props => [carrera.inicio];
 }
 
-class AceptarCarreraEvent extends CarreraEvent {
-  final String carreraId;
+class AceptarOfertaEvent extends CarreraEvent {
+  final DocumentReference<Map<String, dynamic>> carreraRef;
+  final String choferId;
+  final BuildContext context;
 
-  const AceptarCarreraEvent(this.carreraId);
+  const AceptarOfertaEvent(this.carreraRef, this.choferId, this.context);
 
   @override
-  List<Object> get props => [carreraId];
+  List<Object> get props => [carreraRef.id];
 }
 
 class CancelarCarreraEvent extends CarreraEvent {
@@ -42,20 +47,10 @@ class CancelarCarreraEvent extends CarreraEvent {
 }
 
 class OfertarCarreraEvent extends CarreraEvent {
-  final String carreraId;
+  final DocumentReference<Map<String, dynamic>> carreraRef;
   final String? precioOferta;
-
-  const OfertarCarreraEvent(this.carreraId, this.precioOferta);
-
-  @override
-  List<Object> get props => [carreraId];
-}
-
-class ComenzarCarreraEvent extends CarreraEvent {
-  final String carreraId;
-
-  const ComenzarCarreraEvent(this.carreraId);
+  const OfertarCarreraEvent(this.carreraRef, this.precioOferta);
 
   @override
-  List<Object> get props => [carreraId];
+  List<Object> get props => [carreraRef.id];
 }

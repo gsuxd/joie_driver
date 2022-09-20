@@ -1,3 +1,5 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:joiedriver/blocs/user/user_bloc.dart';
 import 'package:joiedriver/helpers/generate_random_string.dart';
 import 'package:joiedriver/metodos_pago/models/metodo_pago.dart';
 import 'package:joiedriver/register_login_emprendedor/registro/user_data_register.dart';
@@ -166,7 +168,9 @@ class _Body extends ConsumerState<Body> {
       if (fase2) {
         bool fase3 = await upload();
         if (fase3) {
-          await registerSingleton();
+          context
+              .read<UserBloc>()
+              .add(LoginUserEvent(email!, password!, context));
           return true;
         }
       }

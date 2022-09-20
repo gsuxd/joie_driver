@@ -8,7 +8,7 @@ abstract class PositionEvent extends Equatable {
 }
 
 class GetPositionEvent extends PositionEvent {
-  final UserData user;
+  final BuildContext context;
 
-  const GetPositionEvent(this.user);
+  const GetPositionEvent(this.context);
 }
