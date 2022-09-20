@@ -6,27 +6,31 @@ class Oferta {
   final String thumb;
   final double calificacion;
   final String precio;
+  final int tardanza;
 
   Oferta(
       {required this.chofer,
       required this.thumb,
       required this.choferId,
       required this.calificacion,
-      required this.precio});
+      required this.precio,
+      required this.tardanza});
 
   factory Oferta.fromJson(data) => Oferta(
       chofer: data['chofer'],
       thumb: data['thumb'],
       choferId: data['choferId'],
       calificacion: double.parse(data['calificacion']),
-      precio: data['precio']);
+      precio: data['precio'],
+      tardanza: int.parse(data['tardanza']));
 
   toJson() => {
         'chofer': chofer,
         'thumb': thumb,
         'choferId': choferId,
         'calificacion': calificacion.toString(),
-        'precio': precio
+        'precio': precio,
+        'tardanza': tardanza.toString()
       };
 }
 
@@ -39,14 +43,20 @@ class Carrera {
   final String? choferId;
   final String? condicionEspecial;
   final LatLng inicio;
+  final String refInicio;
+  final String refDestino;
   final LatLng destino;
   final DateTime fecha;
   final List<Oferta> ofertas;
   final bool cancelada;
+  final bool finalizada;
 
   Carrera(
       {required this.aceptada,
       this.choferId,
+      this.finalizada = false,
+      this.refInicio = '',
+      this.refDestino = '',
       required this.numeroPasajeros,
       required this.pasajeroId,
       required this.precioOfertado,
@@ -63,6 +73,9 @@ class Carrera {
         choferId: data['choferId'],
         numeroPasajeros: int.parse(data['numeroPasajeros']),
         pasajeroId: data['pasajeroId'],
+        finalizada: data['finalizada'],
+        refInicio: data['refInicio'],
+        refDestino: data['refDestino'],
         precioOfertado: double.parse(data['precioOfertado']),
         condicionEspecial: data['condicionEspecial'],
         metodoPago: data['metodoPago'],
@@ -91,7 +104,10 @@ class Carrera {
         'precioOfertado': precioOfertado.toString(),
         'condicionEspecial': condicionEspecial,
         'metodoPago': metodoPago,
+        'finalizada': finalizada,
         'cancelada': cancelada,
+        'refInicio': refInicio,
+        'refDestino': refDestino,
         'inicio': {
           'lat': inicio.latitude.toString(),
           'lng': inicio.longitude.toString()

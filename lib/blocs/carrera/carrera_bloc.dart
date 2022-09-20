@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,8 +10,8 @@ import 'package:joiedriver/blocs/position/position_bloc.dart';
 import 'package:joiedriver/blocs/user/user_bloc.dart';
 import 'package:joiedriver/carrera_en_curso/bloc/carrera_en_curso_bloc.dart';
 import 'package:joiedriver/carrera_en_curso/carrera_en_curso_chofer.dart';
-import 'package:joiedriver/carrera_en_curso/carrera_en_curso_pasajero.dart';
 import 'package:joiedriver/helpers/calculate_distance.dart';
+import 'package:joiedriver/home/home.dart';
 import 'package:joiedriver/solicitar_carrera/pages/waiting_screen.dart';
 
 import 'carrera_model.dart';
@@ -42,6 +41,8 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
         .update({
       'active': false,
     });
+    _carrerasCercanasSubscription?.cancel();
+    _carrerasCercanasSubscription = null;
     emit(
       CarreraEnCurso(
         event.carreraRef,
@@ -64,36 +65,55 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
                   thumb: user.profilePicture,
                   choferId: user.email,
                   calificacion: 4,
-                  precio: event.precioOferta!)
+                  precio: event.precioOferta!,
+                  tardanza: event.tardanza)
               .toJson()
         ])
       });
-      Navigator.of(context).pop();
-      _carrerasOfertada
-          .add(event.carreraRef.snapshots().listen(_handleSnapshotOferta));
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+        ),
+      );
+      _carrerasOfertada.add({
+        "id": event.carreraRef.id,
+        "subscription":
+            event.carreraRef.snapshots().listen(_handleSnapshotOferta)
+      });
     } catch (e) {
-      print(e);
+      e;
     }
     emit(CarreraInitial());
   }
 
-  final List<StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>>
-      _carrerasOfertada = [];
+  final List<Map<String, dynamic>> _carrerasOfertada = [];
 
   @override
   Future<void> close() async {
     for (var element in _carrerasOfertada) {
-      element.cancel();
+      element['subscription'].cancel();
+    }
+    if (_carrerasCercanasSubscription != null) {
+      _carrerasCercanasSubscription!.cancel();
     }
     return super.close();
   }
 
   void _handleSnapshotOferta(DocumentSnapshot<Map<String, dynamic>> e) {
     final carrera = Carrera.fromJson(e.data());
+    final condicion = carrera.ofertas
+        .where((element) =>
+            element.choferId ==
+            (context.read<UserBloc>().state as UserLogged).user.email)
+        .isEmpty;
+    if (condicion) {
+      _carrerasOfertada.removeWhere((element) => element['id'] == e.id);
+      return;
+    }
     if (carrera.aceptada &&
         carrera.choferId ==
             (context.read<UserBloc>().state as UserLogged).user.email) {
-      Navigator.of(context).push(
+      Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (_) => BlocProvider(
             create: (_) => CarreraEnCursoBloc(),
@@ -179,8 +199,16 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
     );
   }
 
-  void _handleSnapshot(QuerySnapshot<Map<String, dynamic>> val) {
-    final carreras = val.docs;
+  void _handleSnapshot(QuerySnapshot<Map<String, dynamic>> val) async {
+    final ignoreList = await (context.read<UserBloc>().state as UserLogged)
+        .documentReference
+        .get();
+    final carreras = val.docs.map((e) {
+      if (!((ignoreList['carrerasIgnoradas'] as List).contains(e.id))) {
+        print(e);
+        return e;
+      }
+    });
     if (carreras.isNotEmpty && carreras.length != _carrerasCercanasCount) {
       final x = Carrera.fromJson(carreras.last);
       final distance = calculateDistance(
@@ -193,31 +221,31 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
                   .location
                   .longitude!));
       if (distance < 5) {
-        if (DateTime.now().difference(x.fecha).inSeconds > 120 ||
-            x.aceptada == true) {
-          val.docs.last.reference.delete();
-          return;
-        }
         if (x.aceptada) {
           return;
         }
         _carrerasCercanasCount = carreras.length;
-        _showModal(x, carreras.last.reference);
+        if (carreras.last != null) {
+          _showModal(x, carreras.last!.reference);
+        }
       }
     }
   }
 
-  void _listenCollection() {
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
+      _carrerasCercanasSubscription;
+
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>> _listenCollection() {
     final collection =
         FirebaseFirestore.instance.collection('carreras').snapshots();
-    collection.listen(_handleSnapshot, onError: (err) {
-      _listenCollection();
+    return collection.listen(_handleSnapshot, onError: (err) {
+      _carrerasCercanasSubscription = _listenCollection();
     });
   }
 
   void _handleListen(
       ListenCarrerasEvent event, Emitter<CarreraState> emit) async {
     context = event.context;
-    _listenCollection();
+    _carrerasCercanasSubscription = _listenCollection();
   }
 }

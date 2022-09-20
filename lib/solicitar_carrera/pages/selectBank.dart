@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:joiedriver/blocs/carrera/carrera_bloc.dart';
 import 'package:joiedriver/blocs/carrera/carrera_model.dart';
-import 'package:joiedriver/solicitar_carrera/pages/waiting_screen.dart';
 
 enum FormasPago {
   efectivo,

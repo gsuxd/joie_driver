@@ -17,6 +17,8 @@ class MapViewPasajeros extends StatefulWidget {
 class _MapViewPasajerosState extends State<MapViewPasajeros> {
   late GoogleMapController _controller;
 
+  LatLng? _pointB;
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -47,12 +49,28 @@ class _MapViewPasajerosState extends State<MapViewPasajeros> {
                       }
                     },
                     child: GoogleMap(
+                      onTap: (LatLng tap) {
+                        setState(() {
+                          _pointB = tap;
+                        });
+                      },
                       initialCameraPosition: CameraPosition(
                         target: LatLng(positionState.location.latitude!,
                             positionState.location.longitude!),
                         zoom: 15,
                       ),
                       markers: {
+                        if (_pointB != null)
+                          Marker(
+                              markerId: const MarkerId('pointB'),
+                              position: _pointB!,
+                              infoWindow: InfoWindow(
+                                  title: "Destino",
+                                  onTap: () {
+                                    setState(() {
+                                      _pointB = null;
+                                    });
+                                  })),
                         Marker(
                           markerId: const MarkerId('current_location'),
                           position: LatLng(positionState.location.latitude!,
@@ -79,10 +97,16 @@ class _MapViewPasajerosState extends State<MapViewPasajeros> {
           bottom: 15,
           left: 120,
           child: InkWell(
-            onTap: () {
-              showBottomSheet(
-                  context: context,
-                  builder: (context) => const SolicitarCarreraModal());
+            onTap: () async {
+              if (_pointB == null) {
+                await showToast("Selecciona un destino tocando el mapa");
+              } else {
+                showBottomSheet(
+                    context: context,
+                    builder: (context) => SolicitarCarreraModal(
+                          pointB: _pointB!,
+                        ));
+              }
             },
             child: Container(
               decoration: BoxDecoration(

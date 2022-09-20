@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:joiedriver/home/home.dart';
 
-import '../home/home.dart';
-
-class CarreraFinalizadaChofer extends StatelessWidget {
-  const CarreraFinalizadaChofer({Key? key}) : super(key: key);
+class CarreraCanceladaChofer extends StatelessWidget {
+  const CarreraCanceladaChofer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Carrera Cancelada'),
+      ),
       body: Column(
         children: [
           const Center(
-            child: Text('Carrera Finalizada'),
+            child: Text('Carrera Cancelada'),
           ),
           ElevatedButton(
               onPressed: () {
@@ -21,7 +23,7 @@ class CarreraFinalizadaChofer extends StatelessWidget {
                         builder: (context) => const HomeScreen()));
               },
               child:
-                  const Text('Volver', style: TextStyle(color: Colors.white)))
+                  const Text('Volver', style: TextStyle(color: Colors.black)))
         ],
       ),
     );

@@ -5,6 +5,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:joiedriver/blocs/carrera/carrera_model.dart';
+import 'package:joiedriver/blocs/user/user_bloc.dart';
 import 'package:joiedriver/colors.dart';
 import 'package:joiedriver/helpers/calculate_distance.dart';
 
@@ -105,6 +106,20 @@ class _NuevaCarreraModalState extends State<NuevaCarreraModal> {
 
   int selectedIndex = 0;
 
+  void _ignoreCarrera() async {
+    await (context.read<UserBloc>().state as UserLogged)
+        .documentReference
+        .update({
+      'carrerasIgnoradas': FieldValue.arrayUnion([widget.carreraRef.id]),
+    });
+  }
+
+  @override
+  void dispose() {
+    _ignoreCarrera();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -164,7 +179,9 @@ class _NuevaCarreraModalState extends State<NuevaCarreraModal> {
                         width: 10,
                       ),
                       Text(
-                        'Centro',
+                        widget.carrera.refInicio.isEmpty
+                            ? widget.carrera.refInicio
+                            : "No especifica",
                         style: _text,
                       ),
                     ],
@@ -185,7 +202,9 @@ class _NuevaCarreraModalState extends State<NuevaCarreraModal> {
                         width: 10,
                       ),
                       Text(
-                        'Las Margaritas',
+                        widget.carrera.refDestino.isEmpty
+                            ? widget.carrera.refDestino
+                            : "No especifica",
                         style: _text,
                       ),
                     ],
@@ -220,10 +239,14 @@ class _NuevaCarreraModalState extends State<NuevaCarreraModal> {
               ),
               InkWell(
                 onTap: () {
-                  if (context.read<CarreraBloc>().state is! CarreraLoading) {
-                    context.read<CarreraBloc>().add(OfertarCarreraEvent(
-                        widget.carreraRef, _pricesList[selectedIndex]));
-                  }
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => SelectTimePage(
+                        carreraRef: widget.carreraRef,
+                        price: _pricesList[selectedIndex],
+                      ),
+                    ),
+                  );
                 },
                 child: Container(
                   padding:
@@ -413,5 +436,93 @@ class _CustomButton extends StatelessWidget {
                 color: selected ? Colors.black : Colors.white, fontSize: 18)),
       ),
     );
+  }
+}
+
+class SelectTimePage extends StatefulWidget {
+  const SelectTimePage(
+      {Key? key, required this.carreraRef, required this.price})
+      : super(key: key);
+  final DocumentReference<Map<String, dynamic>> carreraRef;
+  final String price;
+  @override
+  State<SelectTimePage> createState() => _SelectTimePageState();
+}
+
+class _SelectTimePageState extends State<SelectTimePage> {
+  final TextEditingController _controller = TextEditingController();
+  void _onTap(int time) {
+    if (context.read<CarreraBloc>().state is! CarreraLoading) {
+      if (time == 20) {
+        showModalBottomSheet(
+            context: context,
+            builder: (_) => Container(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: _controller,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                            hintText:
+                                "Introduce el tiempo de llegada en minutos"),
+                      ),
+                      ElevatedButton(
+                          onPressed: () {
+                            context.read<CarreraBloc>().add(OfertarCarreraEvent(
+                                widget.carreraRef,
+                                widget.price,
+                                int.parse(_controller.text)));
+                          },
+                          child: const Text(
+                            "Listo",
+                            style: TextStyle(color: Colors.white),
+                          ))
+                    ],
+                  ),
+                ));
+      } else {
+        context
+            .read<CarreraBloc>()
+            .add(OfertarCarreraEvent(widget.carreraRef, widget.price, time));
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('Seleccionar tiempo'),
+        ),
+        body: Column(
+          children: [
+            ElevatedButton(
+                onPressed: () {
+                  _onTap(3);
+                },
+                child: const Text('3 min')),
+            ElevatedButton(
+                onPressed: () {
+                  _onTap(5);
+                },
+                child: const Text('5 min')),
+            ElevatedButton(
+                onPressed: () {
+                  _onTap(10);
+                },
+                child: const Text('10 min')),
+            ElevatedButton(
+                onPressed: () {
+                  _onTap(15);
+                },
+                child: const Text('15 min')),
+            ElevatedButton(
+                onPressed: () {
+                  _onTap(20);
+                },
+                child: const Text('mas')),
+          ],
+        ));
   }
 }

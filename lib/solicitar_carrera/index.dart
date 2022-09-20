@@ -10,7 +10,10 @@ import 'package:joiedriver/solicitar_carrera/components/textedit.dart';
 import 'pages/selectBank.dart';
 
 class SolicitarCarreraModal extends StatefulWidget {
-  const SolicitarCarreraModal({Key? key}) : super(key: key);
+  const SolicitarCarreraModal({Key? key, required this.pointB})
+      : super(key: key);
+
+  final LatLng pointB;
 
   @override
   State<SolicitarCarreraModal> createState() => _SolicitarCarreraModalState();
@@ -21,29 +24,10 @@ class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
 
   final data = {};
 
-  String _directionInicio = "Cargando";
-
-  void getCity(BuildContext context) async {
-    final locationData =
-        (context.read<PositionBloc>().state as PositionObtained).location;
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-        locationData.latitude!, locationData.longitude!);
-    var first = placemarks.first;
-    setState(() {
-      _directionInicio = first.street!;
-    });
-  }
-
   Future<Location> getlocationfromaddress(String v) async {
     List<Location> placemarks = await locationFromAddress(v);
     var first = placemarks.first;
     return first;
-  }
-
-  @override
-  void initState() {
-    getCity(context);
-    super.initState();
   }
 
   void handleSubmit(BuildContext context) async {
@@ -53,7 +37,7 @@ class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
       final location =
           (context.read<PositionBloc>().state as PositionObtained).location;
       data['inicio'] = LatLng(location.latitude!, location.longitude!);
-      data['destino'] = const LatLng(11.6856744, -70.2053779);
+      data['destino'] = widget.pointB;
 
       data['pasajeroId'] =
           (context.read<UserBloc>().state as UserLogged).user.email;
@@ -88,7 +72,6 @@ class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
                 return null;
               },
               icon: "assets/images/A.png",
-              value: _directionInicio,
               onSaved: (value) {
                 data["partida"] = value;
               },
@@ -104,9 +87,11 @@ class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
             CustomTextField(
               validator: (v) {
                 if (v!.isEmpty) {
-                  return "Ingresa una dirección";
+                  return "Ingresa el monto a ofertar";
                 }
-                return null;
+                if (int.parse(v) < 5000) {
+                  return "El monto debe ser mayor a 5000";
+                }
               },
               keyboardType: TextInputType.number,
               hintText: "Monto a ofertar",
@@ -116,12 +101,12 @@ class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
             CustomTextField(
               validator: (v) {
                 if (v!.isEmpty) {
-                  return "Ingresa un monto a ofertar";
+                  return "Ingresa el número de pasajeros";
                 }
                 return null;
               },
               keyboardType: TextInputType.number,
-              hintText: "Número de passajeros",
+              hintText: "Número de pasajeros",
               icon: "assets/images/outline_add_a_photo_black_24dp.png",
               onSaved: (value) => data["pasajeros"] = value,
             ),

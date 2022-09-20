@@ -5,7 +5,9 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:joiedriver/blocs/carrera/carrera_model.dart';
 import 'package:joiedriver/blocs/position/position_bloc.dart';
+import 'package:joiedriver/carrera_cancelada/carrera_cancelada_chofer.dart';
 import 'package:joiedriver/helpers/calculate_distance.dart';
+import 'package:joiedriver/helpers/get_polyline_points.dart';
 
 import 'bloc/carrera_en_curso_bloc.dart';
 
@@ -22,9 +24,9 @@ class CarreraEnCursoPage extends StatefulWidget {
 }
 
 class _CarreraEnCursoPageState extends State<CarreraEnCursoPage> {
-  late BitmapDescriptor _markerIcon;
-  late BitmapDescriptor _markerAIcon;
-  late BitmapDescriptor _markerBIcon;
+  BitmapDescriptor? _markerIcon;
+  BitmapDescriptor? _markerAIcon;
+  BitmapDescriptor? _markerBIcon;
   void _loadIcon() async {
     _markerIcon = await BitmapDescriptor.fromAssetImage(
         const ImageConfiguration(size: Size(12, 12)),
@@ -40,32 +42,28 @@ class _CarreraEnCursoPageState extends State<CarreraEnCursoPage> {
 
   void _handlePositionState(PositionState state) async {
     if (state is PositionObtained) {
-      final distance = calculateDistance(
-          LatLng(state.location.latitude!, state.location.longitude!),
-          widget.carrera.inicio);
-      if (distance < 0.5) {
-        PolylinePoints polylinePoints = PolylinePoints();
-        PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-          "AIzaSyAEE30voT1-ycMD3-cxpq2m4oJcKrpLeRA",
-          PointLatLng(state.location.latitude!, state.location.longitude!),
-          PointLatLng(widget.carrera.destino.latitude,
-              widget.carrera.destino.longitude),
-        );
-        setState(() {
-          _polylinePoints = result;
-        });
+      final distanceA = calculateDistance(widget.carrera.inicio,
+          LatLng(state.location.latitude!, state.location.longitude!));
+      final distanceB = calculateDistance(widget.carrera.destino,
+          LatLng(state.location.latitude!, state.location.longitude!));
+      if (distanceA <= 0.010 && distanceB > 0.010) {
+        _markerAIcon = null;
+
+        _polylinePoints = await getPolypoints(
+            LatLng(state.location.latitude!, state.location.longitude!),
+            widget.carrera.destino);
       } else {
-        PolylinePoints polylinePoints = PolylinePoints();
-        PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-          "AIzaSyAEE30voT1-ycMD3-cxpq2m4oJcKrpLeRA",
-          PointLatLng(state.location.latitude!, state.location.longitude!),
-          PointLatLng(
-              widget.carrera.inicio.latitude, widget.carrera.inicio.longitude),
-        );
-        setState(() {
-          _polylinePoints = result;
-        });
+        _polylinePoints = await getPolypoints(
+            LatLng(state.location.latitude!, state.location.longitude!),
+            widget.carrera.inicio);
       }
+      if (distanceB <= 0.010 && distanceA > 0.010) {
+        _markerBIcon = null;
+        _polylinePoints = await getPolypoints(
+            LatLng(state.location.latitude!, state.location.longitude!),
+            widget.carrera.inicio);
+      }
+      setState(() {});
     }
   }
 
@@ -87,7 +85,7 @@ class _CarreraEnCursoPageState extends State<CarreraEnCursoPage> {
         child: BlocBuilder<CarreraEnCursoBloc, CarreraEnCursoState>(
           builder: (context, state) {
             if (state is CarreraEnCursoCancelada) {
-              return const Text('Carrera cancelada');
+              return const CarreraCanceladaChofer();
             }
 
             if (state is CarreraEnCursoLoading) {
@@ -108,20 +106,29 @@ class _CarreraEnCursoPageState extends State<CarreraEnCursoPage> {
                   )
                 },
                 markers: {
-                  Marker(
-                      markerId: const MarkerId("A Point"),
-                      icon: _markerAIcon,
-                      position: (context.read<CarreraEnCursoBloc>().state
-                              as CarreraEnCursoChofer)
-                          .carrera
-                          .inicio),
-                  Marker(
-                      markerId: const MarkerId("B Point"),
-                      icon: _markerBIcon,
-                      position: (context.read<CarreraEnCursoBloc>().state
-                              as CarreraEnCursoChofer)
-                          .carrera
-                          .destino)
+                  if (_markerIcon != null && state is PositionObtained)
+                    Marker(
+                      markerId: const MarkerId("chofer"),
+                      position: LatLng(
+                          state.location.latitude!, state.location.longitude!),
+                      icon: _markerIcon!,
+                    ),
+                  if (_markerAIcon != null)
+                    Marker(
+                        markerId: const MarkerId("A Point"),
+                        icon: _markerAIcon!,
+                        position: (context.read<CarreraEnCursoBloc>().state
+                                as CarreraEnCursoChofer)
+                            .carrera
+                            .inicio),
+                  if (_markerBIcon != null)
+                    Marker(
+                        markerId: const MarkerId("B Point"),
+                        icon: _markerBIcon!,
+                        position: (context.read<CarreraEnCursoBloc>().state
+                                as CarreraEnCursoChofer)
+                            .carrera
+                            .destino)
                 },
                 initialCameraPosition: CameraPosition(
                   zoom: 13.5,

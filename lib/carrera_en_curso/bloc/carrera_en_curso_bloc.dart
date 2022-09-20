@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joiedriver/blocs/carrera/carrera_model.dart';
 import 'package:joiedriver/blocs/user/user_bloc.dart';
+import 'package:joiedriver/carrera_cancelada/carrera_cancelada_chofer.dart';
+import 'package:joiedriver/carrera_cancelada/carrera_cancelada_pasajero.dart';
+import 'package:joiedriver/carrera_finalizada/carrera_finalizada_chofer.dart';
 
 part 'carrera_en_curso_event.dart';
 part 'carrera_en_curso_state.dart';
@@ -22,7 +25,9 @@ class CarreraEnCursoBloc
     await event.carreraRef.update({
       'cancelada': true,
     });
-    Navigator.of(_context).pop();
+    final context = event.context;
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const CarreraCanceladaPasajero()));
   }
 
   void _handleCargarCarrera(CargarCarreraEnCursoEvent event,
@@ -37,7 +42,13 @@ class CarreraEnCursoBloc
       } else if (carrera.choferId ==
           (_context.read<UserBloc>().state as UserLogged).user.email) {
         if (carrera.cancelada) {
-          emit(CarreraEnCursoCancelada(carrera));
+          Navigator.of(_context).pushReplacement(MaterialPageRoute(
+              builder: (_) => const CarreraCanceladaChofer()));
+          break;
+        }
+        if (carrera.finalizada) {
+          Navigator.of(_context).pushReplacement(MaterialPageRoute(
+              builder: (_) => const CarreraFinalizadaChofer()));
           break;
         }
         emit(CarreraEnCursoChofer(carreraRef: e.reference, carrera: carrera));

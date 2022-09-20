@@ -9,6 +9,7 @@ import 'package:joiedriver/blocs/carrera/carrera_model.dart';
 import 'package:joiedriver/blocs/position/position_bloc.dart';
 import 'package:joiedriver/carrera_en_curso/bloc/carrera_en_curso_bloc.dart';
 import 'package:joiedriver/helpers/calculate_distance.dart';
+import 'package:joiedriver/helpers/get_polyline_points.dart';
 
 class CarreraEnCursoPagePasajero extends StatefulWidget {
   const CarreraEnCursoPagePasajero(
@@ -76,31 +77,32 @@ class _CarreraEnCursoPagePasajeroState
             const ImageConfiguration(size: Size(10, 10)),
             "assets/images/coches-en-el-mapa.png"),
       );
-      final PolylinePoints polylinePoints = PolylinePoints();
-      final distance = calculateDistance(widget.carrera.inicio, choferLocation);
-      if (distance <= 0.010) {
+      final distanceA =
+          calculateDistance(widget.carrera.inicio, choferLocation);
+      final distanceB =
+          calculateDistance(widget.carrera.destino, choferLocation);
+      if (distanceA <= 0.010 && distanceB > 0.010) {
         _markerAIcon = null;
-        PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-          "AIzaSyAEE30voT1-ycMD3-cxpq2m4oJcKrpLeRA",
-          PointLatLng(choferLocation.latitude, choferLocation.longitude),
-          PointLatLng(widget.carrera.destino.latitude,
-              widget.carrera.destino.longitude),
-        );
-        _polylineResult = result;
+
+        _polylineResult =
+            await getPolypoints(choferLocation, widget.carrera.destino);
       } else {
-        PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-          "AIzaSyAEE30voT1-ycMD3-cxpq2m4oJcKrpLeRA",
-          PointLatLng(choferLocation.latitude, choferLocation.longitude),
-          PointLatLng(
-              widget.carrera.inicio.latitude, widget.carrera.inicio.longitude),
-        );
-        _polylineResult = result;
+        _polylineResult =
+            await getPolypoints(choferLocation, widget.carrera.inicio);
+      }
+      if (distanceB <= 0.010 && distanceA > 0.010) {
+        _markerBIcon = null;
+        await widget.carreraRef.update({
+          'finalizada': true,
+        });
+        _polylineResult =
+            await getPolypoints(choferLocation, widget.carrera.inicio);
       }
       setState(() {});
       _controller!.animateCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(
-            tilt: 90,
+            tilt: 70,
             zoom: 18,
             target: LatLng(
               location['latitude'],
@@ -132,7 +134,7 @@ class _CarreraEnCursoPagePasajeroState
                         .toList())
             },
             initialCameraPosition: CameraPosition(
-              tilt: 90,
+              tilt: 70,
               target: LatLng(
                   (context.watch<PositionBloc>().state as PositionObtained)
                       .location
@@ -156,7 +158,7 @@ class _CarreraEnCursoPagePasajeroState
               if (_chofer != null) _chofer!
             },
           ),
-          if (_timer != null && _timer! != 1)
+          if (_timer != null && _timer! == 1)
             Positioned(
                 bottom: 50,
                 left: 120,
@@ -192,7 +194,8 @@ class _CarreraEnCursoPagePasajeroState
                               context.read<CarreraEnCursoBloc>().add(
                                   CancelarCarreraEnCursoEvent(
                                       carreraRef: widget.carreraRef,
-                                      carrera: widget.carrera));
+                                      carrera: widget.carrera,
+                                      context: context));
                             },
                             icon: const Icon(
                               Icons.close,

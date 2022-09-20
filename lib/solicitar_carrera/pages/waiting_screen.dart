@@ -7,6 +7,8 @@ import 'package:joiedriver/blocs/carrera/carrera_bloc.dart';
 import 'package:joiedriver/blocs/carrera/carrera_model.dart';
 import 'package:joiedriver/carrera_en_curso/carrera_en_curso_pasajero.dart';
 
+import '../../carrera_en_curso/bloc/carrera_en_curso_bloc.dart';
+
 class WaitingScreen extends StatefulWidget {
   const WaitingScreen({Key? key, required this.carreraRef}) : super(key: key);
   final DocumentReference<Map<String, dynamic>> carreraRef;
@@ -90,8 +92,10 @@ class _WaitingScreenState extends State<WaitingScreen> {
           );
         }
         if (state is CarreraEnCurso) {
-          return CarreraEnCursoPagePasajero(
-              carreraRef: state.carreraRef, carrera: state.carrera);
+          return BlocProvider(
+              create: (_) => CarreraEnCursoBloc(),
+              child: CarreraEnCursoPagePasajero(
+                  carreraRef: state.carreraRef, carrera: state.carrera));
         }
         if (state is CarreraLoading) {
           return const Scaffold(
