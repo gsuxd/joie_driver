@@ -79,9 +79,31 @@ class MyApp extends StatelessWidget {
       ),
 
       darkTheme: ThemeData(
+        shadowColor: blue_dark,
+        primaryColor: blue_dark,
+        primaryColorDark: blue_dark,
         //Se indica que el tema tiene un brillo oscuro
         brightness: Brightness.dark,
         primarySwatch: Colors.blue,
+        fontFamily: "Montserrat",
+        appBarTheme: const AppBarTheme(
+            centerTitle: true,
+            backgroundColor: Colors.blueAccent,
+            elevation: 0,
+            iconTheme: IconThemeData(
+              color: Color(0xFFFFFFFF),
+            ),
+            titleTextStyle: TextStyle(
+              color: Color(0xFFFFFFFF),
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              fontStyle: FontStyle.normal,
+            )),
+        inputDecorationTheme: inputDecorationTheme(),
+        textTheme: const TextTheme(
+          bodyText1: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+          bodyText2: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+        ),
       ),
       home: const MyHomePage(
         title: 'JoieDriver',
