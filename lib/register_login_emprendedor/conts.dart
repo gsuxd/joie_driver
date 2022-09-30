@@ -160,8 +160,8 @@ List<String> banco = [
 
 const String genero = 'assets/icons/genero.svg';
 //Mensajes de error de login
-final RegExp emailValidator =
-RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9.]+\.[a-zA-Z]+");
+//final RegExp emailValidator = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9.]+\.[a-zA-Z]+");
+final RegExp emailValidator = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
 //email
 const String emailNull = "Por favor ingrese su correo";
 const String emailError = "Ingrese un correo válido";

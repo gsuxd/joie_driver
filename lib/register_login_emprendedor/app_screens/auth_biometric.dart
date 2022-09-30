@@ -1,4 +1,5 @@
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,12 @@ class _Body extends ConsumerState<AuthBiometric> {
     String typeUser = await encryptedSharedPreferences.getString('typeuser');
     String codeLogin = await encryptedSharedPreferences.getString('code');
     if(typeUser == "emprendedor"){
+      ActionCodeSettings actionCodeSettings = ActionCodeSettings(url: 'https://www.google.com');
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (!user!.emailVerified) {
+        await user.sendEmailVerification();
+      }
       Navigator.push(
           context,
           MaterialPageRoute(
