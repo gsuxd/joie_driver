@@ -16,7 +16,7 @@ class NoAccountChofer extends StatelessWidget {
         Text(
           '¿No tienes cuenta Joie Driver?',
           style: TextStyle(
-            fontSize: getPropertieScreenWidth(16),
+            fontSize: getPropertieScreenWidth(18),
             color: jtextColorSec,
           ),
         ),
@@ -32,7 +32,7 @@ class NoAccountChofer extends StatelessWidget {
           },
           child: Text(
             'Registrate',
-            style: TextStyle(fontSize: getPropertieScreenWidth(16)),
+            style: TextStyle(fontSize: getPropertieScreenWidth(20)),
           ),
         ),
       ],

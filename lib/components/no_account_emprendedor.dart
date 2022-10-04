@@ -32,7 +32,7 @@ class NoAccountEmprendedor extends StatelessWidget {
           },
           child: Text(
             'Registrate',
-            style: TextStyle(fontSize: getPropertieScreenWidth(20)),
+            style: TextStyle(fontSize: getPropertieScreenWidth(18)),
           ),
         ),
         SizedBox(
