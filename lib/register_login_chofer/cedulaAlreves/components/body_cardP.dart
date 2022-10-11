@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:joiedriver/register_login_chofer/registro/user_data_register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,18 +10,19 @@ import '../../licencia/licencia.dart';
 import '../../size_config.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+
 class Body extends StatefulWidget {
-  RegisterUser  user;
+  RegisterUser user;
   Body(this.user, {Key? key}) : super(key: key);
   @override
-  createState() =>  _Body(user);
+  createState() => _Body(user);
 }
 
 class _Body extends State<Body> {
   RegisterUser user;
   _Body(this.user);
   File? cedulaR;
-  late Widget imageWiew ;
+  late Widget imageWiew;
   @override
   void initState() {
     // TODO: implement initState
@@ -58,7 +62,7 @@ class _Body extends State<Body> {
               child: ButtonDefChofer(
                   text: 'Siguiente',
                   press: () {
-                    if(user.cedulaR != null){
+                    if (user.cedulaR != null) {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -71,26 +75,35 @@ class _Body extends State<Body> {
     );
   }
 
-  Future getImage () async {
+  Future getImage() async {
+    final _prefs = await EncryptedSharedPreferences().getInstance();
+    _prefs.setString("userRegister", jsonEncode(user.toJson()));
+    _prefs.setString("locationRegister", "cedulaPhotoR");
     ImagePicker imegaTemp = ImagePicker();
-    var tempImage = await imegaTemp.pickImage(source: ImageSource.camera, imageQuality: 80,
-      maxHeight: 1000,);
-    cedulaR =  File(tempImage!.path);
-    setState(()  {
-
+    var tempImage = await imegaTemp.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 80,
+      maxHeight: 1000,
+    );
+    cedulaR = File(tempImage!.path);
+    setState(() {
       imageWiew = cambiarmage();
-
     });
   }
 
-  Widget cambiarmage(){
-
-    if(cedulaR != null){
+  Widget cambiarmage() {
+    if (cedulaR != null) {
       user.cedulaR = cedulaR;
-      return  Image.file(cedulaR!, height: SizeConfig.screenHeight * 0.50);
-    }else{
-      user.cedulaR = null;
-      return SvgPicture.asset(cedularImg, height: SizeConfig.screenHeight * 0.50);
+      return Image.file(cedulaR!, height: SizeConfig.screenHeight * 0.50);
+    } else {
+      if (user.cedulaR != null) {
+        return Image.file(user.cedulaR!,
+            height: SizeConfig.screenHeight * 0.50);
+      } else {
+        user.cedulaR = null;
+        return SvgPicture.asset(cedularImg,
+            height: SizeConfig.screenHeight * 0.50);
+      }
     }
   }
 }

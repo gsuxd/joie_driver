@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:joiedriver/metodos_pago/components/nuevo_metodo.dart';
 import 'package:joiedriver/pedidos.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
@@ -198,23 +197,23 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                 Container(
                   height: 20.0,
                 ),
-                if (GetIt.I.get<UserData>().type != "usersPasajeros")
-                  Row(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(left: 14),
-                        child: ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) => const NuevoMetodo()),
-                              );
-                            },
-                            icon: const Icon(Icons.monetization_on_outlined),
-                            label: const Text("Metodos de pago")),
-                      ),
-                    ],
-                  )
+                // if (GetIt.I.get<UserData>().type != "usersPasajeros")
+                //   Row(
+                //     children: [
+                //       Container(
+                //         margin: const EdgeInsets.only(left: 14),
+                //         child: ElevatedButton.icon(
+                //             onPressed: () {
+                //               Navigator.of(context).push(
+                //                 MaterialPageRoute(
+                //                     builder: (context) => const NuevoMetodo()),
+                //               );
+                //             },
+                //             icon: const Icon(Icons.monetization_on_outlined),
+                //             label: const Text("Metodos de pago")),
+                //       ),
+                //     ],
+                //   )
               ],
             ),
             Positioned(bottom: 10, left: 0.0, child: bottomNavBar(context))
@@ -394,13 +393,13 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
         children: [
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => const MyApp()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const MyApp()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding:
-                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_inicio,
               shape: const CircleBorder(),
@@ -421,8 +420,8 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding:
-                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_historial,
               shape: const CircleBorder(),
@@ -445,8 +444,8 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding:
-                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_ingresos,
               shape: const CircleBorder(),
@@ -463,14 +462,16 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
           ElevatedButton(
             onPressed: () {
               setState(() {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const PerfilUsuario()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PerfilUsuario()));
               });
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding:
-                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_perfil,
               shape: const CircleBorder(),

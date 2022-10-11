@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:joiedriver/register_login_emprendedor/registro/user_data_register.dart';
 import 'package:flutter/material.dart';
@@ -16,38 +18,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:joiedriver/register_login_emprendedor/app_screens/ganancias/ganancias.dart';
 
-class ImageNotify extends ChangeNotifier {
-  Widget _image = SvgPicture.asset(antePen, height: SizeConfig.screenHeight * 0.50);
-
-  Widget get widget => _image;
-
-  void setImage(Widget image) {
-    _image = image;
-    notifyListeners();
-  }
-}
-
-class ScreenNotify extends ChangeNotifier {
-  bool _view = false;
-  double _width = 200.0;
-  double _height = 200.0;
-
-  bool get view => _view;
-  double get width => _width;
-  double get height => _height;
-
-  void setScreen(bool view, double width, double height) {
-    _view = view;
-    _width = width;
-    _height = height;
-
-    notifyListeners();
-  }
-}
-
-final screenProvider = ChangeNotifierProvider((ref) => ScreenNotify());
-final imageProvider = ChangeNotifierProvider((ref) => ImageNotify());
-
 class Body extends ConsumerStatefulWidget {
   RegisterUser user;
 
@@ -57,113 +27,126 @@ class Body extends ConsumerStatefulWidget {
 }
 
 class _Body extends ConsumerState<Body> {
-  EncryptedSharedPreferences encryptedSharedPreferences = EncryptedSharedPreferences();
+  EncryptedSharedPreferences encryptedSharedPreferences =
+      EncryptedSharedPreferences();
   @override
   void initState() {
     super.initState();
-    final value = ref.read(screenProvider);
-    value.setScreen(false, 200, 200);
+    _getIsReanuding();
+    imageView = cambiarfile();
   }
-  Widget cargando = const Text("");
+
+  void _getIsReanuding() async {
+    final prefs = await encryptedSharedPreferences.getInstance();
+    if (prefs.getString("locationRegister") != null) {
+      setState(() {
+        _isReanuding = true;
+      });
+    }
+  }
+
+  bool _isReanuding = false;
+  Widget? cargando;
   RegisterUser user;
   _Body(this.user);
   File? antecedentes;
-  late ImageNotify imageView;
-
-
+  late Widget imageView;
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(
-      builder: (context, ref, child) {
-        EmailNotify  email = ref.watch(emailProvider);
-        ScreenNotify  screen = ref.watch(screenProvider);
-        imageView = ref.watch(imageProvider);
-        CodeNotify  code = ref.watch(codeProvider);
-        email.setEmail(user.email);
-        code.setCode(user.code);
-        return Stack(
-          children: [
-            SizedBox(
-              width: double.infinity,
-              child: Column(
-                children: [
-                  AppBar(
-                    title: const Text('Por tu seguridad y la nuestra'),
-                    centerTitle: true,
-                    leading:
-                    Container(
-                      padding: const EdgeInsets.all(5.0),
-                      child: GestureDetector(
-                          onTap: (){
-                            Navigator.pop(context);
-                          },
-                          child: const Icon(Icons.arrow_back_ios, color: jBase, size: 24,)
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: SizeConfig.screenHeight * 0.05,
-                  ),
-                  imageView.widget,
-                  SizedBox(
-                    height: SizeConfig.screenHeight * 0.05,
-                  ),
-                  SizedBox(
-                    width: SizeConfig.screenWidth * 0.2,
-                    height: SizeConfig.screenHeight * 0.1,
-                    child: IconButton(
-                      onPressed: getImage,
-                      icon: SvgPicture.asset(adjun),
-                    ),
-                  ),
-                  Text(
-                    'Antecedentes Penales (Opcional)',
-                    style: heading2,
-                    textAlign: TextAlign.center,
-                  ),
-                  const Spacer(),
-                  SizedBox(
-                      width: SizeConfig.screenWidth * 0.6,
-                      child: ButtonDefEmprendedor(
-                          text: 'Registrar',
-                          press:  () async {
-                            //lleva al Home
-                              cargando = londing();
-                              screen.setScreen(true, MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
-                          })),
-                  const Spacer(),
-                ],
+    return Stack(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: Column(
+            children: [
+              AppBar(
+                title: const Text('Por tu seguridad y la nuestra'),
+                centerTitle: true,
+                leading: Container(
+                  padding: const EdgeInsets.all(5.0),
+                  child: GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Icon(
+                        Icons.arrow_back_ios,
+                        color: jBase,
+                        size: 24,
+                      )),
+                ),
               ),
-            ),
-            Visibility(
-                visible: screen.view,
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  color: const  Color(0x80000000),
-                )),
-
-            Center(
-                child:
+              SizedBox(
+                height: SizeConfig.screenHeight * 0.05,
+              ),
+              if (!_isReanuding) imageView,
+              if (!_isReanuding)
                 SizedBox(
-                    width: screen.width,
-                    height: screen.height,
-                    child: cargando
-                ))
-          ],
-        );
-      },
+                  height: SizeConfig.screenHeight * 0.05,
+                ),
+              if (!_isReanuding)
+                SizedBox(
+                  width: SizeConfig.screenWidth * 0.2,
+                  height: SizeConfig.screenHeight * 0.1,
+                  child: IconButton(
+                    onPressed: getFile,
+                    icon: SvgPicture.asset(adjun),
+                  ),
+                ),
+              if (!_isReanuding)
+                Text(
+                  'Antecedentes Penales (Opcional)',
+                  style: heading2,
+                  textAlign: TextAlign.center,
+                ),
+              const Spacer(),
+              SizedBox(
+                  width: SizeConfig.screenWidth * 0.6,
+                  child: ButtonDefEmprendedor(
+                      text: 'Registrar',
+                      press: () async {
+                        //lleva al Home
+                        setState(() {
+                          cargando = londing();
+                        });
+                      })),
+              const Spacer(),
+            ],
+          ),
+        ),
+        Visibility(
+            visible: cargando != null,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              color: const Color(0x80000000),
+              child: Center(
+                  child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      child: cargando)),
+            )),
+      ],
     );
   }
 
   Future fases() async {
-    bool fase1 = await upload();
-    if(fase1){
+    bool fase1 = await userRegister();
+    final _prefs = await EncryptedSharedPreferences().getInstance();
+    if (fase1) {
       bool fase2 = await userRegisterData();
-      if(fase2){
-        bool fase3 = await userRegister();
-        if(fase3){
+      if (fase2) {
+        bool fase3 = await upload();
+        if (fase3) {
+          _prefs.remove("userRegister");
+          _prefs.remove("locationRegister");
+          _prefs.remove("userType");
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeScreen(user.code),
+              ),
+              (route) => false);
           return true;
         }
       }
@@ -176,22 +159,26 @@ class _Body extends ConsumerState<Body> {
       future: fases(), // a previously-obtained Future<String> or null
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
-          if(snapshot.data){
-            return Ganancias();
-          }else{
-            return const OpError(stackTrace: null,);
+          if (snapshot.data) {
+            return const Ganancias();
+          } else {
+            return const OpError(
+              stackTrace: null,
+            );
           }
         } else if (snapshot.hasError) {
-          return const OpError(stackTrace: null,);
+          return const OpError(
+            stackTrace: null,
+          );
         } else {
-          return Container (
+          return Container(
             height: 200.0,
             width: 200.0,
             margin: EdgeInsets.only(
-              left: MediaQuery.of(context).size.width*.1,
-              right: MediaQuery.of(context).size.width*.1,
-              top: MediaQuery.of(context).size.height*.25,
-              bottom: MediaQuery.of(context).size.height*.25,
+              left: MediaQuery.of(context).size.width * .1,
+              right: MediaQuery.of(context).size.width * .1,
+              top: MediaQuery.of(context).size.height * .25,
+              bottom: MediaQuery.of(context).size.height * .25,
             ),
             child: const CircularProgressIndicator(
               strokeWidth: 8,
@@ -203,19 +190,18 @@ class _Body extends ConsumerState<Body> {
   }
 
   Future<bool> userRegister() async {
-    try{
+    try {
       final FirebaseAuth auth = FirebaseAuth.instance;
-      await auth.createUserWithEmailAndPassword(email: user.email, password: user.password);
+      await auth.createUserWithEmailAndPassword(
+          email: user.email, password: user.password);
       await encryptedSharedPreferences.setString('code', user.code);
       await encryptedSharedPreferences.setString('email', user.email);
       await encryptedSharedPreferences.setString('passwd', user.password);
       await encryptedSharedPreferences.setString('typeuser', "emprendedor");
       return true;
-    }on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-
-      } else if (e.code == 'email-already-in-use') {
-      }
+      } else if (e.code == 'email-already-in-use') {}
       return false;
     } catch (e) {
       return false;
@@ -226,95 +212,130 @@ class _Body extends ConsumerState<Body> {
     String addEmail = user.email;
 
     //Produccion
-    CollectionReference users = FirebaseFirestore.instance.collection('usersEmprendedor');
+    CollectionReference users =
+        FirebaseFirestore.instance.collection('usersEmprendedor');
 
     //Desarrollo
     //CollectionReference users = FirebaseFirestore.instance.collection('usersEmprendedorDev');
 
-    return await users.doc(addEmail)
+    return await users
+        .doc(addEmail)
         .set({
-      'name': user.name.toUpperCase(),
-      'lastname': user.lastName.toUpperCase(),
-      'datebirth' : user.date,
-      'gender' : user.genero.toUpperCase(),
-      'phone' : user.phone,
-      'address' : user.address,
-      'city' : user.city,
-      'parent' : user.referenceCode,
-      'code' : user.code,
-      'nameComplete' : user.nameComplete,
-      'number_bank' : user.numberBank,
-      'number_ci' : user.numberCi,
-      'type_bank' : user.typeBank,
-      'bank' : user.bank,
-      'date_ci' : user.dateCi,
-      'date_register' : DateTime.now(),
-    })
+          'name': user.name.toUpperCase(),
+          'lastname': user.lastName.toUpperCase(),
+          'datebirth': user.date,
+          'gender': user.genero.toUpperCase(),
+          'phone': user.phone,
+          'address': user.address,
+          'city': user.city,
+          'parent': user.referenceCode,
+          'code': user.code,
+          'nameComplete': user.nameComplete,
+          'number_bank': user.numberBank,
+          'number_ci': user.numberCi,
+          'type_bank': user.typeBank,
+          'bank': user.bank,
+          'date_ci': user.dateCi,
+          'date_register': DateTime.now(),
+        })
         .then((value) => true)
         .catchError((error) => false);
   }
 
   Future<bool> upload() async {
-    try{
-
-      //Produccion
-      Reference img3 = FirebaseStorage.instance.ref().child(user.email).child('/ProfilePhoto.jpg');
-      Reference img4 = FirebaseStorage.instance.ref().child(user.email).child('/Cedula.jpg');
-      Reference img5 = FirebaseStorage.instance.ref().child(user.email).child('/CedulaR.jpg');
-
-      //Desarrollo
-      // Reference img3 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/ProfilePhoto.jpg');
-      // Reference img4 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/Cedula.jpg');
-      // Reference img5 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/CedulaR.jpg');
-
-      UploadTask uploadTaskProfilePhoto = img3.putFile(user.photoPerfil!);
-      UploadTask uploadTaskCedula = img4.putFile(user.cedula!);
-      UploadTask uploadTaskCedulaR = img5.putFile(user.cedulaR!);
-
-      if(user.documentAntecedentes != null){
+    if (_isReanuding) {
+      return true;
+    } else {
+      try {
         //Produccion
-        Reference doc1 = FirebaseStorage.instance.ref().child(user.email).child('/Antecent.pdf');
+        Reference img3 = FirebaseStorage.instance
+            .ref()
+            .child(user.email)
+            .child('/ProfilePhoto.jpg');
+        Reference img4 = FirebaseStorage.instance
+            .ref()
+            .child(user.email)
+            .child('/Cedula.jpg');
+        Reference img5 = FirebaseStorage.instance
+            .ref()
+            .child(user.email)
+            .child('/CedulaR.jpg');
 
         //Desarrollo
-        // Reference doc1 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/Antecent.pdf');
+        // Reference img3 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/ProfilePhoto.jpg');
+        // Reference img4 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/Cedula.jpg');
+        // Reference img5 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/CedulaR.jpg');
 
-        UploadTask uploadTaskAntecedent = doc1.putFile(user.documentAntecedentes!);
-        await uploadTaskAntecedent.whenComplete((){ });
+        UploadTask uploadTaskProfilePhoto = img3.putFile(user.photoPerfil!);
+        UploadTask uploadTaskCedula = img4.putFile(user.cedula!);
+        UploadTask uploadTaskCedulaR = img5.putFile(user.cedulaR!);
+
+        if (user.documentAntecedentes != null) {
+          //Produccion
+          Reference doc1 = FirebaseStorage.instance
+              .ref()
+              .child(user.email)
+              .child('/Antecent.pdf');
+
+          //Desarrollo
+          // Reference doc1 = FirebaseStorage.instance.ref("FileDev").child(user.email).child('/Antecent.pdf');
+
+          UploadTask uploadTaskAntecedent =
+              doc1.putFile(user.documentAntecedentes!);
+          await uploadTaskAntecedent.whenComplete(() {});
+        }
+
+        await uploadTaskProfilePhoto.whenComplete(() {});
+        await uploadTaskCedula.whenComplete(() {});
+        await uploadTaskCedulaR.whenComplete(() {});
+
+        user.photoPerfil?.delete(recursive: true);
+        user.documentAntecedentes?.delete(recursive: true);
+        user.cedulaR?.delete(recursive: true);
+        user.cedula?.delete(recursive: true);
+
+        return true;
+      } on FirebaseAuthException catch (error) {
+        return false;
       }
-
-      await uploadTaskProfilePhoto.whenComplete((){ });
-      await uploadTaskCedula.whenComplete((){ });
-      await uploadTaskCedulaR.whenComplete((){ });
-
-    user.photoPerfil?.delete(recursive: true);
-    user.documentAntecedentes?.delete(recursive: true);
-      user.cedulaR?.delete(recursive: true);
-      user.cedula?.delete(recursive: true);
-
-      return true;
-    }on FirebaseAuthException catch(error){
-      return false;
     }
   }
 
-  Future getImage () async {
-    var tempFile = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['pdf',]);
+  Future getFile() async {
+    final _prefs = await EncryptedSharedPreferences().getInstance();
+    _prefs.setString("userRegister", jsonEncode(user.toJson()));
+    _prefs.setString("locationRegister", "antecedentsFile");
+    var tempFile = await FilePicker.platform
+        .pickFiles(type: FileType.custom, allowedExtensions: [
+      'pdf',
+    ]);
     antecedentes = File(tempFile!.paths[0].toString());
-    imageView.setImage(cambiarmage());
+    imageView = cambiarfile();
+    setState(() {});
   }
 
-  Widget cambiarmage(){
-
-    if(antecedentes != null){
+  Widget cambiarfile() {
+    if (antecedentes != null) {
       user.documentAntecedentes = antecedentes;
-      return  Center(
-          child: Text(antecedentes!.path.split('/').last, style: const TextStyle(fontWeight: FontWeight.bold, color: blue), textAlign: TextAlign.center,)
-      );
-    }else{
-      user.documentAntecedentes = null;
-      return SvgPicture.asset(antePen, height: SizeConfig.screenHeight * 0.50);
+      return Center(
+          child: Text(
+        antecedentes!.path.split('/').last,
+        style: const TextStyle(fontWeight: FontWeight.bold, color: blue),
+        textAlign: TextAlign.center,
+      ));
+    } else {
+      if (user.documentAntecedentes != null) {
+        return Center(
+            child: Text(
+          user.documentAntecedentes!.path.split('/').last,
+          style: const TextStyle(fontWeight: FontWeight.bold, color: blue),
+          textAlign: TextAlign.center,
+        ));
+      } else {
+        user.documentAntecedentes = null;
+        return SvgPicture.asset(antePen,
+            height: SizeConfig.screenHeight * 0.50);
+      }
     }
   }
 }

@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:joiedriver/register_login_chofer/registro/user_data_register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,21 +10,21 @@ import '../../conts.dart';
 import '../../size_config.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+
 class Body extends StatefulWidget {
-  RegisterUser  user;
+  RegisterUser user;
   Body(this.user, {Key? key}) : super(key: key);
   @override
-  createState() =>  BodyE(user);
+  createState() => BodyE(user);
 }
 
 class BodyE extends State<Body> {
   RegisterUser user;
   BodyE(this.user);
   File? phofilePhoto;
-  late Widget imageWiew ;
+  late Widget imageWiew;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     imageWiew = cambiarmage();
   }
@@ -58,7 +61,7 @@ class BodyE extends State<Body> {
               child: ButtonDefChofer(
                   text: 'Siguiente',
                   press: () {
-                    if(user.photoPerfil != null){
+                    if (user.photoPerfil != null) {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -73,26 +76,35 @@ class BodyE extends State<Body> {
     );
   }
 
-  Future getImage () async {
+  Future getImage() async {
+    final _prefs = await EncryptedSharedPreferences().getInstance();
+    _prefs.setString("userRegister", jsonEncode(user.toJson()));
+    _prefs.setString("locationRegister", "profilePhoto");
+    _prefs.setString("userType", "chofer");
     ImagePicker imegaTemp = ImagePicker();
-    var tempImage = await imegaTemp.pickImage(source: ImageSource.camera, imageQuality: 90,
-      maxHeight: 800,);
-    phofilePhoto =  File(tempImage!.path);
-    setState(()  {
-
+    var tempImage = await imegaTemp.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 90,
+      maxHeight: 800,
+    );
+    phofilePhoto = File(tempImage!.path);
+    setState(() {
       imageWiew = cambiarmage();
-
     });
   }
 
-  Widget cambiarmage(){
-
-    if(phofilePhoto != null){
+  Widget cambiarmage() {
+    if (phofilePhoto != null) {
       user.photoPerfil = phofilePhoto;
-      return  Image.file(phofilePhoto!, height: SizeConfig.screenHeight * 0.50);
-    }else{
-      user.photoPerfil = null;
-      return SvgPicture.asset(profilePhoto, height: SizeConfig.screenHeight * 0.50);
+      return Image.file(phofilePhoto!, height: SizeConfig.screenHeight * 0.50);
+    } else {
+      if (user.photoPerfil != null) {
+        return Image.file(user.photoPerfil!,
+            height: SizeConfig.screenHeight * 0.50);
+      } else {
+        return SvgPicture.asset(profilePhoto,
+            height: SizeConfig.screenHeight * 0.50);
+      }
     }
   }
 }

@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:joiedriver/register_login_chofer/registro/user_data_register.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -7,19 +10,19 @@ import '../../size_config.dart';
 import '../../tarjeta_propiedad/card_propierty.dart';
 import '/components/default_button_chofer.dart';
 import 'dart:io';
+
 class Body extends StatefulWidget {
   RegisterUser user;
-  Body( this.user, {Key? key}) : super(key: key);
+  Body(this.user, {Key? key}) : super(key: key);
   @override
-  createState() =>  _Body(this.user);
+  createState() => _Body(this.user);
 }
-
 
 class _Body extends State<Body> {
   RegisterUser user;
-  _Body( this.user);
+  _Body(this.user);
   File? FileAntecedentes;
-  late Widget imageWiew ;
+  late Widget imageWiew;
   bool varInit = true;
   @override
   void initState() {
@@ -27,6 +30,7 @@ class _Body extends State<Body> {
     super.initState();
     imageWiew = cambiarfile();
   }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -36,9 +40,7 @@ class _Body extends State<Body> {
           SizedBox(
             height: SizeConfig.screenHeight * 0.05,
           ),
-
           imageWiew,
-
           SizedBox(
             height: SizeConfig.screenHeight * 0.05,
           ),
@@ -61,10 +63,10 @@ class _Body extends State<Body> {
               child: ButtonDefChofer(
                   text: 'Siguiente',
                   press: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CardPropierty(user)));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CardPropierty(user)));
                   })),
           const Spacer(),
         ],
@@ -72,32 +74,42 @@ class _Body extends State<Body> {
     );
   }
 
-
-
-  Future getFile () async {
-
-    var tempFile = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf',]);
+  Future getFile() async {
+    final _prefs = await EncryptedSharedPreferences().getInstance();
+    _prefs.setString("userRegister", jsonEncode(user.toJson()));
+    _prefs.setString("locationRegister", "antecedentsFile");
+    var tempFile = await FilePicker.platform
+        .pickFiles(type: FileType.custom, allowedExtensions: [
+      'pdf',
+    ]);
     FileAntecedentes = File(tempFile!.paths[0].toString());
     setState(() {
       imageWiew = cambiarfile();
     });
-
   }
 
-
-
-  Widget cambiarfile(){
-
-    if(FileAntecedentes != null ){
+  Widget cambiarfile() {
+    if (FileAntecedentes != null) {
       user.documentAntecedentes = FileAntecedentes;
-      return  Center(
-          child: Text(FileAntecedentes!.path.split('/').last, style: const TextStyle(fontWeight: FontWeight.bold, color: blue), textAlign: TextAlign.center,)
-      );
-    }else{
-      user.documentAntecedentes = null;
-      return SvgPicture.asset(antePen, height: SizeConfig.screenHeight * 0.50);
+      return Center(
+          child: Text(
+        FileAntecedentes!.path.split('/').last,
+        style: const TextStyle(fontWeight: FontWeight.bold, color: blue),
+        textAlign: TextAlign.center,
+      ));
+    } else {
+      if (user.documentAntecedentes != null) {
+        return Center(
+            child: Text(
+          user.documentAntecedentes!.path.split('/').last,
+          style: const TextStyle(fontWeight: FontWeight.bold, color: blue),
+          textAlign: TextAlign.center,
+        ));
+      } else {
+        user.documentAntecedentes = null;
+        return SvgPicture.asset(antePen,
+            height: SizeConfig.screenHeight * 0.50);
+      }
     }
   }
 }

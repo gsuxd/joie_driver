@@ -1,4 +1,5 @@
 import 'dart:io';
+
 class RegisterUser {
   final String name;
   final String lastName;
@@ -14,7 +15,7 @@ class RegisterUser {
   File? documentAntecedentes;
   File? cedulaR;
 
-  RegisterUser( {
+  RegisterUser({
     required this.name,
     required this.lastName,
     required this.email,
@@ -30,5 +31,42 @@ class RegisterUser {
     required this.cedulaR,
   });
 
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'lastName': lastName,
+      'email': email,
+      'address': address,
+      'code': code,
+      'phone': phone,
+      'date': date,
+      'password': password,
+      'genero': genero,
+      'documentAntecedentes': documentAntecedentes?.path,
+      'photoPerfil': photoPerfil?.path,
+      'cedulaR': cedulaR?.path,
+      'documentId': documentId?.path,
+    };
+  }
 
+  factory RegisterUser.fromJson(Map<String, dynamic> data) {
+    return RegisterUser(
+      documentId: data['documentId'] != null ? File(data['documentId']) : null,
+      name: data['name'],
+      lastName: data['lastName'],
+      email: data['email'],
+      address: data['address'],
+      code: data['code'],
+      phone: data['phone'],
+      date: data['date'],
+      password: data['password'],
+      genero: data['genero'],
+      documentAntecedentes: data['documentAntecedentes'] != null
+          ? File(data['documentAntecedentes'])
+          : null,
+      photoPerfil:
+          data['photoPerfil'] != null ? File(data['photoPerfil']) : null,
+      cedulaR: data['cedulaR'] != null ? File(data['cedulaR']) : null,
+    );
+  }
 }

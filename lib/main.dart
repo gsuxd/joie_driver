@@ -7,10 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:joiedriver/register_login_chofer/conts.dart';
+import 'package:joiedriver/register_login_chofer/helpers/recoverProgress.dart';
 import 'package:joiedriver/register_login_chofer/splash/splash_screen.dart';
 import 'package:joiedriver/register_login_chofer/theme.dart';
 import 'package:joiedriver/register_login_emprendedor/app_screens/auth_biometric.dart';
-import 'package:joiedriver/singletons/user_data.dart';
+import 'package:joiedriver/register_login_emprendedor/helpers/recoverProgress.dart';
+import 'package:joiedriver/register_login_user/helpers/recoverProgress.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_player/video_player.dart';
 import 'colors.dart';
@@ -24,16 +26,6 @@ Future<void> main() async {
     if (defaultTargetPlatform == TargetPlatform.android) {
       AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
     }
-    FirebaseAuth.instance.authStateChanges().listen((event) async {
-      if (event != null) {
-        await registerSingleton();
-      } else {
-        if (GetIt.I.isRegistered<UserData>() &&
-            FirebaseAuth.instance.currentUser != null) {
-          GetIt.I.unregister<UserData>();
-        }
-      }
-    });
     runApp(const ProviderScope(
       child: MyApp(),
     ));
@@ -77,7 +69,6 @@ class MyApp extends StatelessWidget {
           bodyText2: TextStyle(color: Color.fromARGB(255, 6, 38, 63)),
         ),
       ),
-
       darkTheme: ThemeData(
         //Se indica que el tema tiene un brillo oscuro
         brightness: Brightness.dark,
@@ -106,9 +97,25 @@ class _MyHomePageState extends State<MyHomePage> {
   late double longitude;
   late double latitude;
 
+  void _resume(context) async {
+    final _prefs = await EncryptedSharedPreferences().getInstance();
+    if (_prefs.getString("userType") != null) {
+      switch (_prefs.getString("userType")) {
+        case "chofer":
+          recoverProgressChofer(context);
+          break;
+        case "emprendedor":
+          recoverProgressEmprendedor(context);
+          break;
+        default:
+          recoverProgressPasajero(context);
+      }
+    }
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
+    _resume(context);
     super.initState();
     //goPrincipalMenu(context);
     // Pointing the video controller to our local asset.
@@ -196,27 +203,31 @@ class _MyHomePageState extends State<MyHomePage> {
       String passwd = await encryptedSharedPreferences.getString('passwd');
       String google = await encryptedSharedPreferences.getString('google');
 
-      if (typeUser == "emprendedor"  || typeUser == "chofer") {
+      if (typeUser == "emprendedor" || typeUser == "chofer") {
         try {
           var result = await InternetAddress.lookup('google.com');
           if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-            if(google == "true"){
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const AuthBiometric()));
+            if (google == "true") {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AuthBiometric()));
               return;
             }
             try {
               await FirebaseAuth.instance
                   .signInWithEmailAndPassword(email: email, password: passwd);
               initScreen = false;
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const AuthBiometric()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AuthBiometric()));
             } on FirebaseAuthException catch (e) {
               if (e.code == 'user-not-found') {
                 //showToast("Este Email no esta registrado");
               } else if (e.code == 'wrong-password') {
                 //showToast("Contraseña Incorrecta");
-              }else{
+              } else {
                 showToast(e.toString());
               }
             } catch (e) {
@@ -227,25 +238,24 @@ class _MyHomePageState extends State<MyHomePage> {
           showToast("Sin Conexión");
         }
       }
-      if(initScreen){
+      if (initScreen) {
         Navigator.push(
             context,
             MaterialPageRoute(
-              //builder: (context) => MapaMenu(longitude: longitude, latitude: latitude,))));
-              //builder: (context) => const SplashScreen()
+                //builder: (context) => MapaMenu(longitude: longitude, latitude: latitude,))));
+                //builder: (context) => const SplashScreen()
                 builder: (context) => const SplashScreen()
-              // builder: (context) {
-              //   if (FirebaseAuth.instance.currentUser != null) {
-              //     if (GetIt.I.get<UserData>().type != "users") {
-              //       return const PerfilUsuario();
-              //     }
-              //     return PerfilChofer();
-              //   }
-              //   return const ChooseScreen();
-              // }
-            ));
+                // builder: (context) {
+                //   if (FirebaseAuth.instance.currentUser != null) {
+                //     if (GetIt.I.get<UserData>().type != "users") {
+                //       return const PerfilUsuario();
+                //     }
+                //     return PerfilChofer();
+                //   }
+                //   return const ChooseScreen();
+                // }
+                ));
       }
-
     });
   }
 }
