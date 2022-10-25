@@ -1,12 +1,14 @@
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:get_it/get_it.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:joiedriver/metodos_pago/components/nuevo_metodo.dart';
 import 'package:joiedriver/pedidos.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
 import 'package:joiedriver/singletons/user_data.dart';
 import 'asistencia_tecnica.dart';
+import 'blocs/user/user_bloc.dart';
 import 'colors.dart';
 import 'main.dart';
 
@@ -44,13 +46,14 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
       try {
         final newImage = await FirebaseStorage.instance
             .ref()
-            .child(GetIt.I.get<UserData>().email)
+            .child((context.read<UserBloc>().state as UserLogged).user.email)
             .child("ProfilePhoto.jpg")
             .putFile(image);
         _newImage = await newImage.ref.getDownloadURL();
         setState(() {});
         if (_newImage != null) {
-          GetIt.I.get<UserData>().profilePicture = _newImage!;
+          (context.read<UserBloc>().state as UserLogged).user.profilePicture =
+              _newImage!;
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -71,10 +74,10 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
         appBar: AppBar(
           backgroundColor: blue,
           leading: Container(
-            padding: const EdgeInsets.all(5.0),
+            padding: EdgeInsets.all(5.0),
             child: GestureDetector(
                 onTap: () {},
-                child: const Icon(
+                child: Icon(
                   Icons.arrow_back_ios,
                   color: Colors.white,
                   size: 40,
@@ -83,7 +86,7 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
           title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Text(
               state,
-              style: const TextStyle(
+              style: TextStyle(
                   fontFamily: "Monserrat",
                   fontWeight: FontWeight.bold,
                   fontSize: 25.0),
@@ -125,8 +128,10 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                       child: Stack(children: [
                         CircleAvatar(
                           backgroundImage: !_isLoading
-                              ? NetworkImage(
-                                  GetIt.I.get<UserData>().profilePicture)
+                              ? NetworkImage(context.select<UserBloc, String>(
+                                  (val) => (val.state as UserLogged)
+                                      .user
+                                      .profilePicture))
                               : null,
                           radius: 50,
                           child: _isLoading
@@ -168,17 +173,25 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                 Container(
                   height: 20.0,
                 ),
-                item(GetIt.I.get<UserData>().name,
+                item(
+                    context.select<UserBloc, String>(
+                        (val) => (val.state as UserLogged).user.name),
                     "assets/images/nombre_y_apellido.svg"),
                 Container(
                   height: 20.0,
                 ),
-                item(GetIt.I.get<UserData>().lastName,
+                item(
+                    context.select<UserBloc, String>(
+                        (val) => (val.state as UserLogged).user.lastName),
                     "assets/images/nombre_y_apellido.svg"),
                 Container(
                   height: 20.0,
                 ),
-                item(GetIt.I.get<UserData>().birthDate.substring(0, 10),
+                item(
+                    context
+                        .select<UserBloc, String>(
+                            (val) => (val.state as UserLogged).user.birthDate)
+                        .substring(0, 10),
                     "assets/images/edad.svg"),
                 Container(
                   height: 20.0,
@@ -188,32 +201,38 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                   height: 20.0,
                 ),
                 item(
-                    GetIt.I.get<UserData>().genero, "assets/images/genero.svg"),
+                    context.select<UserBloc, String>(
+                        (val) => (val.state as UserLogged).user.genero),
+                    "assets/images/genero.svg"),
                 Container(
                   height: 20.0,
                 ),
                 itemCorreo(
-                    GetIt.I.get<UserData>().email, "assets/images/correo.svg"),
+                    context.select<UserBloc, String>(
+                        (val) => (val.state as UserLogged).user.email),
+                    "assets/images/correo.svg"),
                 Container(
                   height: 20.0,
                 ),
-                // if (GetIt.I.get<UserData>().type != "usersPasajeros")
-                //   Row(
-                //     children: [
-                //       Container(
-                //         margin: const EdgeInsets.only(left: 14),
-                //         child: ElevatedButton.icon(
-                //             onPressed: () {
-                //               Navigator.of(context).push(
-                //                 MaterialPageRoute(
-                //                     builder: (context) => const NuevoMetodo()),
-                //               );
-                //             },
-                //             icon: const Icon(Icons.monetization_on_outlined),
-                //             label: const Text("Metodos de pago")),
-                //       ),
-                //     ],
-                //   )
+                if (context.select<UserBloc, String>(
+                        (val) => (val.state as UserLogged).user.type) !=
+                    "usersPasajeros")
+                  Row(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(left: 14),
+                        child: ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) => const NuevoMetodo()),
+                              );
+                            },
+                            icon: const Icon(Icons.monetization_on_outlined),
+                            label: const Text("Metodos de pago")),
+                      ),
+                    ],
+                  )
               ],
             ),
             Positioned(bottom: 10, left: 0.0, child: bottomNavBar(context))
@@ -247,7 +266,7 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                 },
                 child: Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: Colors.black54,
                       fontFamily: "Monserrat",
                       fontSize: 16.0),
@@ -268,11 +287,11 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                 onChanged: (text) {
                   setState(() {});
                 },
-                style: const TextStyle(
+                style: TextStyle(
                     color: Colors.black45,
                     fontFamily: "Monserrat",
                     fontSize: 12),
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: "Ciudad",
                   labelText: '',
                   labelStyle: TextStyle(fontFamily: "Monserrat", fontSize: 12),
@@ -316,7 +335,7 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                 },
                 child: Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: Colors.black54,
                       fontFamily: "Monserrat",
                       fontSize: 16.0),
@@ -337,11 +356,11 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                 onChanged: (text) {
                   setState(() {});
                 },
-                style: const TextStyle(
+                style: TextStyle(
                     color: Colors.black45,
                     fontFamily: "Monserrat",
                     fontSize: 12),
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: "Correo",
                   labelText: '',
                   labelStyle: TextStyle(fontFamily: "Monserrat", fontSize: 12),
@@ -377,7 +396,7 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
           ),
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
                 color: Colors.black54, fontFamily: "Monserrat", fontSize: 16.0),
           )
         ],
@@ -385,24 +404,24 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
     );
   }
 
-  SizedBox bottomNavBar(BuildContext context) {
-    return SizedBox(
+  Widget bottomNavBar(BuildContext context) {
+    return Container(
       width: MediaQuery.of(context).size.width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ElevatedButton(
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const MyApp()));
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => MyApp()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: const EdgeInsets.only(
-                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding:
+                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_inicio,
-              shape: const CircleBorder(),
+              shape: CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/inicio.svg",
@@ -420,11 +439,11 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: const EdgeInsets.only(
-                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding:
+                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_historial,
-              shape: const CircleBorder(),
+              shape: CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/historial2.svg",
@@ -440,15 +459,15 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const AsistenciaTecnicaUsuario()));
+                      builder: (context) => AsistenciaTecnicaUsuario()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: const EdgeInsets.only(
-                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding:
+                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_ingresos,
-              shape: const CircleBorder(),
+              shape: CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/asistencia_tecnica.svg",
@@ -462,19 +481,17 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
           ElevatedButton(
             onPressed: () {
               setState(() {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const PerfilUsuario()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => PerfilUsuario()));
               });
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: const EdgeInsets.only(
-                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              padding:
+                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_perfil,
-              shape: const CircleBorder(),
+              shape: CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/perfil.svg",

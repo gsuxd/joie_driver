@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:joiedriver/blocs/user/user_bloc.dart';
 import 'package:joiedriver/register_login_chofer/registro/user_data_register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -29,7 +31,7 @@ class _Body extends State<Body> {
 
   void _getIsReanuding() async {
     final prefs = await encryptedSharedPreferences.getInstance();
-    if (prefs.getString("locationRegister") != null) {
+    if (prefs.getBool("isFailLogin") != null) {
       setState(() {
         _isReanuding = true;
       });
@@ -136,12 +138,10 @@ class _Body extends State<Body> {
           _prefs.remove("userRegister");
           _prefs.remove("locationRegister");
           _prefs.remove("userType");
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomeScreen(user.code),
-              ),
-              (route) => false);
+          _prefs.remove("isFailLogin");
+          context
+              .read<UserBloc>()
+              .add(LoginUserEvent(user.email, user.password, context));
           return true;
         }
       }
@@ -155,7 +155,7 @@ class _Body extends State<Body> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data) {
-            return HomeScreen(user.code);
+            return const HomeScreen();
           } else {
             return const OpError(
               stackTrace: null,

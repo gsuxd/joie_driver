@@ -1,9 +1,11 @@
-import 'package:get_it/get_it.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joiedriver/pedidos.dart';
 import 'package:firebase_database/firebase_database.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
+
+import 'blocs/user/user_bloc.dart';
 import 'colors.dart';
 import 'estatics.dart';
 import 'mapa_principal.dart';
@@ -37,7 +39,7 @@ class _ProfileState extends State<Profile> {
               color: Colors.white,
             ),
           ),
-          title: const Center(
+          title: Center(
             child: Text(
               "Tu Perfil",
               style: TextStyle(
@@ -47,7 +49,7 @@ class _ProfileState extends State<Profile> {
               textAlign: TextAlign.center,
             ),
           ),
-          actions: [conectSwitch(context)],
+          actions: [ConectSwitch(context)],
         ),
         backgroundColor: Colors.white,
         body: Stack(
@@ -66,7 +68,7 @@ class _ProfileState extends State<Profile> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           "Hola",
                           style: TextStyle(
                               fontSize: 16,
@@ -75,8 +77,9 @@ class _ProfileState extends State<Profile> {
                               color: blue),
                         ),
                         Text(
-                          GetIt.I.get<UserData>().name,
-                          style: const TextStyle(
+                          context.select<UserBloc, String>(
+                              (val) => (val.state as UserLogged).user.name),
+                          style: TextStyle(
                               fontSize: 16,
                               fontFamily: "Monserrat",
                               fontWeight: FontWeight.bold,
@@ -93,8 +96,9 @@ class _ProfileState extends State<Profile> {
                     ),
                     CircleAvatar(
                       radius: 40,
-                      backgroundImage:
-                          NetworkImage(GetIt.I.get<UserData>().profilePicture),
+                      backgroundImage: NetworkImage(
+                          context.select<UserBloc, String>((val) =>
+                              (val.state as UserLogged).user.profilePicture)),
                     ),
                     Container(
                       width: 10,
@@ -106,14 +110,14 @@ class _ProfileState extends State<Profile> {
                 ),
                 Container(
                   color: blue,
-                  padding: const EdgeInsets.only(
+                  padding: EdgeInsets.only(
                       top: 5.0, bottom: 5.0, right: 5.0, left: 5.0),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       itemMenu("Editar perfil", "assets/images/profile.svg"),
-                      itemMenu("Asistencia\nTecnica",
+                      itemMenu("Asistencia\Tecnica",
                           "assets/images/asistencia_tecnica.svg"),
                       itemMenu(
                           "Notificaciones", "assets/images/notificaciones.svg"),
@@ -129,7 +133,7 @@ class _ProfileState extends State<Profile> {
                     Container(
                       width: 10.0,
                     ),
-                    const Text(
+                    Text(
                       "Mi Cuenta",
                       style: TextStyle(
                           color: Colors.black87,
@@ -149,7 +153,7 @@ class _ProfileState extends State<Profile> {
                     Container(
                       width: 20.0,
                     ),
-                    const Text(
+                    Text(
                       "Saldo",
                       style: TextStyle(
                           color: Colors.black87,
@@ -160,7 +164,7 @@ class _ProfileState extends State<Profile> {
                     Container(
                       width: 100.0,
                     ),
-                    const Text(
+                    Text(
                       "56.000 \$",
                       style: TextStyle(
                           fontSize: 16,
@@ -183,7 +187,7 @@ class _ProfileState extends State<Profile> {
                     Container(
                       width: 20.0,
                     ),
-                    const Text(
+                    Text(
                       "Calificacion",
                       style: TextStyle(
                           color: Colors.black87,
@@ -191,15 +195,17 @@ class _ProfileState extends State<Profile> {
                           fontFamily: "Monserrat",
                           fontWeight: FontWeight.bold),
                     ),
-                    FutureBuilder(
-                      future: stars(),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<Widget> snapshot) {
-                        if (snapshot.hasData) {
-                          return snapshot.data!;
-                        }
-                        return Container();
-                      },
+                    Container(
+                      child: FutureBuilder(
+                        future: stars(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<Widget> snapshot) {
+                          if (snapshot.hasData) {
+                            return snapshot.data!;
+                          }
+                          return Container();
+                        },
+                      ),
                     ),
                     Container(
                       width: 10.0,
@@ -209,7 +215,7 @@ class _ProfileState extends State<Profile> {
                     ),
                   ],
                 ),
-                const Divider(
+                Divider(
                   height: 20,
                   color: Colors.black54,
                   thickness: 4,
@@ -219,7 +225,7 @@ class _ProfileState extends State<Profile> {
                     Container(
                       width: 10.0,
                     ),
-                    const Text(
+                    Text(
                       "Refiere y Gana",
                       style: TextStyle(
                           color: Colors.black87,
@@ -239,7 +245,7 @@ class _ProfileState extends State<Profile> {
                     Container(
                       width: 20.0,
                     ),
-                    const Text(
+                    Text(
                       "Invitar Parcero",
                       style: TextStyle(
                           color: Colors.black87,
@@ -250,7 +256,7 @@ class _ProfileState extends State<Profile> {
                     Container(
                       width: 70.0,
                     ),
-                    const Text(
+                    Text(
                       " ",
                       style: TextStyle(
                           fontSize: 16,
@@ -273,7 +279,7 @@ class _ProfileState extends State<Profile> {
                     Container(
                       width: 20.0,
                     ),
-                    const Text(
+                    Text(
                       "Conoce Nuestros\nbeneficios",
                       style: TextStyle(
                           color: Colors.black87,
@@ -284,7 +290,7 @@ class _ProfileState extends State<Profile> {
                     Container(
                       width: 50.0,
                     ),
-                    const Text(
+                    Text(
                       " ",
                       style: TextStyle(
                           fontSize: 16,
@@ -309,26 +315,27 @@ class _ProfileState extends State<Profile> {
 
   Future<Row> stars() async {
     Query calificacionPonderada = FirebaseDatabase.instance
-        .ref()
+        .reference()
         .child('calificaciones/$usuario/calificacion');
     return calificacionPonderada.get().then((value) => dibujarEstrellas(3.7));
   }
 
   Row dibujarEstrellas(calificacion) {
+    print(calificacion);
     if (calificacion == null) {
       return Row(
         children: [
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -341,17 +348,17 @@ class _ProfileState extends State<Profile> {
     if (calificacion > 0 && calificacion < 0.5) {
       return Row(
         children: [
-          const Icon(Icons.star_border_rounded),
-          const Icon(Icons.star_border_rounded),
-          const Icon(Icons.star_border_rounded),
-          const Icon(Icons.star_border_rounded),
-          const Icon(Icons.star_border_rounded),
+          Icon(Icons.star_border_rounded),
+          Icon(Icons.star_border_rounded),
+          Icon(Icons.star_border_rounded),
+          Icon(Icons.star_border_rounded),
+          Icon(Icons.star_border_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -366,17 +373,17 @@ class _ProfileState extends State<Profile> {
           double.parse((calificacion).toStringAsFixed(1)).toString();
       return Row(
         children: [
-          const Icon(Icons.star_half_rounded),
-          const Icon(Icons.star_border_rounded),
-          const Icon(Icons.star_border_rounded),
-          const Icon(Icons.star_border_rounded),
-          const Icon(Icons.star_border_rounded),
+          Icon(Icons.star_half_rounded),
+          Icon(Icons.star_border_rounded),
+          Icon(Icons.star_border_rounded),
+          Icon(Icons.star_border_rounded),
+          Icon(Icons.star_border_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -391,17 +398,17 @@ class _ProfileState extends State<Profile> {
           double.parse((calificacion).toStringAsFixed(1)).toString();
       return Row(
         children: [
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_border_rounded),
-          const Icon(Icons.star_border_rounded),
-          const Icon(Icons.star_border_rounded),
-          const Icon(Icons.star_border_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_border_rounded),
+          Icon(Icons.star_border_rounded),
+          Icon(Icons.star_border_rounded),
+          Icon(Icons.star_border_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -416,17 +423,17 @@ class _ProfileState extends State<Profile> {
           double.parse((calificacion).toStringAsFixed(1)).toString();
       return Row(
         children: [
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_half_rounded),
-          const Icon(Icons.star_border_rounded),
-          const Icon(Icons.star_border_rounded),
-          const Icon(Icons.star_border_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_half_rounded),
+          Icon(Icons.star_border_rounded),
+          Icon(Icons.star_border_rounded),
+          Icon(Icons.star_border_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -441,17 +448,17 @@ class _ProfileState extends State<Profile> {
           double.parse((calificacion).toStringAsFixed(1)).toString();
       return Row(
         children: [
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_border_rounded),
-          const Icon(Icons.star_border_rounded),
-          const Icon(Icons.star_border_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_border_rounded),
+          Icon(Icons.star_border_rounded),
+          Icon(Icons.star_border_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -466,17 +473,17 @@ class _ProfileState extends State<Profile> {
           double.parse((calificacion).toStringAsFixed(1)).toString();
       return Row(
         children: [
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_half_rounded),
-          const Icon(Icons.star_border_rounded),
-          const Icon(Icons.star_border_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_half_rounded),
+          Icon(Icons.star_border_rounded),
+          Icon(Icons.star_border_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -491,17 +498,17 @@ class _ProfileState extends State<Profile> {
           double.parse((calificacion).toStringAsFixed(1)).toString();
       return Row(
         children: [
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_border_rounded),
-          const Icon(Icons.star_border_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_border_rounded),
+          Icon(Icons.star_border_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -516,17 +523,17 @@ class _ProfileState extends State<Profile> {
           double.parse((calificacion).toStringAsFixed(1)).toString();
       return Row(
         children: [
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_half_rounded),
-          const Icon(Icons.star_border_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_half_rounded),
+          Icon(Icons.star_border_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -541,17 +548,17 @@ class _ProfileState extends State<Profile> {
           double.parse((calificacion).toStringAsFixed(1)).toString();
       return Row(
         children: [
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_border_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_border_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -566,17 +573,17 @@ class _ProfileState extends State<Profile> {
           double.parse((calificacion).toStringAsFixed(1)).toString();
       return Row(
         children: [
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_half_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_half_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -590,17 +597,17 @@ class _ProfileState extends State<Profile> {
           double.parse((calificacion).toStringAsFixed(1)).toString();
       return Row(
         children: [
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_rounded),
-          const Icon(Icons.star_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_rounded),
+          Icon(Icons.star_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -611,7 +618,7 @@ class _ProfileState extends State<Profile> {
     }
 
     return Row(
-      children: const [Icon(Icons.star_rounded)],
+      children: [Icon(Icons.star_rounded)],
     );
   }
 
@@ -627,7 +634,7 @@ class _ProfileState extends State<Profile> {
           ),
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 12,
@@ -639,8 +646,8 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  SizedBox bottomNavBar(BuildContext context) {
-    return SizedBox(
+  Widget bottomNavBar(BuildContext context) {
+    return Container(
       width: MediaQuery.of(context).size.width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -661,10 +668,10 @@ class _ProfileState extends State<Profile> {
             style: ElevatedButton.styleFrom(
               elevation: 0,
               padding:
-                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_inicio,
-              shape: const CircleBorder(),
+              shape: CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/inicio.svg",
@@ -683,10 +690,10 @@ class _ProfileState extends State<Profile> {
             style: ElevatedButton.styleFrom(
               elevation: 0,
               padding:
-                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_historial,
-              shape: const CircleBorder(),
+              shape: CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/historial.svg",
@@ -700,15 +707,15 @@ class _ProfileState extends State<Profile> {
           ElevatedButton(
             onPressed: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => const Statics()));
+                  context, MaterialPageRoute(builder: (context) => Statics()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
               padding:
-                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_ingresos,
-              shape: const CircleBorder(),
+              shape: CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/ingresos.svg",
@@ -731,10 +738,10 @@ class _ProfileState extends State<Profile> {
             style: ElevatedButton.styleFrom(
               elevation: 0,
               padding:
-                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               primary: color_icon_perfil,
-              shape: const CircleBorder(),
+              shape: CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/perfil.svg",
@@ -747,7 +754,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget conectSwitch(BuildContext context) {
+  Widget ConectSwitch(BuildContext context) {
     return Switch(
       value: isSwitched,
       onChanged: (value) {

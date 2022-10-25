@@ -1,11 +1,12 @@
 import 'dart:convert';
 
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:joiedriver/blocs/user/user_bloc.dart';
 import 'package:joiedriver/register_login_emprendedor/registro/user_data_register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../components/default_button_emprendedor.dart';
-import '../../../components/states/states.dart';
 import '../../../home/home.dart';
 import '../../conts.dart';
 import '../../error/error_screen.dart';
@@ -141,12 +142,9 @@ class _Body extends ConsumerState<Body> {
           _prefs.remove("userRegister");
           _prefs.remove("locationRegister");
           _prefs.remove("userType");
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomeScreen(user.code),
-              ),
-              (route) => false);
+          context
+              .read<UserBloc>()
+              .add(LoginUserEvent(user.email, user.password, context));
           return true;
         }
       }

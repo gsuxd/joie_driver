@@ -1,35 +1,54 @@
-import 'package:joiedriver/register_login_user/share/comparte.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import '../mapa_principal.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:joiedriver/blocs/position/position_bloc.dart';
+import 'package:joiedriver/blocs/user/user_bloc.dart';
+import 'package:joiedriver/home_user/components/appBar.dart';
 import '/components/navigation_drawer.dart';
-import 'package:permission_handler/permission_handler.dart';
-
+import 'bloc/cars_bloc.dart';
+import 'components/map_view_pasajeros.dart';
 
 class HomeScreenUser extends StatefulWidget {
   static String routeName = '/home';
 
-  HomeScreenUser({Key? key}) : super(key: key);
+  const HomeScreenUser({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreenUser> createState() => _HomeScreenState();
+  State<HomeScreenUser> createState() => _HomeScreenUserState();
 }
 
-class _HomeScreenState extends State<HomeScreenUser> {
+class _HomeScreenUserState extends State<HomeScreenUser> {
+  @override
+  void initState() {
+    context.read<PositionBloc>().add(GetPositionEvent(context));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // void initState() {
-    //   super.initState();
-    //   goPrincipalMenu(context);
-    // }
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('En Desarrollo'),
+      appBar: (context.watch<UserBloc>().state) is UserLogged
+          ? const Appbar()
+          : null,
+      drawer: const NavigationDrawer(),
+      body: BlocBuilder<PositionBloc, PositionState>(
+        builder: (context, state) {
+          if (state is PositionLoading || state is PositionInitial) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (state is PositionError) {
+            return const Center(
+              child: Text('Error'),
+            );
+          }
+          return BlocProvider(
+            create: (context) => CarsBloc()
+              ..add(LoadNearCars((state as PositionObtained).location)),
+            child: const MapViewPasajeros(),
+          );
+        },
       ),
-      //drawer: const NavigationDrawer(),
-      body: ComparteYGana(),
     );
   }
 }

@@ -28,7 +28,7 @@ class NoAccountChofer extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const TerminosCondiciones()));
+                    builder: (context) => const TerminosCondicionesChofer()));
           },
           child: Text(
             'Registrate',
