@@ -89,12 +89,10 @@ class _SignInForm extends State<SignInForm> {
 
                 //TODO: Validador del boton en el login
                 if (_formKey.currentState!.validate()) {
-                  print("entra");
                   _formKey.currentState!.save();
                 try {
                   var result = await  InternetAddress.lookup('google.com');
                   if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-                    print('connected');
                     try {
                       UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
                           email: _email.text.toString(),
@@ -119,7 +117,6 @@ class _SignInForm extends State<SignInForm> {
                     }
                   }
                 }on SocketException catch (e) {
-                  print('not connected');
                   showToast("Debes tener acceso a internet para registrarte");
                 }
 
