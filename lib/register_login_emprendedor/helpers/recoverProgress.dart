@@ -9,15 +9,15 @@ import '../Antecedents/antecedentes.dart';
 import '../cedula/cedula.dart';
 import '../cedulaAlreves/profile_photo.dart';
 import '../profile_photo/profile_photo.dart';
-import '../registro/user_data_register.dart';
+import '../registro/emprendedor_data_register.dart';
 
 void recoverProgressEmprendedor(context) async {
   final prefs = await EncryptedSharedPreferences().getInstance();
   if (prefs.getString("locationRegister") != null) {
     final ImagePicker _picker = ImagePicker();
     Widget yes = const Text("");
-    final RegisterUser userRegister =
-        RegisterUser.fromJson(jsonDecode(prefs.getString(
+    final RegisterEmprendedor userRegister =
+    RegisterEmprendedor.fromJson(jsonDecode(prefs.getString(
       "userRegister",
     )!));
     switch (prefs.getString("locationRegister")!) {

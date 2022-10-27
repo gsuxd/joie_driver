@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joiedriver/blocs/user/user_bloc.dart';
-import 'package:joiedriver/register_login_chofer/registro/user_data_register.dart';
+import 'package:joiedriver/register_login_chofer/registro/conductor_data_register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../components/default_button_chofer.dart';
@@ -18,7 +18,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Body extends StatefulWidget {
-  RegisterUser user;
+  RegisterConductor user;
 
   Body({Key? key, required this.user}) : super(key: key);
   @override
@@ -49,7 +49,7 @@ class _Body extends State<Body> {
 
   bool _isReanuding = false;
   Widget? cargando;
-  RegisterUser user;
+  RegisterConductor user;
   _Body(this.user);
   File? imagePropiedad;
   late Widget imageView;

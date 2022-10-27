@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../register_login_emprendedor/registro/user_data_register.dart';
+import '../../register_login_emprendedor/registro/emprendedor_data_register.dart';
 import 'components/body_banco.dart';
 
 
 class DatosBanco extends StatelessWidget {
-  RegisterUser user;
+  RegisterEmprendedor user;
   DatosBanco(this.user, {Key? key}) : super(key: key);
 
 

@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:joiedriver/register_login_chofer/registro/user_data_register.dart';
+import 'package:joiedriver/register_login_chofer/registro/conductor_data_register.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -136,7 +136,7 @@ class _RegistroFormState extends State<RegistroForm> {
                               hash.add([int.parse(i)]);
                             }
 
-                            RegisterUser user = RegisterUser(
+                            RegisterConductor user = RegisterConductor(
                               name: _controllerTextName.text,
                               lastName: _controllerTextLastName.text,
                               email: _email.text.replaceAll(" ", ""),

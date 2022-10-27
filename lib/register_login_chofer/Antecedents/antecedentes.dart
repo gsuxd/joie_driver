@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../registro/user_data_register.dart';
+import '../registro/conductor_data_register.dart';
 import '../size_config.dart';
 import 'components/body_antecedents.dart';
 
 class AntecedentsScreen extends StatefulWidget {
-  RegisterUser user;
+  RegisterConductor user;
   AntecedentsScreen(this.user, {Key? key}) : super(key: key);
   @override
   createState() =>  _AntecedentsScreen(user);
@@ -12,7 +12,7 @@ class AntecedentsScreen extends StatefulWidget {
 }
 
 class _AntecedentsScreen extends State<AntecedentsScreen> {
-  RegisterUser user;
+  RegisterConductor user;
   _AntecedentsScreen(this.user);
   @override
   Widget build(BuildContext context) {

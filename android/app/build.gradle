@@ -34,7 +34,7 @@ android {
     if (keystorePropertiesFile.exists()) {
         keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
     }
-        compileSdkVersion 31
+        compileSdkVersion 33
 
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
@@ -47,13 +47,13 @@ android {
             versionCode 2
             versionName "1.0.1"
             minSdkVersion 20
-            targetSdkVersion 30
+            targetSdkVersion 33
             versionCode flutterVersionCode.toInteger()
             versionName flutterVersionName
             multiDexEnabled true
         }
 
-        signingConfigs {
+        /*signingConfigs {
             release {
                 keyAlias keystoreProperties['keyAlias']
                 keyPassword keystoreProperties['keyPassword']
@@ -78,7 +78,7 @@ android {
 
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             }
-        }
+        }*/
         buildToolsVersion '30.0.3'
     }
 

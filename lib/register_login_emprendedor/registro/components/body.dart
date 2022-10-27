@@ -8,6 +8,7 @@ class Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return SizedBox(
       width: double.infinity,
       child: ListView(

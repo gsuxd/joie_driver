@@ -1,11 +1,11 @@
-import 'package:joiedriver/register_login_chofer/registro/user_data_register.dart';
+import 'package:joiedriver/register_login_chofer/registro/conductor_data_register.dart';
 import 'package:flutter/material.dart';
 import '../size_config.dart';
 import 'components/body_cardP.dart';
 
 
 class CardPropierty extends StatelessWidget {
-  RegisterUser user;
+  RegisterConductor user;
   CardPropierty(this.user, {Key? key}) : super(key: key);
   static String routeName = '/card_propierty';
 

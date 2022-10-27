@@ -11,15 +11,15 @@ import '../cedula/cedula.dart';
 import '../cedulaAlreves/profile_photo.dart';
 import '../licencia/licencia.dart';
 import '../profile_photo/profile_photo.dart';
-import '../registro/user_data_register.dart';
+import '../registro/conductor_data_register.dart';
 import '../tarjeta_propiedad/card_propierty.dart';
 
 void recoverProgressChofer(context) async {
   final prefs = await EncryptedSharedPreferences().getInstance();
   if (prefs.getString("locationRegister") != null) {
     Widget yes = const Text("");
-    final RegisterUser userRegister =
-        RegisterUser.fromJson(jsonDecode(prefs.getString(
+    final RegisterConductor userRegister =
+        RegisterConductor.fromJson(jsonDecode(prefs.getString(
       "userRegister",
     )!));
     switch (prefs.getString("locationRegister")!) {

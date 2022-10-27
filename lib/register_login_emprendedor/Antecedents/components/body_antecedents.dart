@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joiedriver/blocs/user/user_bloc.dart';
-import 'package:joiedriver/register_login_emprendedor/registro/user_data_register.dart';
+import 'package:joiedriver/register_login_emprendedor/registro/emprendedor_data_register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../components/default_button_emprendedor.dart';
@@ -20,7 +20,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:joiedriver/register_login_emprendedor/app_screens/ganancias/ganancias.dart';
 
 class Body extends ConsumerStatefulWidget {
-  RegisterUser user;
+  RegisterEmprendedor user;
 
   Body({Key? key, required this.user}) : super(key: key);
   @override
@@ -48,7 +48,7 @@ class _Body extends ConsumerState<Body> {
 
   bool _isReanuding = false;
   Widget? cargando;
-  RegisterUser user;
+  RegisterEmprendedor user;
   _Body(this.user);
   File? antecedentes;
   late Widget imageView;

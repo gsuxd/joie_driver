@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../../register_login_chofer/conts.dart';
 import '../../../register_login_chofer/size_config.dart';
-import '../../../register_login_chofer/registro/user_data_register.dart';
+import '../../../register_login_chofer/registro/conductor_data_register.dart';
 import 'form_datos.dart';
 
 class Body extends StatefulWidget {
-  RegisterUser user;
+  RegisterConductor user;
   Body(this.user, {Key? key}) : super(key: key);
 
 
@@ -14,7 +14,7 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  RegisterUser user;
+  RegisterConductor user;
   _BodyState(this.user);
   @override
   Widget build(BuildContext context) {

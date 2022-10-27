@@ -5,14 +5,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:joiedriver/components/default_button_emprendedor.dart';
 import '../../../components/error_form.dart';
 import '../../../register_login_emprendedor/size_config.dart';
-import '../../../register_login_emprendedor/registro/user_data_register.dart';
+import '../../../register_login_emprendedor/registro/emprendedor_data_register.dart';
 import '../../../register_login_emprendedor/profile_photo/profile_photo.dart';
 import '../../conts.dart';
 
 
 class BancoForm extends StatefulWidget {
 
-  RegisterUser user;
+  RegisterEmprendedor user;
   BancoForm(this.user, {Key? key}) : super(key: key);
 
 
@@ -22,7 +22,7 @@ class BancoForm extends StatefulWidget {
 
 class _BancoFormState extends State<BancoForm> {
   bool validationCedula = true;
-  RegisterUser user;
+  RegisterEmprendedor user;
   _BancoFormState(this.user);
 
   final List<String> errors = [];

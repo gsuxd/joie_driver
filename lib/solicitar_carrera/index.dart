@@ -53,8 +53,9 @@ class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
-      height: 520,
+      height: 500,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black, width: 2),
         borderRadius: const BorderRadius.only(

@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:joiedriver/register_login_chofer/helpers/recoverProgress.dart';
+import 'package:joiedriver/register_login_chofer/helpers/recoverProgressConductor.dart';
 import 'package:joiedriver/register_login_chofer/theme.dart';
 import 'package:joiedriver/register_login_emprendedor/helpers/recoverProgress.dart';
 import 'package:joiedriver/register_login_user/helpers/recoverProgress.dart';
@@ -61,11 +61,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       supportedLocales: S.delegate.supportedLocales,
       localizationsDelegates: const [
         S.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
       ],
       title: 'Conductores',
       theme: ThemeData(
@@ -123,10 +125,10 @@ class _MyHomePageState extends State<MyHomePage> {
     if (_prefs.getString("userType") != null) {
       _prefs.setBool("isFailLogin", true);
       switch (_prefs.getString("userType")) {
-        case "chofer":
+        case "Conductor":
           recoverProgressChofer(context);
           break;
-        case "emprendedor":
+        case "Emprendedor":
           recoverProgressEmprendedor(context);
           break;
         default:
@@ -191,7 +193,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     }
                     if (state is UserLogged) {
                       switch (state.user.type) {
-                        case "chofer":
+                        case "Conductor":
+                          return const HomeScreen();
+                        case "Emprendedor":
                           return const HomeScreen();
                         default:
                           return const HomeScreenUser();
