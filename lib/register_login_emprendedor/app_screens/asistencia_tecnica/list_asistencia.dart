@@ -9,7 +9,6 @@ import '../../../register_login_emprendedor/conts.dart';
 import '../appbar.dart';
 import 'asistencia_tecnica.dart';
 
-
 //Creamos la clase AsisTec
 class ListAsisTecnicaEmprendedor extends StatefulWidget {
   static String routeName = '/support';
@@ -20,50 +19,47 @@ class ListAsisTecnicaEmprendedor extends StatefulWidget {
 }
 
 class _List extends State<ListAsisTecnicaEmprendedor> {
-
   @override
-  void initState()  {
+  void initState() {
     // TODO: implement initState
     super.initState();
   }
 
   Future<bool> getData() async {
     email = await encryptedSharedPreferences.getString('email');
-    email = email.substring(0, email.length-4);
+    email = email.substring(0, email.length - 4);
     return true;
   }
+
   final ScrollController _scrollController = ScrollController();
   String email = "None";
   EncryptedSharedPreferences encryptedSharedPreferences =
-  EncryptedSharedPreferences();
+      EncryptedSharedPreferences();
   final notificacionDAO = NotificacionUsuarioDAO();
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollHaciaAbajo());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollHaciaAbajo());
     return Scaffold(
-      appBar: appBarEmprendedor(
-          accion: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  primary: jBase,
-                  elevation: 0
-              ),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>  const AsisTecnicaEmprendedor()
-                    ));
-              },
-              child: const Icon(Icons.add_circle_outline, size: 30,),
-            ),
-          ], leading: back(context), title: 'Solicitudes'),
+      appBar: appBarEmprendedor(accion: [
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(primary: jBase, elevation: 0),
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const AsisTecnicaEmprendedor()));
+          },
+          child: const Icon(
+            Icons.add_circle_outline,
+            size: 30,
+          ),
+        ),
+      ], leading: back(context), title: 'Solicitudes'),
       backgroundColor: Colors.white,
-      body:  FutureBuilder<bool?>(
+      body: FutureBuilder<bool?>(
         future: getData(),
-        builder: (BuildContext context,
-            AsyncSnapshot<bool?> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<bool?> snapshot) {
           if (snapshot.hasError) {
             return Row(
               mainAxisSize: MainAxisSize.max,
@@ -90,16 +86,14 @@ class _List extends State<ListAsisTecnicaEmprendedor> {
                   decoration: const BoxDecoration(
                     color: Colors.redAccent,
                   ),
-                  child: Text(
-                          "Error al obtener los datos",
-                          style: textStyleBlack()),
+                  child: Text("Error al obtener los datos",
+                      style: textStyleBlack()),
                 )
               ],
             );
           }
 
-          if (snapshot.connectionState ==
-              ConnectionState.done) {
+          if (snapshot.connectionState == ConnectionState.done) {
             //lo que se muestra cuando la carga se completa
             return Padding(
                 padding: const EdgeInsets.only(
@@ -113,7 +107,7 @@ class _List extends State<ListAsisTecnicaEmprendedor> {
           return const SizedBox(
             height: 170,
             width: 170,
-            child: CircularProgressIndicator(    ),
+            child: CircularProgressIndicator(),
           );
         },
       ),
@@ -126,7 +120,7 @@ class _List extends State<ListAsisTecnicaEmprendedor> {
     }
   }
 
-   _getListaMensajes()  {
+  _getListaMensajes() {
     return Expanded(
         flex: 0,
         child: FirebaseAnimatedList(
