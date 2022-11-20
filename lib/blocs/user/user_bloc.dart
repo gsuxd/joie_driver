@@ -6,12 +6,10 @@ import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:joiedriver/home_user/home.dart';
 import 'package:joiedriver/register_login_user/conts.dart';
 import 'package:joiedriver/singletons/carro_data.dart';
 import 'package:joiedriver/singletons/user_data.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'user_event.dart';
 part 'user_state.dart';
@@ -45,11 +43,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         UserData.fromJson(jsonDecode(prefs.getString("user")!));
     late DocumentReference<Map<String, dynamic>> userSnapshot;
     switch (user.type) {
-      case 'chofer':
+      case 'Conductor':
         userSnapshot =
             FirebaseFirestore.instance.collection("users").doc(user.email);
         break;
-      case 'emprendedor':
+      case 'Emprendedor':
         userSnapshot = FirebaseFirestore.instance
             .collection("usersEmprendedor")
             .doc(user.email);
@@ -81,7 +79,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               referralsCode: value['code'],
               email: FirebaseAuth.instance.currentUser!.email!,
               genero: value['gender'],
-              type: "chofer",
+              type: "Conductor",
               profilePicture: await FirebaseStorage.instance
                   .ref()
                   .child(
@@ -122,7 +120,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                     referralsCode: value['code'],
                     email: FirebaseAuth.instance.currentUser!.email!,
                     genero: value['gender'],
-                    type: "pasajero",
+                    type: "Pasajero",
                     profilePicture: await FirebaseStorage.instance
                         .ref()
                         .child(
@@ -157,7 +155,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                           referralsCode: value['code'],
                           email: FirebaseAuth.instance.currentUser!.email!,
                           genero: value['gender'],
-                          type: "emprendedor",
+                          type: "Emprendedor",
                           profilePicture: await FirebaseStorage.instance
                               .ref()
                               .child(

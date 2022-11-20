@@ -24,7 +24,7 @@ class PositionBloc extends Bloc<PositionEvent, PositionState> {
     try {
       await location.requestPermission();
       await location.getLocation().then((value) {
-        if (user.type == 'chofer') {
+        if (user.type == 'Conductor') {
           context.read<CarreraBloc>().add(
                 ListenCarrerasEvent(
                     LatLng(
@@ -35,15 +35,16 @@ class PositionBloc extends Bloc<PositionEvent, PositionState> {
               );
         }
         emit(PositionObtained(value));
+        return;
       });
       CollectionReference collection;
       switch (user.type) {
-        case "chofer":
+        case "Conductor":
           {
             collection = FirebaseFirestore.instance.collection("users");
             break;
           }
-        case "usersEmprendedores":
+        case "Emprendedor":
           collection =
               FirebaseFirestore.instance.collection("usersEmprendedores");
           break;
@@ -57,17 +58,20 @@ class PositionBloc extends Bloc<PositionEvent, PositionState> {
           locationData.latitude!, locationData.longitude!);
       var first = placemarks.first;
       await for (final value in location.onLocationChanged) {
-        await userRef.update({
-          "location": {
-            "latitude": value.latitude,
-            "longitude": value.longitude
-          },
-          "city": first.locality,
-        });
+        if (user.type == "Conductor") {
+          await userRef.update({
+            "location": {
+              "latitude": value.latitude,
+              "longitude": value.longitude
+            },
+            "city": first.locality,
+          });
+        }
         emit(PositionObtained(value));
+        return;
       }
     } catch (e) {
-      print(e);
+      e;
     }
   }
 }

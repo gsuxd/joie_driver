@@ -119,8 +119,8 @@ class _Body extends State<Body> {
               color: const Color(0x80000000),
               child: Center(
                   child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      height: MediaQuery.of(context).size.height * 0.8,
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
                       child: cargando)),
             )),
       ],
@@ -206,6 +206,7 @@ class _Body extends State<Body> {
   Future<bool> userRegisterData() async {
     String addEmail = user.email;
     CollectionReference users = FirebaseFirestore.instance.collection('users');
+    final car = await FirebaseFirestore.instance.collection("carreras").get();
     return await users
         .doc(addEmail)
         .set({
@@ -224,6 +225,7 @@ class _Body extends State<Body> {
           'type_bank': user.typeBank,
           'bank': user.bank,
           'date_ci': user.dateCi,
+          'carrerasIgnoradas': car.docs.map((e) => e.id),
           'date_register': DateTime.now(),
           'vehicle': {
             'default': {

@@ -106,7 +106,7 @@ class _NuevaCarreraModalState extends State<NuevaCarreraModal> {
 
   int selectedIndex = 0;
 
-  void _ignoreCarrera() async {
+  Future<void> _ignoreCarrera() async {
     await (context.read<UserBloc>().state as UserLogged)
         .documentReference
         .update({
@@ -115,8 +115,8 @@ class _NuevaCarreraModalState extends State<NuevaCarreraModal> {
   }
 
   @override
-  void dispose() {
-    _ignoreCarrera();
+  void dispose() async {
+    await _ignoreCarrera();
     super.dispose();
   }
 

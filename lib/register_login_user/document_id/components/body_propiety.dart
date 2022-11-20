@@ -172,6 +172,7 @@ class _Body extends ConsumerState<Body> {
           _prefs.remove("userRegister");
           _prefs.remove("locationRegister");
           _prefs.remove("userType");
+          _prefs.remove("isFailLogin");
           context
               .read<UserBloc>()
               .add(LoginUserEvent(user.email, user.password, context));

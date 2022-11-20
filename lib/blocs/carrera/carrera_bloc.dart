@@ -200,33 +200,57 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
   }
 
   void _handleSnapshot(QuerySnapshot<Map<String, dynamic>> val) async {
-    final ignoreList = await (context.read<UserBloc>().state as UserLogged)
+    final ignoreList = (await (context.read<UserBloc>().state as UserLogged)
         .documentReference
-        .get();
-    final carreras = val.docs.map((e) {
-      if (!((ignoreList['carrerasIgnoradas'] as List).contains(e.id))) {
-        print(e);
-        return e;
+        .get())['carrerasIgnoradas'];
+    final List<QueryDocumentSnapshot<Map<String, dynamic>>> carreras = [];
+    for (var e in val.docs) {
+      if (!((ignoreList as List).contains(e.id))) {
+        carreras.add(e);
       }
-    });
+    }
     if (carreras.isNotEmpty && carreras.length != _carrerasCercanasCount) {
-      final x = Carrera.fromJson(carreras.last);
-      final distance = calculateDistance(
-          x.inicio,
-          LatLng(
-              (context.read<PositionBloc>().state as PositionObtained)
-                  .location
-                  .latitude!,
-              (context.read<PositionBloc>().state as PositionObtained)
-                  .location
-                  .longitude!));
-      if (distance < 5) {
-        if (x.aceptada) {
-          return;
-        }
-        _carrerasCercanasCount = carreras.length;
-        if (carreras.last != null) {
-          _showModal(x, carreras.last!.reference);
+      for (var e in carreras) {
+        {
+          final x = Carrera.fromJson(e);
+          final distance = calculateDistance(
+            x.inicio,
+            LatLng(
+                (context.read<PositionBloc>().state as PositionObtained)
+                    .location
+                    .latitude!,
+                (context.read<PositionBloc>().state as PositionObtained)
+                    .location
+                    .longitude!),
+          );
+          if (distance <= 5) {
+            print(DateTime.now().difference(x.fecha).inMinutes);
+            if (DateTime.now().difference(x.fecha).inMinutes >= 2) {
+              (context.read<UserBloc>().state as UserLogged)
+                  .documentReference
+                  .update({
+                "carrerasIgnoradas": FieldValue.arrayUnion([e.id])
+              });
+              continue;
+            }
+            if (x.aceptada) {
+              (context.read<UserBloc>().state as UserLogged)
+                  .documentReference
+                  .update({
+                "carrerasIgnoradas": FieldValue.arrayUnion([e.id])
+              });
+              continue;
+            }
+            _carrerasCercanasCount = carreras.length;
+            _showModal(x, e.reference);
+            continue;
+          }
+          (context.read<UserBloc>().state as UserLogged)
+              .documentReference
+              .update({
+            "carrerasIgnoradas": FieldValue.arrayUnion([e.id])
+          });
+          continue;
         }
       }
     }
