@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../components/default_button.dart';
 import '../../components/error_form.dart';
+import '../../register_login_chofer/forget_password_sucess/forget_password.dart';
 import '../conts.dart';
 import '../size_config.dart';
 
@@ -18,6 +20,7 @@ class _ForgotFormPasswordState extends State<ForgotFormPassword> {
 
   final List<String> errors = [];
   late String email;
+  TextEditingController emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +29,7 @@ class _ForgotFormPasswordState extends State<ForgotFormPassword> {
         child: Column(children: [
           //TODO: Validador de Forma
           TextFormField(
+            controller: emailController,
             onSaved: (newValue) => email = newValue!,
             onChanged: (value) {
               if (value.isNotEmpty && errors.contains(emailNull)) {
@@ -78,18 +82,31 @@ class _ForgotFormPasswordState extends State<ForgotFormPassword> {
           ),
           //TODO: Forma de Error
           FormError(errors: errors),
-          SizedBox(
-            height: SizeConfig.screenHeight * 0.09,
-          ),
+
           //TODO: Boton de Contraseña
           ButtonDef(
             text: 'Continuar',
             press: () {
-              if (_formKey.currentState!.validate()) {
-                //Validar y reenviar para resetear contraseña
+              if (_formKey.currentState!.validate() && emailController.text.isNotEmpty) {
+                sendEmail();
               }
             },
           ),
         ]));
+  }
+
+  Future sendEmail () async{
+    try {
+      final FirebaseAuth auth = FirebaseAuth.instance;
+      String emailAddress = emailController.text;
+      await auth.sendPasswordResetEmail(email: emailAddress);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const ForgotPasswordScreenSucessChofer()));
+
+    } on FirebaseAuthException catch (error) {
+      showToast(error.toString());
+    }
   }
 }

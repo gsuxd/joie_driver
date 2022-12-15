@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../forget_password/forget_password.dart';
+import '../../../register_login_chofer/forget_password/forget_password.dart';
 
 
 class ForgotButtom extends StatelessWidget {
@@ -18,6 +17,6 @@ class ForgotButtom extends StatelessWidget {
             MaterialPageRoute(
                 builder: (context) => const ForgotPasswordScreen()));
       },
-      child: const Text("Olvide mi contraseña"));
+      child: const Text("Olvide mi contraseña", style: TextStyle(fontSize: 18,),));
   }
 }
