@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
-import 'package:joiedriver/register_login_emprendedor/registro/user_data_register.dart';
+import 'package:joiedriver/register_login_emprendedor/registro/emprendedor_data_register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../components/default_button_emprendedor.dart';
@@ -12,14 +12,14 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class Body extends StatefulWidget {
-  RegisterUser user;
+  RegisterEmprendedor user;
   Body(this.user, {Key? key}) : super(key: key);
   @override
   createState() => _Body(user);
 }
 
 class _Body extends State<Body> {
-  RegisterUser user;
+  RegisterEmprendedor user;
   _Body(this.user);
   File? cedula;
   late Widget imageWiew;

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
-import 'package:joiedriver/register_login_chofer/registro/user_data_register.dart';
+import 'package:joiedriver/register_login_chofer/registro/conductor_data_register.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -12,14 +12,14 @@ import '/components/default_button_chofer.dart';
 import 'dart:io';
 
 class Body extends StatefulWidget {
-  RegisterUser user;
+  RegisterConductor user;
   Body(this.user, {Key? key}) : super(key: key);
   @override
   createState() => _Body(this.user);
 }
 
 class _Body extends State<Body> {
-  RegisterUser user;
+  RegisterConductor user;
   _Body(this.user);
   File? FileAntecedentes;
   late Widget imageWiew;

@@ -29,14 +29,17 @@ class NoAccountChofer extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
-        ButtonDef(
-            text: "Registrate",
-            press: (){
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const TerminosCondiciones()));
-            }
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const TerminosCondicionesChofer()));
+          },
+          child: Text(
+            'Registrate',
+            style: TextStyle(fontSize: getPropertieScreenWidth(16)),
+          ),
         ),
       ],
     )

@@ -3,17 +3,16 @@ import 'package:flutter/material.dart';
 import '../registro/registro.dart';
 import 'components/body_terminos.dart';
 
-
 //Aca empieza todo
-class TerminosCondiciones extends StatefulWidget {
-  const TerminosCondiciones({Key? key}) : super(key: key);
+class TerminosCondicionesChofer extends StatefulWidget {
+  const TerminosCondicionesChofer({Key? key}) : super(key: key);
 
   @override
-  State<TerminosCondiciones> createState() => _TerminosCondicionesState();
+  State<TerminosCondicionesChofer> createState() => _TerminosCondicionesState();
 }
 
 //Aca colocaremos el Sccafold
-class _TerminosCondicionesState extends State<TerminosCondiciones> {
+class _TerminosCondicionesState extends State<TerminosCondicionesChofer> {
   bool? checked = false;
   bool checkBoxValue = false;
 
@@ -22,15 +21,17 @@ class _TerminosCondicionesState extends State<TerminosCondiciones> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Terminos y Condiciones"),
-        leading:
-        Container(
+        leading: Container(
           padding: const EdgeInsets.all(5.0),
           child: GestureDetector(
-              onTap: (){
+              onTap: () {
                 Navigator.pop(context);
               },
-              child: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 18,)
-          ),
+              child: const Icon(
+                Icons.arrow_back_ios,
+                color: Colors.white,
+                size: 18,
+              )),
         ),
       ),
       body: Center(
@@ -66,12 +67,14 @@ class _TerminosCondicionesState extends State<TerminosCondiciones> {
               margin: const EdgeInsets.only(bottom: 20),
               child: ElevatedButton(
                 //Esta linea es importante: si checked es cierto (si el usuario a presionado el checkbox), entonces el boton tendrá funcionalidad, si no, el boton no servirá
-                onPressed: (checked == true ? () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const Registro()));
-                } : null),
+                onPressed: (checked == true
+                    ? () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Registro()));
+                      }
+                    : null),
                 child: const Text("continuar"),
               ),
             )

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../register_login_chofer/registro/user_data_register.dart';
+import '../../register_login_chofer/registro/conductor_data_register.dart';
 import '../size_config.dart';
 import '/register_login_chofer/licencia/components/body_cardP.dart';
 
 
 
 class Licencia extends StatelessWidget {
-  RegisterUser user;
+  RegisterConductor user;
   Licencia(this.user, {Key? key}) : super(key: key);
 
   @override

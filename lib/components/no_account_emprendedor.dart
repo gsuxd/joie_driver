@@ -25,8 +25,24 @@ class NoAccountEmprendedor extends StatelessWidget {
             color: jtextColorSec,
           ),
         ),
-        const SizedBox(
-          height: 10,
+        SizedBox(
+          width: getPropertieScreenWidth(10),
+        ),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        const TerminosCondicionesEmprendedor()));
+          },
+          child: Text(
+            'Registrate',
+            style: TextStyle(fontSize: getPropertieScreenWidth(20)),
+          ),
+        ),
+        SizedBox(
+          width: getPropertieScreenWidth(10),
         ),
         ButtonDef(
             text: "Registrate",

@@ -18,9 +18,9 @@ class AuthBiometric extends ConsumerStatefulWidget {
 
 class _Body extends ConsumerState<AuthBiometric> {
   EncryptedSharedPreferences encryptedSharedPreferences =
-  EncryptedSharedPreferences();
+      EncryptedSharedPreferences();
   @override
-  void initState()  {
+  void initState() {
     super.initState();
     //huellaAuth();
     irAprincipal();
@@ -28,42 +28,28 @@ class _Body extends ConsumerState<AuthBiometric> {
 
   Future<void> irAprincipal() async {
     String typeUser = await encryptedSharedPreferences.getString('typeuser');
-    String codeLogin = await encryptedSharedPreferences.getString('code');
-    if(typeUser == "emprendedor"){
-      ActionCodeSettings actionCodeSettings = ActionCodeSettings(url: 'https://www.google.com');
-      User? user = FirebaseAuth.instance.currentUser;
-
-      if (!user!.emailVerified) {
-        await user.sendEmailVerification();
-      }
+    if (typeUser == "emprendedor") {
       Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>  const Ganancias()));
-    }else{
+          context, MaterialPageRoute(builder: (context) => const Ganancias()));
+    } else {
       Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>   HomeScreen(codeLogin)));
+          context, MaterialPageRoute(builder: (context) => const HomeScreen()));
     }
   }
 
-  Future huellaAuth() async{
+  Future huellaAuth() async {
     final LocalAuthentication auth = LocalAuthentication();
     final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
     final bool canAuthenticate =
         canAuthenticateWithBiometrics || await auth.isDeviceSupported();
-    if(canAuthenticate){
+    if (canAuthenticate) {
       try {
         final bool didAuthenticate = await auth.authenticate(
-
             localizedReason: 'Autentíquese para mostrar su cuenta',
             authMessages: const [
-
               IOSAuthMessages(
                 cancelButton: 'No Graciass',
               ),
-
               AndroidAuthMessages(
                 signInTitle: 'Se requiere autenticación biométrica',
                 cancelButton: 'Cancelar',
@@ -72,54 +58,45 @@ class _Body extends ConsumerState<AuthBiometric> {
             options: const AuthenticationOptions(
               biometricOnly: true,
             ));
-        if(!didAuthenticate){
+        if (!didAuthenticate) {
           // Navigator.push(
           //     context,
           //     MaterialPageRoute(
           //         builder: (context) =>  const LognInScreenEmprendedor()));
-        }else{
-          String typeUser = await encryptedSharedPreferences.getString('typeuser');
+        } else {
+          String typeUser =
+              await encryptedSharedPreferences.getString('typeuser');
           String codeLogin = await encryptedSharedPreferences.getString('code');
-          if(typeUser == "emprendedor"){
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>  const Ganancias()));
-          }else{
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>   HomeScreen(codeLogin)));
+          if (typeUser == "emprendedor") {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const Ganancias()));
+          } else {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const HomeScreen()));
           }
-
         }
       } on PlatformException catch (e) {
         showToast(
-            "Tu dispositivo no Tiene habailitada la Autenticación Biometrica"
-        );
+            "Tu dispositivo no Tiene habailitada la Autenticación Biometrica");
         // Navigator.push(
         //     context,
         //     MaterialPageRoute(
         //         builder: (context) =>  const LognInScreenEmprendedor()));
       }
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(
-        builder: (context, ref, child) {
-          CodeNotifyE  code = ref.watch(codeProviderE);
-          return    const Scaffold(
-            body: Center(
-              // child: IconButton(
-              //     onPressed: huellaAuth,
-              //     icon: const Icon(Icons.fingerprint_rounded), color: jBase, iconSize: 56,),
+    return Consumer(builder: (context, ref, child) {
+      CodeNotifyE code = ref.watch(codeProviderE);
+      return const Scaffold(
+        body: Center(
+            // child: IconButton(
+            //     onPressed: huellaAuth,
+            //     icon: const Icon(Icons.fingerprint_rounded), color: jBase, iconSize: 56,),
             ),
-          );
-        }
-    );
+      );
+    });
   }
-
 }

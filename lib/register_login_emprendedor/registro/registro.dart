@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'components/body.dart';
 
-class Registro extends StatelessWidget {
+class RegistroEmprendedor extends StatelessWidget {
   static String routeName = '/registro';
-  const Registro({Key? key}) : super(key: key);
+  const RegistroEmprendedor({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

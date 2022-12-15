@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../register_login_chofer/registro/user_data_register.dart';
+import '../../register_login_chofer/registro/conductor_data_register.dart';
 import '../size_config.dart';
 import '/register_login_chofer/cedula/components/body_cardP.dart';
 
 
 
 class Cedula extends StatelessWidget {
-  RegisterUser user;
+  RegisterConductor user;
   Cedula(this.user, {Key? key}) : super(key: key);
 
   @override

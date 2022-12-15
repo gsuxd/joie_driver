@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:joiedriver/register_login_chofer/helpers/recoverProgress.dart';
+import 'package:joiedriver/register_login_chofer/helpers/recoverProgressConductor.dart';
 import '../../../components/social_cards.dart';
 import '../../conts.dart';
 import '../../size_config.dart';
@@ -15,6 +15,7 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return SizedBox(
       width: double.infinity,
       child: ListView(

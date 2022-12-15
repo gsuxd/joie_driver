@@ -5,12 +5,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:joiedriver/components/default_button_chofer.dart';
 import '../../../components/error_form.dart';
 import '../../../register_login_chofer/size_config.dart';
-import '../../../register_login_chofer/registro/user_data_register.dart';
+import '../../../register_login_chofer/registro/conductor_data_register.dart';
 import '../../../register_login_chofer/profile_photo/profile_photo.dart';
 import '../../conts.dart';
 
 class BancoForm extends StatefulWidget {
-  RegisterUser user;
+  RegisterConductor user;
 
   BancoForm(this.user, {Key? key}) : super(key: key);
 
@@ -20,7 +20,7 @@ class BancoForm extends StatefulWidget {
 
 class _BancoFormState extends State<BancoForm> {
   bool validationCedula = true;
-  RegisterUser user;
+  RegisterConductor user;
 
   _BancoFormState(this.user);
 

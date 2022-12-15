@@ -2,7 +2,8 @@ import 'dart:io';
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../../../home/home.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:joiedriver/blocs/user/user_bloc.dart';
 import '../../size_config.dart';
 import '/components/default_button.dart';
 import '../components/error_form.dart';
@@ -17,7 +18,8 @@ class SignInForm extends StatefulWidget {
 }
 
 class _SignInForm extends State<SignInForm> {
-  EncryptedSharedPreferences encryptedSharedPreferences = EncryptedSharedPreferences();
+  EncryptedSharedPreferences encryptedSharedPreferences =
+      EncryptedSharedPreferences();
   bool isHiddenPassword = true;
   final List<String> errors = [];
   final _formKey = GlobalKey<FormState>();
@@ -43,8 +45,6 @@ class _SignInForm extends State<SignInForm> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-
     // bool _isLoading = false;
     // bool _isLoading2 = false;
     // final _auth = ref.watch(authenticationProvider);
@@ -86,39 +86,35 @@ class _SignInForm extends State<SignInForm> {
           ButtonDef(
               text: "Ingresar",
               press: () async {
-
-                //TODO: Validador del boton en el login
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
-                try {
-                  var result = await  InternetAddress.lookup('google.com');
-                  if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-                    try {
-                      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: _email.text.toString(),
-                          password: _password.text.toString()
-                      );
+                  try {
+                    var result = await InternetAddress.lookup('google.com');
+                    if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                      try {
+                        context.read<UserBloc>().add(LoginUserEvent(
+                            _email.text, _password.text, context));
 
-                      await encryptedSharedPreferences.setString('email', _email.text.toString());
-                      await encryptedSharedPreferences.setString('passwd', _password.text.toString());
-                      await encryptedSharedPreferences.setString('typeuser', "pasajero");
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => HomeScreen("Bienvenido")));
-                    } on FirebaseAuthException catch (e) {
-                      if (e.code == 'user-not-found') {
-                        showToast("Este Email no esta registrado");
-                      } else if (e.code == 'wrong-password') {
-                        showToast("Contraseña Incorrecta");
+                        await encryptedSharedPreferences.setString(
+                            'email', _email.text.toString());
+                        await encryptedSharedPreferences.setString(
+                            'passwd', _password.text.toString());
+                        await encryptedSharedPreferences.setString(
+                            'typeuser', "pasajero");
+                      } on FirebaseAuthException catch (e) {
+                        if (e.code == 'user-not-found') {
+                          showToast("Este Email no esta registrado");
+                        } else if (e.code == 'wrong-password') {
+                          showToast("Contraseña Incorrecta");
+                        }
+                      } catch (e) {
+                        showToast(e.toString());
                       }
-                    }catch (e) {
-                      showToast(e.toString());
                     }
+                  } on SocketException catch (e) {
+                    e;
+                    showToast("Debes tener acceso a internet para registrarte");
                   }
-                }on SocketException catch (e) {
-                  showToast("Debes tener acceso a internet para registrarte");
-                }
 
                   //Navigator.pushNamedAndRemoveUntil(
                   //    context, "/success", (route) => false);
@@ -174,26 +170,24 @@ class _SignInForm extends State<SignInForm> {
           )),
     );
   }
+
   void statePassword() {
     setState(() {
       isHiddenPassword = !isHiddenPassword;
     });
   }
+
   Widget _inputEmail() {
     return TextFormField(
       controller: _email,
       onChanged: (value) {
         if (value.isNotEmpty && errors.contains(emailNull)) {
           removeError(error: emailNull);
-          setState(() {
-
-          });
+          setState(() {});
         } else if (emailValidator.hasMatch(value) &&
             errors.contains(emailError)) {
           removeError(error: emailError);
-          setState(() {
-
-          });
+          setState(() {});
         }
         return;
       },

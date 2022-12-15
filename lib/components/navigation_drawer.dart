@@ -9,6 +9,7 @@ class NavigationDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Drawer(
       child: SafeArea(
         child: Column(children: [

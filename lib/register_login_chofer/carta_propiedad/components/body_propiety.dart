@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
-import 'package:joiedriver/register_login_chofer/registro/user_data_register.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:joiedriver/blocs/user/user_bloc.dart';
+import 'package:joiedriver/register_login_chofer/registro/conductor_data_register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../components/default_button_chofer.dart';
@@ -16,7 +18,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Body extends StatefulWidget {
-  RegisterUser user;
+  RegisterConductor user;
 
   Body({Key? key, required this.user}) : super(key: key);
   @override
@@ -29,7 +31,7 @@ class _Body extends State<Body> {
 
   void _getIsReanuding() async {
     final prefs = await encryptedSharedPreferences.getInstance();
-    if (prefs.getString("locationRegister") != null) {
+    if (prefs.getBool("isFailLogin") != null) {
       setState(() {
         _isReanuding = true;
       });
@@ -47,7 +49,7 @@ class _Body extends State<Body> {
 
   bool _isReanuding = false;
   Widget? cargando;
-  RegisterUser user;
+  RegisterConductor user;
   _Body(this.user);
   File? imagePropiedad;
   late Widget imageView;
@@ -117,8 +119,8 @@ class _Body extends State<Body> {
               color: const Color(0x80000000),
               child: Center(
                   child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      height: MediaQuery.of(context).size.height * 0.8,
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
                       child: cargando)),
             )),
       ],
@@ -136,12 +138,10 @@ class _Body extends State<Body> {
           _prefs.remove("userRegister");
           _prefs.remove("locationRegister");
           _prefs.remove("userType");
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomeScreen(user.code),
-              ),
-              (route) => false);
+          _prefs.remove("isFailLogin");
+          context
+              .read<UserBloc>()
+              .add(LoginUserEvent(user.email, user.password, context));
           return true;
         }
       }
@@ -155,7 +155,7 @@ class _Body extends State<Body> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data) {
-            return HomeScreen(user.code);
+            return const HomeScreen();
           } else {
             return const OpError(
               stackTrace: null,
@@ -206,6 +206,7 @@ class _Body extends State<Body> {
   Future<bool> userRegisterData() async {
     String addEmail = user.email;
     CollectionReference users = FirebaseFirestore.instance.collection('users');
+    final car = await FirebaseFirestore.instance.collection("carreras").get();
     return await users
         .doc(addEmail)
         .set({
@@ -224,6 +225,7 @@ class _Body extends State<Body> {
           'type_bank': user.typeBank,
           'bank': user.bank,
           'date_ci': user.dateCi,
+          'carrerasIgnoradas': car.docs.map((e) => e.id),
           'date_register': DateTime.now(),
           'vehicle': {
             'default': {

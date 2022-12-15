@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:joiedriver/blocs/user/user_bloc.dart';
 import '../../../components/states/states.dart';
 import '../../conts.dart';
 import '../../size_config.dart';
 
 class ScreenNotify extends ChangeNotifier {
-
   String _text = "Invita a un parcero";
   Color _color = Colors.white;
 
@@ -21,20 +22,16 @@ class ScreenNotify extends ChangeNotifier {
   }
 }
 
-
 final screenProvider = ChangeNotifierProvider((ref) => ScreenNotify());
 
 class Body extends ConsumerWidget {
-  String codeLogin;
-  Body(this.codeLogin, {Key? key}) : super(key: key);
+  const Body({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, watch) {
-    CodeNotify  code = watch.watch(codeProvider);
-    ScreenNotify  screen = watch.watch(screenProvider);
-    if(code.value == 'Code'){
-      code.setCode(codeLogin);
-    }
+    CodeNotify code = watch.watch(codeProvider);
+    ScreenNotify screen = watch.watch(screenProvider);
+
     return SafeArea(
       minimum: EdgeInsets.all(getPropertieScreenWidth(10)),
       child: ListView(
@@ -102,7 +99,8 @@ class Body extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  code.value,
+                  context.select<UserBloc, String>((value) =>
+                      (value.state as UserLogged).user.referralsCode),
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Colors.white,
@@ -137,9 +135,12 @@ class Body extends ConsumerWidget {
               vertical: 15,
             ),
             child: GestureDetector(
-                onTap: ()  async {
-                  screen.setScreen("Copiado" ,Colors.transparent);
-                  Clipboard.setData(ClipboardData(text: code.value));
+                onTap: () async {
+                  screen.setScreen("Copiado", Colors.transparent);
+                  Clipboard.setData(ClipboardData(
+                      text: (context.read<UserBloc>().state as UserLogged)
+                          .user
+                          .referralsCode));
                   // if (await Vibration.hasAmplitudeControl()) {
                   // Vibration.vibrate(amplitude: 128, duration: 600);
                   // }

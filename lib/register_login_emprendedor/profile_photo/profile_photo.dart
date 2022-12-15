@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../register_login_emprendedor/registro/user_data_register.dart';
+import '../../register_login_emprendedor/registro/emprendedor_data_register.dart';
 import '../size_config.dart';
 import '/register_login_emprendedor/profile_photo/components/body_cardP.dart';
 
 
 
 class ProfilePhoto extends StatelessWidget {
-  RegisterUser user;
+  RegisterEmprendedor user;
   ProfilePhoto(this.user, {Key? key}) : super(key: key);
 
   @override
