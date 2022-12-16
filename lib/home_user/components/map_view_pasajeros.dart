@@ -18,6 +18,7 @@ class _MapViewPasajerosState extends State<MapViewPasajeros> {
   late GoogleMapController _controller;
 
   LatLng? _pointB;
+  LatLng? _pointA;
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +72,17 @@ class _MapViewPasajerosState extends State<MapViewPasajeros> {
                                       _pointB = null;
                                     });
                                   })),
+                        if (_pointA != null)
+                          Marker(
+                              markerId: const MarkerId('pointA'),
+                              position: _pointB!,
+                              infoWindow: InfoWindow(
+                                  title: "Inicio",
+                                  onTap: () {
+                                    setState(() {
+                                      _pointA = null;
+                                    });
+                                  })),
                         Marker(
                           markerId: const MarkerId('current_location'),
                           position: LatLng(positionState.location.latitude!,
@@ -98,15 +110,10 @@ class _MapViewPasajerosState extends State<MapViewPasajeros> {
           left: 120,
           child: InkWell(
             onTap: () async {
-              if (_pointB == null) {
-                await showToast("Selecciona un destino tocando el mapa");
-              } else {
-                showBottomSheet(
-                    context: context,
-                    builder: (context) => SolicitarCarreraModal(
-                          pointB: _pointB!,
-                        ));
-              }
+              showBottomSheet(
+                  context: context,
+                  backgroundColor: const Color.fromRGBO(0, 0, 0, 0),
+                  builder: (context) => const SolicitarCarreraModal());
             },
             child: Container(
               decoration: BoxDecoration(

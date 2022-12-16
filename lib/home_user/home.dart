@@ -6,6 +6,7 @@ import 'package:joiedriver/home_user/components/appBar.dart';
 import '/components/navigation_drawer.dart';
 import 'bloc/cars_bloc.dart';
 import 'components/map_view_pasajeros.dart';
+import 'markersBloc/points_bloc.dart';
 
 class HomeScreenUser extends StatefulWidget {
   static String routeName = '/home';
@@ -42,9 +43,16 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
               child: Text('Error'),
             );
           }
-          return BlocProvider(
-            create: (context) => CarsBloc()
-              ..add(LoadNearCars((state as PositionObtained).location)),
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => CarsBloc()
+                  ..add(LoadNearCars((state as PositionObtained).location)),
+              ),
+              BlocProvider(
+                create: (context) => PointsBloc(),
+              ),
+            ],
             child: const MapViewPasajeros(),
           );
         },
