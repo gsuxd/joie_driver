@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:joiedriver/blocs/position/position_bloc.dart';
 import 'package:joiedriver/home_user/bloc/cars_bloc.dart';
+import 'package:joiedriver/home_user/markersBloc/points_bloc.dart';
 import 'package:joiedriver/register_login_chofer/conts.dart';
 import 'package:joiedriver/solicitar_carrera/index.dart';
 
@@ -18,7 +19,25 @@ class _MapViewPasajerosState extends State<MapViewPasajeros> {
   late GoogleMapController _controller;
 
   LatLng? _pointB;
-  LatLng? _pointA;
+
+  BitmapDescriptor? _userMarkerIcon;
+  BitmapDescriptor? _pointBIcon;
+
+  void _loadIcon() async {
+    _userMarkerIcon = await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(size: Size(12, 12)),
+        "assets/images/pint-A-indicator.png");
+    _pointBIcon = await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(size: Size(12, 12)),
+        "assets/images/pint-B-indicator.png");
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadIcon();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +62,8 @@ class _MapViewPasajerosState extends State<MapViewPasajeros> {
                             CameraUpdate.newCameraPosition(CameraPosition(
                           zoom: 15,
                           target: LatLng(
-                            state.location.latitude!,
-                            state.location.longitude!,
+                            positionState.location.latitude!,
+                            positionState.location.longitude!,
                           ),
                         )));
                       }
@@ -61,33 +80,25 @@ class _MapViewPasajerosState extends State<MapViewPasajeros> {
                         zoom: 15,
                       ),
                       markers: {
-                        if (_pointB != null)
+                        if (_pointB != null && _pointBIcon != null)
                           Marker(
                               markerId: const MarkerId('pointB'),
                               position: _pointB!,
+                              icon: _pointBIcon!,
                               infoWindow: InfoWindow(
-                                  title: "Destino",
+                                  title: "Eliminar",
                                   onTap: () {
                                     setState(() {
                                       _pointB = null;
                                     });
                                   })),
-                        if (_pointA != null)
+                        if (_userMarkerIcon != null)
                           Marker(
-                              markerId: const MarkerId('pointA'),
-                              position: _pointB!,
-                              infoWindow: InfoWindow(
-                                  title: "Inicio",
-                                  onTap: () {
-                                    setState(() {
-                                      _pointA = null;
-                                    });
-                                  })),
-                        Marker(
-                          markerId: const MarkerId('current_location'),
-                          position: LatLng(positionState.location.latitude!,
-                              positionState.location.longitude!),
-                        ),
+                            markerId: const MarkerId('current_location'),
+                            icon: _userMarkerIcon!,
+                            position: LatLng(positionState.location.latitude!,
+                                positionState.location.longitude!),
+                          ),
                         ...(context.watch<CarsBloc>().state as CarsLoaded).cars
                       },
                       myLocationButtonEnabled: true,
@@ -110,10 +121,18 @@ class _MapViewPasajerosState extends State<MapViewPasajeros> {
           left: 120,
           child: InkWell(
             onTap: () async {
+              if (_pointB == null) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text(
+                        "Porfavor selecciona en el mapa el punto de destino")));
+                return;
+              }
               showBottomSheet(
                   context: context,
                   backgroundColor: const Color.fromRGBO(0, 0, 0, 0),
-                  builder: (context) => const SolicitarCarreraModal());
+                  builder: (context) => SolicitarCarreraModal(
+                        pointB: _pointB!,
+                      ));
             },
             child: Container(
               decoration: BoxDecoration(

@@ -26,37 +26,37 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: (context.watch<UserBloc>().state) is UserLogged
-          ? const Appbar()
-          : null,
-      drawer: const NavigationDrawer(),
-      body: BlocBuilder<PositionBloc, PositionState>(
-        builder: (context, state) {
-          if (state is PositionLoading || state is PositionInitial) {
-            return const Center(
-              child: CircularProgressIndicator(),
+          return Scaffold(
+            appBar: (context.watch<UserBloc>().state) is UserLogged
+            ? const Appbar()
+            : null,
+        drawer: const NavigationDrawer(),
+        body: BlocBuilder<PositionBloc, PositionState>(
+          builder: (context, state) {
+            if (state is PositionLoading || state is PositionInitial) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (state is PositionError) {
+              return const Center(
+                child: Text('Error'),
+              );
+            }
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => CarsBloc()
+                    ..add(LoadNearCars((state as PositionObtained).location)),
+                ),
+                BlocProvider(
+                  create: (context) => PointsBloc(),
+                ),
+              ],
+              child: const MapViewPasajeros(),
             );
-          }
-          if (state is PositionError) {
-            return const Center(
-              child: Text('Error'),
-            );
-          }
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (context) => CarsBloc()
-                  ..add(LoadNearCars((state as PositionObtained).location)),
-              ),
-              BlocProvider(
-                create: (context) => PointsBloc(),
-              ),
-            ],
-            child: const MapViewPasajeros(),
-          );
-        },
-      ),
+          },
+        ),
     );
   }
 }
