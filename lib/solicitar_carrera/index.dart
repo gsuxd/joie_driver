@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:joiedriver/blocs/position/position_bloc.dart';
 import 'package:joiedriver/blocs/user/user_bloc.dart';
+import 'package:joiedriver/helpers/calculate_distance.dart';
 import 'package:joiedriver/register_login_user/conts.dart';
 import 'package:joiedriver/solicitar_carrera/components/textedit.dart';
 import 'package:joiedriver/solicitar_carrera/models/PlacesResponse.dart';
@@ -47,6 +48,15 @@ class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
     }
   }
 
+  Future<List<PlacesResponse>> _getResults(TextEditingValue value) async {
+    final res = await Dio().get(
+        "https://maps.googleapis.com/maps/api/place/textsearch/json?query=${value.text.replaceAll(" ", "%20")}&key=AIzaSyAEE30voT1-ycMD3-cxpq2m4oJcKrpLeRA");
+    final parsed = (res.data['results'] as List<dynamic>).map(
+      (e) => PlacesResponse.fromJson(e),
+    );
+    return parsed.toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -64,14 +74,7 @@ class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
         child: Column(
           children: [
             Autocomplete(
-              optionsBuilder: (value) async {
-                final res = await Dio().get(
-                    "https://maps.googleapis.com/maps/api/place/textsearch/json?query=${value.text.replaceAll(" ", "%20")}&key=AIzaSyAEE30voT1-ycMD3-cxpq2m4oJcKrpLeRA");
-                final parsed = (res.data['results'] as List<dynamic>).map(
-                  (e) => PlacesResponse.fromJson(e),
-                );
-                return parsed;
-              },
+              optionsBuilder: _getResults,
               displayStringForOption: (PlacesResponse option) =>
                   option.formattedAddress,
               fieldViewBuilder: (context, textEditingController, focusNode,
@@ -89,14 +92,7 @@ class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
               },
             ),
             Autocomplete(
-              optionsBuilder: (value) async {
-                final res = await Dio().get(
-                    "https://maps.googleapis.com/maps/api/place/textsearch/json?query=${value.text.replaceAll(" ", "%20")}&key=AIzaSyAEE30voT1-ycMD3-cxpq2m4oJcKrpLeRA");
-                final parsed = (res.data['results'] as List<dynamic>).map(
-                  (e) => PlacesResponse.fromJson(e),
-                );
-                return parsed;
-              },
+              optionsBuilder: _getResults,
               displayStringForOption: (PlacesResponse option) =>
                   option.formattedAddress,
               fieldViewBuilder: (context, textEditingController, focusNode,
@@ -118,9 +114,21 @@ class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
                 if (v!.isEmpty) {
                   return "Ingresa el monto a ofertar";
                 }
-                if (int.parse(v) < 5000) {
-                  return "El monto debe ser mayor a 5000";
+                final pos =
+                    (context.read<PositionBloc>().state as PositionObtained)
+                        .location;
+                final distance = calculateDistance(
+                    LatLng(pos.latitude!, pos.longitude!), widget.pointB);
+                double min;
+                if (distance > 1.0) {
+                  min = distance * 5000;
+                } else {
+                  min = 5000;
                 }
+                if (int.parse(v) < min) {
+                  return "El monto debe ser mayor o igual a ${min.toInt()}";
+                }
+                return null;
               },
               keyboardType: TextInputType.number,
               hintText: "Monto a ofertar",
