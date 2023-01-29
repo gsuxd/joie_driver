@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import '../size_config.dart';
 import 'components/body_cardP.dart';
 
-
 class CardPropierty extends StatelessWidget {
-  RegisterUser user;
-  CardPropierty(this.user, {Key? key}) : super(key: key);
+  final RegisterUser user;
+  const CardPropierty(this.user, {Key? key}) : super(key: key);
   static String routeName = '/card_propierty';
 
   @override
@@ -17,7 +16,7 @@ class CardPropierty extends StatelessWidget {
         title: const Text('Por tu seguridad y la nuestra'),
         centerTitle: true,
       ),
-      body:  Body(user),
+      body: Body(user),
     );
   }
 }

@@ -7,21 +7,19 @@ import '../../conts.dart';
 import '../../size_config.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+
 class Body extends StatefulWidget {
-  RegisterUser  user;
-  Body(this.user, {Key? key}) : super(key: key);
+  final RegisterUser user;
+  const Body(this.user, {Key? key}) : super(key: key);
   @override
-  createState() =>  BodyE(user);
+  createState() => BodyE();
 }
 
 class BodyE extends State<Body> {
-  RegisterUser user;
-  BodyE(this.user);
   File? phofilePhoto;
-  late Widget imageWiew ;
+  late Widget imageWiew;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     imageWiew = cambiarmage();
   }
@@ -58,11 +56,11 @@ class BodyE extends State<Body> {
               child: ButtonDefChofer(
                   text: 'Siguiente',
                   press: () {
-                    if(user.photoPerfil != null){
+                    if (widget.user.photoPerfil != null) {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Cedula(user)));
+                              builder: (context) => Cedula(widget.user)));
                     }
 
                     //Navigator.pushNamed(context, PropiedadScreen.routeName);
@@ -73,25 +71,23 @@ class BodyE extends State<Body> {
     );
   }
 
-  Future getImage () async {
+  Future getImage() async {
     ImagePicker imegaTemp = ImagePicker();
     var tempImage = await imegaTemp.pickImage(source: ImageSource.camera);
-    phofilePhoto =  File(tempImage!.path);
-    setState(()  {
-
+    phofilePhoto = File(tempImage!.path);
+    setState(() {
       imageWiew = cambiarmage();
-
     });
   }
 
-  Widget cambiarmage(){
-
-    if(phofilePhoto != null){
-      user.photoPerfil = phofilePhoto;
-      return  Image.file(phofilePhoto!, height: SizeConfig.screenHeight * 0.50);
-    }else{
-      user.photoPerfil = null;
-      return SvgPicture.asset(profilePhoto, height: SizeConfig.screenHeight * 0.50);
+  Widget cambiarmage() {
+    if (phofilePhoto != null) {
+      widget.user.photoPerfil = phofilePhoto;
+      return Image.file(phofilePhoto!, height: SizeConfig.screenHeight * 0.50);
+    } else {
+      widget.user.photoPerfil = null;
+      return SvgPicture.asset(profilePhoto,
+          height: SizeConfig.screenHeight * 0.50);
     }
   }
 }

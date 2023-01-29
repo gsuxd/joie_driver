@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:joiedriver/singletons/user_data.dart';
-import '../../../components/states/states.dart';
 import '../../conts.dart';
 import '../../size_config.dart';
 

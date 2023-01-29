@@ -19,17 +19,16 @@ class RegistroForm extends StatefulWidget {
 }
 
 class _RegistroFormState extends State<RegistroForm> {
-  TextEditingController _controllerTextName = TextEditingController();
-  TextEditingController _controllerTextLastName = TextEditingController();
-  TextEditingController _controllerTextPassword = TextEditingController();
-  TextEditingController _controllerTextPhone = TextEditingController();
-  TextEditingController _controllerTextAddress = TextEditingController();
+  final TextEditingController _controllerTextName = TextEditingController();
+  final TextEditingController _controllerTextLastName = TextEditingController();
+  final TextEditingController _controllerTextPassword = TextEditingController();
+  final TextEditingController _controllerTextPhone = TextEditingController();
+  final TextEditingController _controllerTextAddress = TextEditingController();
 
   String? _controllerTextDate;
   String? sexo;
   final _formKey = GlobalKey<FormState>();
   final _email = TextEditingController();
-  @override
   void addError({required String error}) {
     if (!errors.contains(error)) {
       setState(() {
@@ -38,7 +37,6 @@ class _RegistroFormState extends State<RegistroForm> {
     }
   }
 
-  @override
   void removeError({required String error}) {
     if (errors.contains(error)) {
       setState(() {
@@ -81,7 +79,7 @@ class _RegistroFormState extends State<RegistroForm> {
               _controllerTextPassword.text =
                   _controllerTextPassword.text.replaceAll(" ", "");
               _email.text = _email.text.replaceAll(" ", "");
-              if (_formKey.currentState!.validate() && errors.length < 1) {
+              if (_formKey.currentState!.validate() && errors.isEmpty) {
                 //escribir datos a sincronizar
 
                 if (sexo != null && _controllerTextDate != null) {
@@ -90,11 +88,9 @@ class _RegistroFormState extends State<RegistroForm> {
                     if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
                       print('connected');
                       try {
-                        UserCredential userCredential = await FirebaseAuth
-                            .instance
-                            .signInWithEmailAndPassword(
-                                email: _email.text.toString(),
-                                password: "SuperSecretPassword!7770#");
+                        await FirebaseAuth.instance.signInWithEmailAndPassword(
+                            email: _email.text.toString(),
+                            password: "SuperSecretPassword!7770#");
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'user-not-found') {
                           print('El usuario no esta registrado');
@@ -102,7 +98,7 @@ class _RegistroFormState extends State<RegistroForm> {
                           //se genera el codigo de referido
                           Iterable<String> binarys = _email.text.codeUnits
                               .map((int strInt) => strInt.toRadixString(2));
-                          Crc32 hash = new Crc32();
+                          Crc32 hash = Crc32();
                           for (var i in binarys) {
                             hash.add([int.parse(i)]);
                           }
@@ -139,7 +135,7 @@ class _RegistroFormState extends State<RegistroForm> {
                         }
                       }
                     }
-                  } on SocketException catch (e) {
+                  } on SocketException {
                     print('not connected');
                     showToast("Debes tener acceso a internet para registrarte");
                   }
@@ -354,7 +350,7 @@ class _RegistroFormState extends State<RegistroForm> {
           });
         }
         password = value;
-        return null;
+        return;
       },
       validator: (value) {
         if (value!.isEmpty && !errors.contains(passNull)) {
@@ -478,7 +474,7 @@ class _RegistroFormState extends State<RegistroForm> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
           //border: Border.all(color: jBase),
           //borderRadius: BorderRadius.circular(40),
           ),
@@ -493,7 +489,7 @@ class _RegistroFormState extends State<RegistroForm> {
             sexo = value.toString();
           });
         },
-        hint: Container(
+        hint: SizedBox(
           width: MediaQuery.of(context).size.width - 54,
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -600,7 +596,7 @@ class _RegistroFormState extends State<RegistroForm> {
         suffixIcon: Padding(
           padding: const EdgeInsets.all(13),
           child: Container(
-            margin: EdgeInsets.only(right: 1),
+            margin: const EdgeInsets.only(right: 1),
             width: 2,
             height: 2,
             child: SvgPicture.asset(

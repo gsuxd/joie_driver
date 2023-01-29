@@ -1,17 +1,17 @@
+import 'package:joiedriver/home/home.dart';
 import 'package:joiedriver/pedidos.dart';
 import 'package:joiedriver/profile.dart';
-import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
-import 'package:geolocator/geolocator.dart';
 
 import 'colors.dart';
 import 'estatics.dart';
-import 'mapa_principal.dart';
 
 class PedidosTime extends StatefulWidget {
+  const PedidosTime({Key? key}) : super(key: key);
+
   @override
-  createState() =>  _PedidosTimeState();
+  createState() => _PedidosTimeState();
 }
 
 class _PedidosTimeState extends State<PedidosTime> {
@@ -30,27 +30,31 @@ class _PedidosTimeState extends State<PedidosTime> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: blue,
-          leading:
-          GestureDetector(
-            onTap: (){},
+          leading: GestureDetector(
+            onTap: () {},
             child: SvgPicture.asset(
               "assets/images/perfil_principal.svg",
               width: 24,
               color: Colors.white,
             ),
           ),
-          title: Center(
-            child: Text("Pedidos", style: TextStyle(fontFamily: "Monserrat", fontWeight: FontWeight.bold, fontSize: 20.0), textAlign: TextAlign.center,),
+          title: const Center(
+            child: Text(
+              "Pedidos",
+              style: TextStyle(
+                  fontFamily: "Monserrat",
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0),
+              textAlign: TextAlign.center,
+            ),
           ),
           actions: [ConectSwitch(context)],
-
         ),
         backgroundColor: Colors.white,
         body: Stack(
           children: [
-            
             ListView(
-              padding: EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(10.0),
               children: [
                 Container(
                   height: 20.0,
@@ -61,7 +65,7 @@ class _PedidosTimeState extends State<PedidosTime> {
                       width: 70,
                       height: 70,
                       clipBehavior: Clip.antiAlias,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                       ),
                       child: Image.network(
@@ -75,9 +79,27 @@ class _PedidosTimeState extends State<PedidosTime> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(puntoA, style: TextStyle(color: Colors.black87, fontSize: 15, fontFamily: "monserrat"),),
-                        Text(puntoB, style: TextStyle(color: Colors.black87, fontSize: 12, fontFamily: "monserrat"),),
-                        Text("$monto \$", style: TextStyle(color: blue, fontSize: 12, fontFamily: "monserrat"),),
+                        Text(
+                          puntoA,
+                          style: const TextStyle(
+                              color: Colors.black87,
+                              fontSize: 15,
+                              fontFamily: "monserrat"),
+                        ),
+                        Text(
+                          puntoB,
+                          style: const TextStyle(
+                              color: Colors.black87,
+                              fontSize: 12,
+                              fontFamily: "monserrat"),
+                        ),
+                        Text(
+                          "$monto \$",
+                          style: const TextStyle(
+                              color: blue,
+                              fontSize: 12,
+                              fontFamily: "monserrat"),
+                        ),
                       ],
                     )
                   ],
@@ -85,13 +107,19 @@ class _PedidosTimeState extends State<PedidosTime> {
                 Container(
                   height: 20.0,
                 ),
-                Center(
-                  child: Text("Cuanto tiempo le tomara\nllegar al pasajero?", style: TextStyle(color: Colors.black87, fontSize: 15, fontFamily: "monserrat"), textAlign: TextAlign.center,),
+                const Center(
+                  child: Text(
+                    "Cuanto tiempo le tomara\nllegar al pasajero?",
+                    style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 15,
+                        fontFamily: "monserrat"),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
                 Container(
                   height: 20.0,
                 ),
-
                 time("3 min.", Colors.white),
                 time("5 min.", Colors.white),
                 time("10 min.", Colors.white),
@@ -102,194 +130,152 @@ class _PedidosTimeState extends State<PedidosTime> {
                 ),
               ],
             ),
-            
-            Positioned(
-                bottom: 10,
-                left: 0.0,
-                child: bottomNavBar(context))
+            Positioned(bottom: 10, left: 0.0, child: bottomNavBar(context))
           ],
-        )
-    ) ;
-
+        ));
   }
 
   ElevatedButton time(String time, Color color) {
     return ElevatedButton(
-                onPressed: () {
-                  setState((){
-
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                  elevation: 0,
-                  padding: EdgeInsets.only(top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
-                  shadowColor: Colors.grey,
-                  primary: Colors.blueAccent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(40.0),
-                  ),
-                ),
-                child: Text(
-                  "$time", style: TextStyle(color: color, fontFamily: "Monserrat", fontWeight: FontWeight.bold, fontSize: 20),
-                ),
-
-              );
+      onPressed: () {
+        setState(() {});
+      },
+      style: ElevatedButton.styleFrom(
+        elevation: 0,
+        backgroundColor: Colors.blueAccent,
+        padding: const EdgeInsets.only(
+            top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
+        shadowColor: Colors.grey,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(40.0),
+        ),
+      ),
+      child: Text(
+        time,
+        style: TextStyle(
+            color: color,
+            fontFamily: "Monserrat",
+            fontWeight: FontWeight.bold,
+            fontSize: 20),
+      ),
+    );
   }
 
   Widget ConectSwitch(BuildContext context) {
-    return
-
-      Switch(
-
-        value: isSwitched,
-        onChanged: (value) {
-          setState(() {
-            isSwitched = value;
-            if(state == "Desconectado"){
-              state = "Conectado";
-            }else{
-              state = "Desconectado";
-            }
-          });
-        },
-        activeTrackColor: Colors.green,
-        activeColor: Colors.white,
-        inactiveThumbColor: Colors.white,
-        inactiveTrackColor: Colors.grey,
-      );
+    return Switch(
+      value: isSwitched,
+      onChanged: (value) {
+        setState(() {
+          isSwitched = value;
+          if (state == "Desconectado") {
+            state = "Conectado";
+          } else {
+            state = "Desconectado";
+          }
+        });
+      },
+      activeTrackColor: Colors.green,
+      activeColor: Colors.white,
+      inactiveThumbColor: Colors.white,
+      inactiveTrackColor: Colors.grey,
+    );
   }
 
   Widget bottomNavBar(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Row(
-
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ElevatedButton(onPressed: ()   async {
-            Future<Position> coord =  _determinePosition();
-            double longitude = await coord.then((value) => value.longitude);
-            double latitude = await coord.then((value) => value.latitude);
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => MapaMenu(longitude: longitude, latitude: latitude,)));
-          },
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()));
+            },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_inicio,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_inicio,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/inicio.svg",
               width: 40,
               color: Colors.white,
-
             ),
-
           ),
-
           Container(
             width: 10,
           ),
-          ElevatedButton(onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => Pedidos()));
-          },
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Pedidos()));
+            },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_historial,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_historial,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/historial.svg",
               width: 40,
               color: Colors.white,
             ),
-
           ),
           Container(
             width: 10,
           ),
-          ElevatedButton(onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => Statics()));
-          },
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Statics()));
+            },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_ingresos,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_ingresos,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/ingresos.svg",
               width: 40,
               color: Colors.white,
             ),
-
           ),
           Container(
             width: 10,
           ),
-          ElevatedButton(onPressed: () {
-            setState(() {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Profile()));
-
-            });
-
-          },
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const Profile()));
+              });
+            },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_perfil,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_perfil,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/perfil.svg",
               width: 40,
               color: Colors.white,
             ),
-
           ),
         ],
       ),
     );
-  }
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
   }
 }

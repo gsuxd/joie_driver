@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../../../components/states/states.dart';
 import '../../conts.dart';
 import '../../size_config.dart';
 
 class ScreenNotify extends ChangeNotifier {
-
   String _text = "Invita a un parcero";
   Color _color = Colors.white;
 
@@ -21,16 +18,14 @@ class ScreenNotify extends ChangeNotifier {
   }
 }
 
-
 final screenProvider = ChangeNotifierProvider((ref) => ScreenNotify());
 
 class Body extends ConsumerWidget {
   const Body({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, watch) {
-    CodeNotify  code = watch.watch(codeProvider);
-    ScreenNotify  screen = watch.watch(screenProvider);
+  Widget build(BuildContext context, ref) {
+    ScreenNotify screen = ref.watch(screenProvider);
     return SafeArea(
       minimum: EdgeInsets.all(getPropertieScreenWidth(10)),
       child: ListView(
@@ -101,10 +96,9 @@ class Body extends ConsumerWidget {
                   'Bienvenido',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold
-                  ),
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
                 )
               ],
             ),
@@ -125,14 +119,14 @@ class Body extends ConsumerWidget {
               vertical: 15,
             ),
             child: const Text(
-                  'Disfruta de JoieDriver',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: jBase,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
+              'Disfruta de JoieDriver',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: jBase,
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
           ),
         ],
       ),

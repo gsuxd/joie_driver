@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../components/social_cards.dart';
 import '../../conts.dart';
 import '../../size_config.dart';
 import 'registro_form.dart';

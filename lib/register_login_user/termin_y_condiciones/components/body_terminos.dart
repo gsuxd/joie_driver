@@ -4,8 +4,8 @@ Expanded texto() {
   return Expanded(
     child: ListView(
   children: [
-    SizedBox(height: 10),
-    Text(
+    const SizedBox(height: 10),
+    const Text(
       "Acuerdo de condiciones de uso de Joie Driver",
       textAlign: TextAlign.center,
       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
@@ -156,10 +156,10 @@ Expanded texto() {
 //Este container lo utilizaremos para todos los titulos
 Container title(text) {
   return Container(
-    margin: EdgeInsets.all(10),
+    margin: const EdgeInsets.all(10),
     child: Text(
       text,
-      style: TextStyle(fontWeight: FontWeight.bold),
+      style: const TextStyle(fontWeight: FontWeight.bold),
       textAlign: TextAlign.justify,
     ),
   );
@@ -168,10 +168,10 @@ Container title(text) {
 //Este container lo utilizaremos para todos los parrafos
 Container parrafo(text) {
   return Container(
-    margin: EdgeInsets.all(10),
+    margin: const EdgeInsets.all(10),
     child: Text(
       text,
-      style: TextStyle(),
+      style: const TextStyle(),
       textAlign: TextAlign.justify,
     ),
   );

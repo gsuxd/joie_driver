@@ -4,7 +4,6 @@ import '../../components/error_form.dart';
 import '../conts.dart';
 import '../size_config.dart';
 
-
 class ForgotFormPassword extends StatefulWidget {
   const ForgotFormPassword({Key? key}) : super(key: key);
 
@@ -23,7 +22,6 @@ class _ForgotFormPasswordState extends State<ForgotFormPassword> {
     return Form(
         key: _formKey,
         child: Column(children: [
-          //TODO: Validador de Forma
           TextFormField(
             onSaved: (newValue) => email = newValue!,
             onChanged: (value) {
@@ -71,16 +69,13 @@ class _ForgotFormPasswordState extends State<ForgotFormPassword> {
                   ),
                 )),
           ),
-      
           SizedBox(
             height: getPropertieScreenHeight(30),
           ),
-          //TODO: Forma de Error
           FormError(errors: errors),
           SizedBox(
             height: SizeConfig.screenHeight * 0.09,
           ),
-          //TODO: Boton de Contraseña
           ButtonDef(
             text: 'Continuar',
             press: () {

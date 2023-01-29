@@ -1,9 +1,7 @@
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joiedriver/blocs/user/user_bloc.dart';
-import '../../../home/home.dart';
 import '../../size_config.dart';
 import '/components/default_button.dart';
 import '../components/error_form.dart';
@@ -24,7 +22,6 @@ class _SignInForm extends State<SignInForm> {
   final _password = TextEditingController();
   bool remerber = false;
 
-  @override
   void addError({required String error}) {
     if (!errors.contains(error)) {
       setState(() {
@@ -33,7 +30,6 @@ class _SignInForm extends State<SignInForm> {
     }
   }
 
-  @override
   void removeError({required String error}) {
     if (errors.contains(error)) {
       setState(() {
@@ -44,8 +40,6 @@ class _SignInForm extends State<SignInForm> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-
     // bool _isLoading = false;
     // bool _isLoading2 = false;
     // final _auth = ref.watch(authenticationProvider);
@@ -91,7 +85,6 @@ class _SignInForm extends State<SignInForm> {
                   return;
                 }
 
-                //TODO: Validador del boton en el login
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
                   try {

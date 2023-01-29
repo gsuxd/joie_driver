@@ -92,6 +92,7 @@ class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
                 if (int.parse(v) < 5000) {
                   return "El monto debe ser mayor a 5000";
                 }
+                return null;
               },
               keyboardType: TextInputType.number,
               hintText: "Monto a ofertar",

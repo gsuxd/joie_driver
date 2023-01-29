@@ -16,7 +16,7 @@ class ForgotButtom extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ForgotPasswordScreen()));
+                builder: (context) => const ForgotPasswordScreen()));
       },
       child: const Text("Olvide mi contraseña"));
   }

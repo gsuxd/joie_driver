@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../../components/social_cards_user.dart';
 import '../../conts.dart';
 import '../../size_config.dart';
 import 'registro_form.dart';
 
 class Body extends StatelessWidget {
-   Body({Key? key}) : super(key: key);
+   const Body({Key? key}) : super(key: key);
 
 
   @override

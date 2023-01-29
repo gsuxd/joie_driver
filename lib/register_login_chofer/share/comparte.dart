@@ -19,7 +19,7 @@ class _ComparteYGanaState extends State<ComparteYGana> {
       child: Scaffold(
         //Este sccafoldKey en el const.dart
         key: scaffoldKey,
-        body: Body(),
+        body: const Body(),
       ),
     );
   }

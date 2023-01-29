@@ -7,7 +7,6 @@ import '../../conts.dart';
 import '../../size_config.dart';
 
 class ScreenNotify extends ChangeNotifier {
-
   String _text = "Invita a un parcero";
   Color _color = Colors.white;
 
@@ -21,18 +20,17 @@ class ScreenNotify extends ChangeNotifier {
   }
 }
 
-
 final screenProvider = ChangeNotifierProvider((ref) => ScreenNotify());
 
 class Body extends ConsumerWidget {
-  String codeLogin;
-  Body(this.codeLogin, {Key? key}) : super(key: key);
+  final String codeLogin;
+  const Body(this.codeLogin, {Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, watch) {
-    CodeNotify  code = watch.watch(codeProvider);
-    ScreenNotify  screen = watch.watch(screenProvider);
-    if(code.value == 'Code'){
+  Widget build(BuildContext context, ref) {
+    CodeNotify code = ref.watch(codeProvider);
+    ScreenNotify screen = ref.watch(screenProvider);
+    if (code.value == 'Code') {
       code.setCode(codeLogin);
     }
     return SafeArea(
@@ -137,8 +135,8 @@ class Body extends ConsumerWidget {
               vertical: 15,
             ),
             child: GestureDetector(
-                onTap: ()  async {
-                  screen.setScreen("Copiado" ,Colors.transparent);
+                onTap: () async {
+                  screen.setScreen("Copiado", Colors.transparent);
                   Clipboard.setData(ClipboardData(text: code.value));
                   // if (await Vibration.hasAmplitudeControl()) {
                   // Vibration.vibrate(amplitude: 128, duration: 600);

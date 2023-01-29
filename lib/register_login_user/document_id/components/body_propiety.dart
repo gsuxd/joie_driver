@@ -4,7 +4,6 @@ import 'package:joiedriver/helpers/generate_random_string.dart';
 import 'package:joiedriver/register_login_user/registro/user_data_register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:joiedriver/singletons/user_data.dart';
 import '../../../components/states/states.dart';
 import '../../../home_user/home.dart';
 import '../../conts.dart';
@@ -52,11 +51,11 @@ final screenProvider = ChangeNotifierProvider((ref) => ScreenNotify());
 final imageProvider = ChangeNotifierProvider((ref) => ImageNotify());
 
 class Body extends ConsumerStatefulWidget {
-  RegisterUser user;
+  final RegisterUser user;
 
-  Body({Key? key, required this.user}) : super(key: key);
+  const Body({Key? key, required this.user}) : super(key: key);
   @override
-  _Body createState() => _Body(this.user);
+  _Body createState() => _Body();
 }
 
 class _Body extends ConsumerState<Body> {
@@ -68,8 +67,6 @@ class _Body extends ConsumerState<Body> {
   }
 
   Widget cargando = const Text("");
-  RegisterUser user;
-  _Body(this.user);
   File? cedulaR;
   late ImageNotify imageView;
 
@@ -79,8 +76,8 @@ class _Body extends ConsumerState<Body> {
     ScreenNotify screen = ref.watch(screenProvider);
     imageView = ref.watch(imageProvider);
     CodeNotify code = ref.watch(codeProvider);
-    email.setEmail(user.email);
-    code.setCode(user.code);
+    email.setEmail(widget.user.email);
+    code.setCode(widget.user.code);
     return Stack(
       children: [
         SizedBox(
@@ -118,7 +115,7 @@ class _Body extends ConsumerState<Body> {
                       text: 'Registrar',
                       press: () async {
                         //lleva al Home
-                        if (user.cedulaR != null) {
+                        if (widget.user.cedulaR != null) {
                           cargando = londing();
                           screen.setScreen(
                               true,
@@ -200,7 +197,7 @@ class _Body extends ConsumerState<Body> {
     try {
       final FirebaseAuth auth = FirebaseAuth.instance;
       await auth.createUserWithEmailAndPassword(
-          email: user.email, password: user.password);
+          email: widget.user.email, password: widget.user.password);
       return true;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -212,18 +209,18 @@ class _Body extends ConsumerState<Body> {
   }
 
   Future<bool> userRegisterData() async {
-    String addEmail = user.email;
+    String addEmail = widget.user.email;
     CollectionReference users =
         FirebaseFirestore.instance.collection('usersPasajeros');
     return await users
         .doc(addEmail)
         .set({
-          'name': user.name.toUpperCase(),
-          'lastname': user.lastName.toUpperCase(),
-          'datebirth': user.date,
-          'gender': user.genero.toUpperCase(),
-          'phone': user.phone,
-          'address': user.address,
+          'name': widget.user.name.toUpperCase(),
+          'lastname': widget.user.lastName.toUpperCase(),
+          'datebirth': widget.user.date,
+          'gender': widget.user.genero.toUpperCase(),
+          'phone': widget.user.phone,
+          'address': widget.user.address,
           'code': generateRandomString(10),
           'metodosPago': []
         })
@@ -233,27 +230,29 @@ class _Body extends ConsumerState<Body> {
 
   Future<bool> upload() async {
     try {
-      Reference img =
-          FirebaseStorage.instance.ref().child(user.email).child('/Cedula.jpg');
+      Reference img = FirebaseStorage.instance
+          .ref()
+          .child(widget.user.email)
+          .child('/Cedula.jpg');
       Reference img1 = FirebaseStorage.instance
           .ref()
-          .child(user.email)
+          .child(widget.user.email)
           .child('/CedulaR.jpg');
       Reference img2 = FirebaseStorage.instance
           .ref()
-          .child(user.email)
+          .child(widget.user.email)
           .child('/ProfilePhoto.jpg');
-      // Reference doc1 = FirebaseStorage.instance.ref().child(user.email).child('/Antecent.pdf');
-      UploadTask uploadCedula = img.putFile(user.documentId!);
-      UploadTask uploadCedulaR = img1.putFile(user.cedulaR!);
-      UploadTask uploadPhotoProfile = img2.putFile(user.photoPerfil!);
-      // UploadTask uploadTaskAntecedent = doc1.putFile(user.documentAntecedentes!);
+      // Reference doc1 = FirebaseStorage.instance.ref().child(widget.user.email).child('/Antecent.pdf');
+      UploadTask uploadCedula = img.putFile(widget.user.documentId!);
+      UploadTask uploadCedulaR = img1.putFile(widget.user.cedulaR!);
+      UploadTask uploadPhotoProfile = img2.putFile(widget.user.photoPerfil!);
+      // UploadTask uploadTaskAntecedent = doc1.putFile(widget.user.documentAntecedentes!);
       await uploadCedula.whenComplete(() {});
       await uploadCedulaR.whenComplete(() {});
       await uploadPhotoProfile.whenComplete(() {});
 
       return true;
-    } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException {
       return false;
     }
   }
@@ -267,10 +266,10 @@ class _Body extends ConsumerState<Body> {
 
   Widget cambiarmage() {
     if (cedulaR != null) {
-      user.cedulaR = cedulaR;
+      widget.user.cedulaR = cedulaR;
       return Image.file(cedulaR!, height: SizeConfig.screenHeight * 0.50);
     } else {
-      user.cedulaR = null;
+      widget.user.cedulaR = null;
       return SvgPicture.asset(cedularImg,
           height: SizeConfig.screenHeight * 0.50);
     }

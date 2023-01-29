@@ -7,21 +7,19 @@ import '../../document_id/document_id.dart';
 import '../../size_config.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+
 class Body extends StatefulWidget {
-  RegisterUser  user;
-  Body(this.user, {Key? key}) : super(key: key);
+  final RegisterUser user;
+  const Body(this.user, {Key? key}) : super(key: key);
   @override
-  createState() =>  _Body(user);
+  createState() => _Body();
 }
 
 class _Body extends State<Body> {
-  RegisterUser user;
-  _Body(this.user);
   File? cedula;
-  late Widget imageWiew ;
+  late Widget imageWiew;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     imageWiew = cambiarmage();
   }
@@ -58,11 +56,11 @@ class _Body extends State<Body> {
               child: ButtonDef(
                   text: 'Siguiente',
                   press: () {
-                    if(user.documentId != null){
+                    if (widget.user.documentId != null) {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => DocumentId(user)));
+                              builder: (context) => DocumentId(widget.user)));
                     }
                   })),
           const Spacer(),
@@ -71,25 +69,23 @@ class _Body extends State<Body> {
     );
   }
 
-  Future getImage () async {
+  Future getImage() async {
     ImagePicker imegaTemp = ImagePicker();
     var tempImage = await imegaTemp.pickImage(source: ImageSource.camera);
-    cedula =  File(tempImage!.path);
-    setState(()  {
-
+    cedula = File(tempImage!.path);
+    setState(() {
       imageWiew = cambiarmage();
-
     });
   }
 
-  Widget cambiarmage(){
-
-    if(cedula != null){
-      user.documentId = cedula;
-      return  Image.file(cedula!, height: SizeConfig.screenHeight * 0.50);
-    }else{
-      user.documentId = null;
-      return SvgPicture.asset(cedulaImg, height: SizeConfig.screenHeight * 0.50);
+  Widget cambiarmage() {
+    if (cedula != null) {
+      widget.user.documentId = cedula;
+      return Image.file(cedula!, height: SizeConfig.screenHeight * 0.50);
+    } else {
+      widget.user.documentId = null;
+      return SvgPicture.asset(cedulaImg,
+          height: SizeConfig.screenHeight * 0.50);
     }
   }
 }

@@ -8,20 +8,15 @@ import '../../../register_login_emprendedor/registro/user_data_register.dart';
 import '../../../register_login_emprendedor/profile_photo/profile_photo.dart';
 import '../../conts.dart';
 
-
 class BancoForm extends StatefulWidget {
-  RegisterUser user;
-  BancoForm(this.user, {Key? key}) : super(key: key);
-
+  final RegisterUser user;
+  const BancoForm(this.user, {Key? key}) : super(key: key);
 
   @override
-  State<BancoForm> createState() => _BancoFormState(user);
+  State<BancoForm> createState() => _BancoFormState();
 }
 
 class _BancoFormState extends State<BancoForm> {
-  RegisterUser user;
-  _BancoFormState(this.user);
-
   final List<String> errors = [];
   String? tipoCuenta2;
   String? bancoChofer;
@@ -43,7 +38,7 @@ class _BancoFormState extends State<BancoForm> {
 
   @override
   Widget build(BuildContext context) {
-    controllerTextName.text = user.name + " " + user.lastName;
+    controllerTextName.text = widget.user.name + " " + widget.user.lastName;
     return Column(
       children: [
         nombreCompletoFormField(),
@@ -62,18 +57,19 @@ class _BancoFormState extends State<BancoForm> {
         spaceMedium(),
         ButtonDefEmprendedor(
           text: 'Siguiente',
-          press: (){
-            user.nameComplete = controllerTextName.text;
-            user.numberBank = controllerTextNumber.text;
-            user.numberCi = controllerTextCedula.text;
-            user.bank = bancoChofer;
-            user.typeBank = tipoCuenta2;
-            user.dateCi = controllerTextDate;
+          press: () {
+            widget.user.nameComplete = controllerTextName.text;
+            widget.user.numberBank = controllerTextNumber.text;
+            widget.user.numberCi = controllerTextCedula.text;
+            widget.user.bank = bancoChofer;
+            widget.user.typeBank = tipoCuenta2;
+            widget.user.dateCi = controllerTextDate;
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ProfilePhoto(user)));
-        },)
+                    builder: (context) => ProfilePhoto(widget.user)));
+          },
+        )
       ],
     );
   }
@@ -267,64 +263,56 @@ class _BancoFormState extends State<BancoForm> {
       child: DropdownButton(
         items: banco.map((String bancos) {
           return DropdownMenuItem(
-              value: bancos, child: Row(children: [SvgPicture.asset(bancos, height: 20,)]));
+              value: bancos,
+              child: Row(children: [
+                SvgPicture.asset(
+                  bancos,
+                  height: 20,
+                )
+              ]));
         }).toList(),
         onChanged: (value) {
           setState(() {
             String name = "Selecciona tu Banco";
-            if(value == bancolombia){
+            if (value == bancolombia) {
               name = "Bancolombia";
-            }else if(value == bbva){
+            } else if (value == bbva) {
               name = "BBVA";
-            }else if(value == bogotaBank){
+            } else if (value == bogotaBank) {
               name = "Banco de Bogotá";
-            }else if(value == colpatria){
+            } else if (value == colpatria) {
               name = "ColPatria";
-            }else if(value == davivienda){
+            } else if (value == davivienda) {
               name = "Davivienda";
-            }else if (value == avvillas) {
+            } else if (value == avvillas) {
               name = 'Bnaco AV Villas';
-            } else
-            if (value == bancamia) {
+            } else if (value == bancamia) {
               name = 'Bancamía';
-            } else
-            if (value == bancoAgrario) {
+            } else if (value == bancoAgrario) {
               name = 'Banco Agrario';
-            } else
-            if (value == bancoCajaSocial) {
+            } else if (value == bancoCajaSocial) {
               name = 'Banco Caja Social';
-            } else
-            if (value == bancoCoopCentral) {
+            } else if (value == bancoCoopCentral) {
               name = 'Banco Cooperativo Coopcentral';
-            }else
-            if (value == credifinanciera) {
+            } else if (value == credifinanciera) {
               name = 'Banco Credifinaciera';
-            }else
-            if (value == bancodeOccidente) {
+            } else if (value == bancodeOccidente) {
               name = 'Banco de Occidente';
-            }else
-            if (value == falabella) {
+            } else if (value == falabella) {
               name = 'Banco Falabella';
-            }else
-            if (value == finandia) {
+            } else if (value == finandia) {
               name = 'Banco Finandina';
-            }else
-            if (value == itau) {
+            } else if (value == itau) {
               name = 'Banco Itaú';
-            }else
-            if (value == pichincha) {
+            } else if (value == pichincha) {
               name = 'Banco Pichincha';
-            }else
-            if (value == bpc) {
+            } else if (value == bpc) {
               name = 'Banco Popular de Colombia';
-            }else
-            if (value == bancoW) {
+            } else if (value == bancoW) {
               name = 'BancoW';
-            }else
-            if (value == bancoOmeva) {
+            } else if (value == bancoOmeva) {
               name = 'Bancoomeva';
-            }else
-            if (value == bancoldex) {
+            } else if (value == bancoldex) {
               name = 'Bancoldex';
             }
             vistaCuenta = name;

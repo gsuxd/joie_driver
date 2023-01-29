@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:archive/archive.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../../components/default_button_emprendedor.dart';
@@ -41,8 +40,6 @@ class _SignInForm extends State<SignInForm> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-
     // bool _isLoading = false;
     // bool _isLoading2 = false;
     // final _auth = ref.watch(authenticationProvider);
@@ -84,7 +81,6 @@ class _SignInForm extends State<SignInForm> {
           ButtonDefEmprendedor(
               text: "Ingresar",
               press: () async {
-                //TODO: Validador del boton en el login
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
                   try {

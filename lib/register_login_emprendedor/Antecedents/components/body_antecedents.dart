@@ -5,7 +5,6 @@ import 'package:joiedriver/metodos_pago/models/metodo_pago.dart';
 import 'package:joiedriver/register_login_emprendedor/registro/user_data_register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:joiedriver/singletons/user_data.dart';
 import '../../../components/default_button_emprendedor.dart';
 import '../../../components/states/states.dart';
 import '../../../home/home.dart';
@@ -53,11 +52,11 @@ final screenProvider = ChangeNotifierProvider((ref) => ScreenNotify());
 final imageProvider = ChangeNotifierProvider((ref) => ImageNotify());
 
 class Body extends ConsumerStatefulWidget {
-  RegisterUser user;
+  final RegisterUser user;
 
-  Body({Key? key, required this.user}) : super(key: key);
+  const Body({Key? key, required this.user}) : super(key: key);
   @override
-  _Body createState() => _Body(this.user);
+  _Body createState() => _Body();
 }
 
 class _Body extends ConsumerState<Body> {
@@ -69,8 +68,6 @@ class _Body extends ConsumerState<Body> {
   }
 
   Widget cargando = const Text("");
-  RegisterUser user;
-  _Body(this.user);
   File? antecedentes;
   late ImageNotify imageView;
 
@@ -82,8 +79,8 @@ class _Body extends ConsumerState<Body> {
         ScreenNotify screen = ref.watch(screenProvider);
         imageView = ref.watch(imageProvider);
         CodeNotify code = ref.watch(codeProvider);
-        email.setEmail(user.email);
-        code.setCode(user.code);
+        email.setEmail(widget.user.email);
+        code.setCode(widget.user.code);
         return Stack(
           children: [
             SizedBox(
@@ -217,7 +214,7 @@ class _Body extends ConsumerState<Body> {
     try {
       final FirebaseAuth auth = FirebaseAuth.instance;
       await auth.createUserWithEmailAndPassword(
-          email: user.email, password: user.password);
+          email: widget.user.email, password: widget.user.password);
       return true;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -229,27 +226,27 @@ class _Body extends ConsumerState<Body> {
   }
 
   Future<bool> userRegisterData() async {
-    String addEmail = user.email;
+    String addEmail = widget.user.email;
     CollectionReference users =
         FirebaseFirestore.instance.collection('usersEmprendedor');
     return await users
         .doc(addEmail)
         .set({
-          'name': user.name.toUpperCase(),
-          'lastname': user.lastName.toUpperCase(),
-          'datebirth': user.date,
-          'gender': user.genero.toUpperCase(),
-          'phone': user.phone,
-          'address': user.address,
-          'parent': user.referenceCode,
+          'name': widget.user.name.toUpperCase(),
+          'lastname': widget.user.lastName.toUpperCase(),
+          'datebirth': widget.user.date,
+          'gender': widget.user.genero.toUpperCase(),
+          'phone': widget.user.phone,
+          'address': widget.user.address,
+          'parent': widget.user.referenceCode,
           'code': generateRandomString(10),
           'metodoPago': MetodoPago.fromJson({
-            'nameComplete': user.nameComplete,
-            'number_bank': user.numberBank,
-            'number_ci': user.numberCi,
-            'type_bank': user.typeBank,
-            'bank': user.bank,
-            'date_ci': user.dateCi,
+            'nameComplete': widget.user.nameComplete,
+            'number_bank': widget.user.numberBank,
+            'number_ci': widget.user.numberCi,
+            'type_bank': widget.user.typeBank,
+            'bank': widget.user.bank,
+            'date_ci': widget.user.dateCi,
           }).toJson()
         })
         .then((value) => true)
@@ -260,26 +257,29 @@ class _Body extends ConsumerState<Body> {
     try {
       Reference img3 = FirebaseStorage.instance
           .ref()
-          .child(user.email)
+          .child(widget.user.email)
           .child('/ProfilePhoto.jpg');
-      Reference img4 =
-          FirebaseStorage.instance.ref().child(user.email).child('/Cedula.jpg');
+      Reference img4 = FirebaseStorage.instance
+          .ref()
+          .child(widget.user.email)
+          .child('/Cedula.jpg');
       Reference img5 = FirebaseStorage.instance
           .ref()
-          .child(user.email)
+          .child(widget.user.email)
           .child('/CedulaR.jpg');
 
-      UploadTask uploadTaskProfilePhoto = img3.putFile(user.photoPerfil!);
-      UploadTask uploadTaskCedula = img4.putFile(user.cedula!);
-      UploadTask uploadTaskCedulaR = img5.putFile(user.cedulaR!);
+      UploadTask uploadTaskProfilePhoto =
+          img3.putFile(widget.user.photoPerfil!);
+      UploadTask uploadTaskCedula = img4.putFile(widget.user.cedula!);
+      UploadTask uploadTaskCedulaR = img5.putFile(widget.user.cedulaR!);
 
-      if (user.documentAntecedentes != null) {
+      if (widget.user.documentAntecedentes != null) {
         Reference doc1 = FirebaseStorage.instance
             .ref()
-            .child(user.email)
+            .child(widget.user.email)
             .child('/Antecent.pdf');
         UploadTask uploadTaskAntecedent =
-            doc1.putFile(user.documentAntecedentes!);
+            doc1.putFile(widget.user.documentAntecedentes!);
         await uploadTaskAntecedent.whenComplete(() {});
       }
 
@@ -287,7 +287,7 @@ class _Body extends ConsumerState<Body> {
       await uploadTaskCedula.whenComplete(() {});
       await uploadTaskCedulaR.whenComplete(() {});
       return true;
-    } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException {
       return false;
     }
   }
@@ -303,7 +303,7 @@ class _Body extends ConsumerState<Body> {
 
   Widget cambiarmage() {
     if (antecedentes != null) {
-      user.documentAntecedentes = antecedentes;
+      widget.user.documentAntecedentes = antecedentes;
       return Center(
           child: Text(
         antecedentes!.path.split('/').last,
@@ -311,7 +311,7 @@ class _Body extends ConsumerState<Body> {
         textAlign: TextAlign.center,
       ));
     } else {
-      user.documentAntecedentes = null;
+      widget.user.documentAntecedentes = null;
       return SvgPicture.asset(antePen, height: SizeConfig.screenHeight * 0.50);
     }
   }

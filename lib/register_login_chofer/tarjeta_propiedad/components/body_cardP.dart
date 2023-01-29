@@ -7,21 +7,19 @@ import '../../conts.dart';
 import '../../size_config.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+
 class Body extends StatefulWidget {
-  RegisterUser  user;
-  Body(this.user);
+  final RegisterUser user;
+  const Body(this.user, {Key? key}) : super(key: key);
   @override
-  createState() =>  _Body(user);
+  createState() => _Body();
 }
 
 class _Body extends State<Body> {
-  RegisterUser user;
-  _Body(this.user);
   File? imagePropiedad;
-  late Widget imageWiew ;
+  late Widget imageWiew;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     imageWiew = cambiarmage();
   }
@@ -58,11 +56,12 @@ class _Body extends State<Body> {
               child: ButtonDefChofer(
                   text: 'Siguiente',
                   press: () {
-                    if(user.documentTarjetaPropiedad != null){
+                    if (widget.user.documentTarjetaPropiedad != null) {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => PropiedadScreen(user)));
+                              builder: (context) =>
+                                  PropiedadScreen(widget.user)));
                     }
 
                     //Navigator.pushNamed(context, PropiedadScreen.routeName);
@@ -73,25 +72,24 @@ class _Body extends State<Body> {
     );
   }
 
-  Future getImage () async {
+  Future getImage() async {
     ImagePicker imegaTemp = ImagePicker();
     var tempImage = await imegaTemp.pickImage(source: ImageSource.camera);
-    imagePropiedad =  File(tempImage!.path);
-    setState(()  {
-
+    imagePropiedad = File(tempImage!.path);
+    setState(() {
       imageWiew = cambiarmage();
-
     });
   }
 
-  Widget cambiarmage(){
-
-    if(imagePropiedad != null){
-      user.documentTarjetaPropiedad = imagePropiedad;
-      return  Image.file(imagePropiedad!, height: SizeConfig.screenHeight * 0.50);
-    }else{
-      user.documentTarjetaPropiedad = null;
-      return SvgPicture.asset(fotoCarnet, height: SizeConfig.screenHeight * 0.50);
+  Widget cambiarmage() {
+    if (imagePropiedad != null) {
+      widget.user.documentTarjetaPropiedad = imagePropiedad;
+      return Image.file(imagePropiedad!,
+          height: SizeConfig.screenHeight * 0.50);
+    } else {
+      widget.user.documentTarjetaPropiedad = null;
+      return SvgPicture.asset(fotoCarnet,
+          height: SizeConfig.screenHeight * 0.50);
     }
   }
 }

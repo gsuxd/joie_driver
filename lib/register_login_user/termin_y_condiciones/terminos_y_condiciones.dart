@@ -21,15 +21,15 @@ class _TerminosCondicionesState extends State<TerminosCondicionesUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Terminos y Condiciones"),
+        title: const Text("Terminos y Condiciones"),
         leading:
         Container(
-          padding: EdgeInsets.all(5.0),
+          padding: const EdgeInsets.all(5.0),
           child: GestureDetector(
               onTap: (){
                 Navigator.pop(context);
               },
-              child: Icon(Icons.arrow_back_ios, color: Colors.white, size: 18,)
+              child: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 18,)
           ),
         ),
       ),
@@ -40,7 +40,7 @@ class _TerminosCondicionesState extends State<TerminosCondicionesUser> {
             texto(),
             //Creamos un Checkbox que indica que el usuario ha aceptado los terminos y condiciones
             Container(
-              margin: EdgeInsets.only(top: 5),
+              margin: const EdgeInsets.only(top: 5),
               height: 70,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -56,7 +56,7 @@ class _TerminosCondicionesState extends State<TerminosCondicionesUser> {
                     },
                   ),
                   //Texto de complemento
-                  Text("He leido y aceptado los terminos y condiciones"),
+                  const Text("He leido y aceptado los terminos y condiciones"),
                 ],
               ),
             ),
@@ -70,7 +70,7 @@ class _TerminosCondicionesState extends State<TerminosCondicionesUser> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => RegistroUser()));
+                          builder: (context) => const RegistroUser()));
                 } : null),
                 child: const Text("continuar"),
               ),

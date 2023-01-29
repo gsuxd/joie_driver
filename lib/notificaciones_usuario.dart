@@ -1,7 +1,6 @@
 import 'package:joiedriver/pedidos.dart';
 import 'package:joiedriver/profile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
 import 'colors.dart';
 import 'estatics.dart';
@@ -11,8 +10,8 @@ import 'notificaciones_usuario_dao.dart';
 import 'notificacionwidget.dart';
 
 class ListaNotificacionesUsuario extends StatefulWidget {
-  ListaNotificacionesUsuario({Key? key}) : super(key: key);
-  final notificacionDAO = NotificacionUsuarioDAO();
+  const ListaNotificacionesUsuario({Key? key}) : super(key: key);
+  final notificacionDAO = const NotificacionUsuarioDAO();
 
   @override
   ListaNotificacionesUsuarioState createState() =>
@@ -22,8 +21,7 @@ class ListaNotificacionesUsuario extends StatefulWidget {
 class ListaNotificacionesUsuarioState
     extends State<ListaNotificacionesUsuario> {
   String usuario = "UsuarioPrueba";
-  ScrollController _scrollController = ScrollController();
-  TextEditingController _mensajeController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   Color color_icon_inicio = blue;
   Color color_icon_historial = blue;
   Color color_icon_perfil = blue;
@@ -34,7 +32,7 @@ class ListaNotificacionesUsuarioState
 
     return Scaffold(
         appBar: AppBar(
-          leading: Icon(
+          leading: const Icon(
             Icons.notifications,
             color: Colors.white,
             size: 30,
@@ -45,8 +43,8 @@ class ListaNotificacionesUsuarioState
           backgroundColor: blue,
         ),
         body: Padding(
-            padding:
-                EdgeInsets.only(top: 10.0, bottom: 10.0, left: 0.0, right: 0.0),
+            padding: const EdgeInsets.only(
+                top: 10.0, bottom: 10.0, left: 0.0, right: 0.0),
             child: Column(children: [
               _getListaMensajes(),
               bottomNavBar(context),
@@ -76,7 +74,7 @@ class ListaNotificacionesUsuarioState
   }
 
   Widget bottomNavBar(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -85,11 +83,11 @@ class ListaNotificacionesUsuarioState
             onPressed: () {},
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding:
-                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_inicio,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_inicio,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/inicio.svg",
@@ -102,16 +100,16 @@ class ListaNotificacionesUsuarioState
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Pedidos()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Pedidos()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding:
-                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_historial,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_historial,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/historial2.svg",
@@ -124,16 +122,16 @@ class ListaNotificacionesUsuarioState
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Statics()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Statics()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding:
-                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_ingresos,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_ingresos,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/asistencia_tecnica.svg",
@@ -148,16 +146,16 @@ class ListaNotificacionesUsuarioState
             onPressed: () {
               setState(() {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Profile()));
+                    MaterialPageRoute(builder: (context) => const Profile()));
               });
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding:
-                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_perfil,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_perfil,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/perfil.svg",

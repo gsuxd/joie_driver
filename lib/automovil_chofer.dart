@@ -5,7 +5,6 @@ import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:joiedriver/pedidos.dart';
 import 'package:joiedriver/profile.dart';
-import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
 import 'package:joiedriver/singletons/carro_data.dart';
@@ -14,6 +13,8 @@ import 'colors.dart';
 import 'estatics.dart';
 
 class AutomovilChofer extends StatefulWidget {
+  const AutomovilChofer({Key? key}) : super(key: key);
+
   @override
   createState() => _PerfilUsuarioState();
 }
@@ -99,7 +100,7 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
           title: Center(
             child: Text(
               titleAppBar,
-              style: TextStyle(
+              style: const TextStyle(
                   fontFamily: "Monserrat",
                   fontWeight: FontWeight.bold,
                   fontSize: 20.0),
@@ -134,7 +135,7 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
                             _changeImage();
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: blue,
+                            backgroundColor: blue,
                             shape: const CircleBorder(),
                           ),
                           child: _isLoading
@@ -207,7 +208,7 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
                 },
                 child: Text(
                   title,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.black54,
                       fontFamily: "Monserrat",
                       fontSize: 16.0),
@@ -228,11 +229,11 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
                 onChanged: (text) {
                   setState(() {});
                 },
-                style: TextStyle(
+                style: const TextStyle(
                     color: Colors.black45,
                     fontFamily: "Monserrat",
                     fontSize: 12),
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: "Modelo",
                   labelText: '',
                   labelStyle: TextStyle(fontFamily: "Monserrat", fontSize: 12),
@@ -276,7 +277,7 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
                 },
                 child: Text(
                   title,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.black54,
                       fontFamily: "Monserrat",
                       fontSize: 16.0),
@@ -297,11 +298,11 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
                 onChanged: (text) {
                   setState(() {});
                 },
-                style: TextStyle(
+                style: const TextStyle(
                     color: Colors.black45,
                     fontFamily: "Monserrat",
                     fontSize: 12),
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: "Anio",
                   labelText: '',
                   labelStyle: TextStyle(fontFamily: "Monserrat", fontSize: 12),
@@ -345,7 +346,7 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
                 },
                 child: Text(
                   title,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.black54,
                       fontFamily: "Monserrat",
                       fontSize: 16.0),
@@ -366,11 +367,11 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
                 onChanged: (text) {
                   setState(() {});
                 },
-                style: TextStyle(
+                style: const TextStyle(
                     color: Colors.black45,
                     fontFamily: "Monserrat",
                     fontSize: 12),
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: "Placa",
                   labelText: '',
                   labelStyle: TextStyle(fontFamily: "Monserrat", fontSize: 12),
@@ -413,7 +414,7 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
                 },
                 child: Text(
                   title,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.black54,
                       fontFamily: "Monserrat",
                       fontSize: 16.0),
@@ -434,11 +435,11 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
                 onChanged: (text) {
                   setState(() {});
                 },
-                style: TextStyle(
+                style: const TextStyle(
                     color: Colors.black45,
                     fontFamily: "Monserrat",
                     fontSize: 12),
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: "Color",
                   labelText: '',
                   labelStyle: TextStyle(fontFamily: "Monserrat", fontSize: 12),
@@ -482,7 +483,7 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
                 },
                 child: Text(
                   title,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.black54,
                       fontFamily: "Monserrat",
                       fontSize: 16.0),
@@ -503,11 +504,11 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
                 onChanged: (text) {
                   setState(() {});
                 },
-                style: TextStyle(
+                style: const TextStyle(
                     color: Colors.black45,
                     fontFamily: "Monserrat",
                     fontSize: 12),
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: "Capacidad",
                   labelText: '',
                   labelStyle: TextStyle(fontFamily: "Monserrat", fontSize: 12),
@@ -526,7 +527,7 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
   }
 
   Widget bottomNavBar(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -535,11 +536,11 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
             onPressed: () {},
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding:
-                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_inicio,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_inicio,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/inicio.svg",
@@ -552,16 +553,16 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Pedidos()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Pedidos()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding:
-                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_historial,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_historial,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/historial.svg",
@@ -574,16 +575,16 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Statics()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Statics()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding:
-                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_ingresos,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_ingresos,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/ingresos.svg",
@@ -598,16 +599,16 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
             onPressed: () {
               setState(() {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Profile()));
+                    MaterialPageRoute(builder: (context) => const Profile()));
               });
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding:
-                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_perfil,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_perfil,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/perfil.svg",

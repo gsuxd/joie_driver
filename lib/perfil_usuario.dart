@@ -5,7 +5,6 @@ import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:joiedriver/metodos_pago/components/nuevo_metodo.dart';
 import 'package:joiedriver/pedidos.dart';
-import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
 import 'package:joiedriver/singletons/user_data.dart';
@@ -74,10 +73,10 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
         appBar: AppBar(
           backgroundColor: blue,
           leading: Container(
-            padding: EdgeInsets.all(5.0),
+            padding: const EdgeInsets.all(5.0),
             child: GestureDetector(
                 onTap: () {},
-                child: Icon(
+                child: const Icon(
                   Icons.arrow_back_ios,
                   color: Colors.white,
                   size: 40,
@@ -86,7 +85,7 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
           title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Text(
               state,
-              style: TextStyle(
+              style: const TextStyle(
                   fontFamily: "Monserrat",
                   fontWeight: FontWeight.bold,
                   fontSize: 25.0),
@@ -142,7 +141,7 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                           child: ElevatedButton(
                             onPressed: () {},
                             style: ElevatedButton.styleFrom(
-                              primary: blue,
+                              backgroundColor: blue,
                               shape: const CircleBorder(),
                             ),
                             child: SvgPicture.asset(
@@ -250,7 +249,7 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                 },
                 child: Text(
                   title,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.black54,
                       fontFamily: "Monserrat",
                       fontSize: 16.0),
@@ -271,11 +270,11 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                 onChanged: (text) {
                   setState(() {});
                 },
-                style: TextStyle(
+                style: const TextStyle(
                     color: Colors.black45,
                     fontFamily: "Monserrat",
                     fontSize: 12),
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: "Ciudad",
                   labelText: '',
                   labelStyle: TextStyle(fontFamily: "Monserrat", fontSize: 12),
@@ -319,7 +318,7 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                 },
                 child: Text(
                   title,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.black54,
                       fontFamily: "Monserrat",
                       fontSize: 16.0),
@@ -340,11 +339,11 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                 onChanged: (text) {
                   setState(() {});
                 },
-                style: TextStyle(
+                style: const TextStyle(
                     color: Colors.black45,
                     fontFamily: "Monserrat",
                     fontSize: 12),
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: "Correo",
                   labelText: '',
                   labelStyle: TextStyle(fontFamily: "Monserrat", fontSize: 12),
@@ -380,7 +379,7 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
           ),
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.black54, fontFamily: "Monserrat", fontSize: 16.0),
           )
         ],
@@ -389,7 +388,7 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
   }
 
   Widget bottomNavBar(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -397,15 +396,14 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
           ElevatedButton(
             onPressed: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => MyApp()));
+                  context, MaterialPageRoute(builder: (context) => const MyApp()));
             },
             style: ElevatedButton.styleFrom(
-              elevation: 0,
+              elevation: 0, backgroundColor: color_icon_inicio,
               padding:
-                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_inicio,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/inicio.svg",
@@ -419,15 +417,14 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
           ElevatedButton(
             onPressed: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Pedidos()));
+                  context, MaterialPageRoute(builder: (context) => const Pedidos()));
             },
             style: ElevatedButton.styleFrom(
-              elevation: 0,
+              elevation: 0, backgroundColor: color_icon_historial,
               padding:
-                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_historial,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/historial2.svg",
@@ -443,15 +440,14 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => AsistenciaTecnicaUsuario()));
+                      builder: (context) => const AsistenciaTecnicaUsuario()));
             },
             style: ElevatedButton.styleFrom(
-              elevation: 0,
+              elevation: 0, backgroundColor: color_icon_ingresos,
               padding:
-                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_ingresos,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/asistencia_tecnica.svg",
@@ -466,16 +462,15 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
             onPressed: () {
               setState(() {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => PerfilUsuario()));
+                    MaterialPageRoute(builder: (context) => const PerfilUsuario()));
               });
             },
             style: ElevatedButton.styleFrom(
-              elevation: 0,
+              elevation: 0, backgroundColor: color_icon_perfil,
               padding:
-                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_perfil,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/perfil.svg",

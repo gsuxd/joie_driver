@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:joiedriver/metodos_pago/components/nuevo_metodo.dart';
 import 'package:joiedriver/singletons/user_data.dart';
 import 'package:meta/meta.dart';
 

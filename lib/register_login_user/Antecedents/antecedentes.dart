@@ -4,16 +4,13 @@ import '../size_config.dart';
 import 'components/body_antecedents.dart';
 
 class AntecedentsScreen extends StatefulWidget {
-  RegisterUser user;
-  AntecedentsScreen(this.user, {Key? key}) : super(key: key);
+  final RegisterUser user;
+  const AntecedentsScreen(this.user, {Key? key}) : super(key: key);
   @override
-  createState() =>  _AntecedentsScreen(user);
-
+  createState() => _AntecedentsScreen();
 }
 
 class _AntecedentsScreen extends State<AntecedentsScreen> {
-  RegisterUser user;
-  _AntecedentsScreen(this.user);
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -22,9 +19,7 @@ class _AntecedentsScreen extends State<AntecedentsScreen> {
         title: const Text('Por tu seguridad y la nuestra'),
         centerTitle: true,
       ),
-      body: Body(user),
+      body: Body(widget.user),
     );
   }
-
-
 }

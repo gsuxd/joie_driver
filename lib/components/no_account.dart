@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:joiedriver/choose/choose.dart';
 import '../register_login_user/conts.dart';
-import '../register_login_user/termin_y_condiciones/terminos_y_condiciones.dart';
 
 class NoAccount extends StatelessWidget {
   const NoAccount({

@@ -7,26 +7,24 @@ import '../../size_config.dart';
 import '../../tarjeta_propiedad/card_propierty.dart';
 import '/components/default_button_chofer.dart';
 import 'dart:io';
+
 class Body extends StatefulWidget {
-  RegisterUser user;
-  Body( this.user, {Key? key}) : super(key: key);
+  final RegisterUser user;
+  const Body(this.user, {Key? key}) : super(key: key);
   @override
-  createState() =>  _Body(this.user);
+  createState() => _Body();
 }
 
-
 class _Body extends State<Body> {
-  RegisterUser user;
-  _Body( this.user);
   File? FileAntecedentes;
-  late Widget imageWiew ;
+  late Widget imageWiew;
   bool varInit = true;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     imageWiew = cambiarfile();
   }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -36,9 +34,7 @@ class _Body extends State<Body> {
           SizedBox(
             height: SizeConfig.screenHeight * 0.05,
           ),
-
           imageWiew,
-
           SizedBox(
             height: SizeConfig.screenHeight * 0.05,
           ),
@@ -61,10 +57,10 @@ class _Body extends State<Body> {
               child: ButtonDefChofer(
                   text: 'Siguiente',
                   press: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CardPropierty(user)));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CardPropierty(widget.user)));
                   })),
           const Spacer(),
         ],
@@ -72,31 +68,28 @@ class _Body extends State<Body> {
     );
   }
 
-
-
-  Future getFile () async {
-
-    var tempFile = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf',]);
+  Future getFile() async {
+    var tempFile = await FilePicker.platform
+        .pickFiles(type: FileType.custom, allowedExtensions: [
+      'pdf',
+    ]);
     FileAntecedentes = File(tempFile!.paths[0].toString());
     setState(() {
       imageWiew = cambiarfile();
     });
-
   }
 
-
-
-  Widget cambiarfile(){
-
-    if(FileAntecedentes != null ){
-      user.documentAntecedentes = FileAntecedentes;
-      return  Center(
-          child: Text(FileAntecedentes!.path.split('/').last, style: const TextStyle(fontWeight: FontWeight.bold, color: blue), textAlign: TextAlign.center,)
-      );
-    }else{
-      user.documentAntecedentes = null;
+  Widget cambiarfile() {
+    if (FileAntecedentes != null) {
+      widget.user.documentAntecedentes = FileAntecedentes;
+      return Center(
+          child: Text(
+        FileAntecedentes!.path.split('/').last,
+        style: const TextStyle(fontWeight: FontWeight.bold, color: blue),
+        textAlign: TextAlign.center,
+      ));
+    } else {
+      widget.user.documentAntecedentes = null;
       return SvgPicture.asset(antePen, height: SizeConfig.screenHeight * 0.50);
     }
   }

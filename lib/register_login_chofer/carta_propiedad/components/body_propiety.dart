@@ -5,7 +5,6 @@ import 'package:joiedriver/metodos_pago/models/metodo_pago.dart';
 import 'package:joiedriver/register_login_chofer/registro/user_data_register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:joiedriver/singletons/user_data.dart';
 import '../../../components/default_button_chofer.dart';
 import '../../../components/states/states.dart';
 import '../../../home/home.dart';
@@ -53,11 +52,11 @@ final screenProvider = ChangeNotifierProvider((ref) => ScreenNotify());
 final imageProvider = ChangeNotifierProvider((ref) => ImageNotify());
 
 class Body extends ConsumerStatefulWidget {
-  RegisterUser user;
+  final RegisterUser user;
 
-  Body({Key? key, required this.user}) : super(key: key);
+  const Body({Key? key, required this.user}) : super(key: key);
   @override
-  _Body createState() => _Body(this.user);
+  _Body createState() => _Body();
 }
 
 class _Body extends ConsumerState<Body> {
@@ -69,8 +68,6 @@ class _Body extends ConsumerState<Body> {
   }
 
   Widget cargando = const Text("");
-  RegisterUser user;
-  _Body(this.user);
   File? imagePropiedad;
   late ImageNotify imageView;
 
@@ -82,8 +79,8 @@ class _Body extends ConsumerState<Body> {
         ScreenNotify screen = ref.watch(screenProvider);
         imageView = ref.watch(imageProvider);
         CodeNotify code = ref.watch(codeProvider);
-        email.setEmail(user.email);
-        code.setCode(user.code);
+        email.setEmail(widget.user.email);
+        code.setCode(widget.user.code);
         return Stack(
           children: [
             SizedBox(
@@ -121,7 +118,7 @@ class _Body extends ConsumerState<Body> {
                           text: 'Registrar',
                           press: () async {
                             //lleva al Home
-                            if (user.documentVehicle != null) {
+                            if (widget.user.documentVehicle != null) {
                               cargando = londing();
                               screen.setScreen(
                                   true,
@@ -159,9 +156,8 @@ class _Body extends ConsumerState<Body> {
       if (fase2) {
         bool fase3 = await upload();
         if (fase3) {
-          context
-              .read<UserBloc>()
-              .add(LoginUserEvent(user.email, user.password, context));
+          context.read<UserBloc>().add(
+              LoginUserEvent(widget.user.email, widget.user.password, context));
           return true;
         }
       }
@@ -208,7 +204,7 @@ class _Body extends ConsumerState<Body> {
     try {
       final FirebaseAuth auth = FirebaseAuth.instance;
       await auth.createUserWithEmailAndPassword(
-          email: user.email, password: user.password);
+          email: widget.user.email, password: widget.user.password);
       return true;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -220,34 +216,34 @@ class _Body extends ConsumerState<Body> {
   }
 
   Future<bool> userRegisterData() async {
-    String addEmail = user.email;
+    String addEmail = widget.user.email;
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     return await users
         .doc(addEmail)
         .set({
-          'name': user.name.toUpperCase(),
-          'lastname': user.lastName.toUpperCase(),
-          'datebirth': user.date,
-          'gender': user.genero.toUpperCase(),
-          'phone': user.phone,
-          'address': user.address,
-          'parent': user.referenceCode,
+          'name': widget.user.name.toUpperCase(),
+          'lastname': widget.user.lastName.toUpperCase(),
+          'datebirth': widget.user.date,
+          'gender': widget.user.genero.toUpperCase(),
+          'phone': widget.user.phone,
+          'address': widget.user.address,
+          'parent': widget.user.referenceCode,
           'code': generateRandomString(10),
           'metodoPago': MetodoPago.fromJson({
-            'nameComplete': user.nameComplete,
-            'number_bank': user.numberBank,
-            'number_ci': user.numberCi,
-            'type_bank': user.typeBank,
-            'bank': user.bank,
-            'date_ci': user.dateCi,
+            'nameComplete': widget.user.nameComplete,
+            'number_bank': widget.user.numberBank,
+            'number_ci': widget.user.numberCi,
+            'type_bank': widget.user.typeBank,
+            'bank': widget.user.bank,
+            'date_ci': widget.user.dateCi,
           }).toJson(),
           'vehicle': {
             'default': {
               'year': 0,
               'capacity': 0,
               'color': '',
-              'brand': user.marca,
-              'plate': user.placa.toUpperCase(),
+              'brand': widget.user.marca,
+              'plate': widget.user.placa.toUpperCase(),
             }
           }
         })
@@ -259,42 +255,46 @@ class _Body extends ConsumerState<Body> {
     try {
       Reference img = FirebaseStorage.instance
           .ref()
-          .child(user.email)
+          .child(widget.user.email)
           .child('/Vehicle.jpg');
       Reference img2 = FirebaseStorage.instance
           .ref()
-          .child(user.email)
+          .child(widget.user.email)
           .child('/TarjetaPropiedad.jpg');
       Reference img3 = FirebaseStorage.instance
           .ref()
-          .child(user.email)
+          .child(widget.user.email)
           .child('/ProfilePhoto.jpg');
-      Reference img4 =
-          FirebaseStorage.instance.ref().child(user.email).child('/Cedula.jpg');
+      Reference img4 = FirebaseStorage.instance
+          .ref()
+          .child(widget.user.email)
+          .child('/Cedula.jpg');
       Reference img5 = FirebaseStorage.instance
           .ref()
-          .child(user.email)
+          .child(widget.user.email)
           .child('/CedulaR.jpg');
       Reference img6 = FirebaseStorage.instance
           .ref()
-          .child(user.email)
+          .child(widget.user.email)
           .child('/Licencia.jpg');
 
-      UploadTask uploadTaskCartaPropiedad = img.putFile(user.documentVehicle!);
+      UploadTask uploadTaskCartaPropiedad =
+          img.putFile(widget.user.documentVehicle!);
       UploadTask uploadTaskTarjetaPropiedad =
-          img2.putFile(user.documentTarjetaPropiedad!);
-      UploadTask uploadTaskProfilePhoto = img3.putFile(user.photoPerfil!);
-      UploadTask uploadTaskCedula = img4.putFile(user.cedula!);
-      UploadTask uploadTaskCedulaR = img5.putFile(user.cedulaR!);
-      UploadTask uploadTaskLicencia = img6.putFile(user.licencia!);
+          img2.putFile(widget.user.documentTarjetaPropiedad!);
+      UploadTask uploadTaskProfilePhoto =
+          img3.putFile(widget.user.photoPerfil!);
+      UploadTask uploadTaskCedula = img4.putFile(widget.user.cedula!);
+      UploadTask uploadTaskCedulaR = img5.putFile(widget.user.cedulaR!);
+      UploadTask uploadTaskLicencia = img6.putFile(widget.user.licencia!);
 
-      if (user.documentAntecedentes != null) {
+      if (widget.user.documentAntecedentes != null) {
         Reference doc1 = FirebaseStorage.instance
             .ref()
-            .child(user.email)
+            .child(widget.user.email)
             .child('/Antecent.pdf');
         UploadTask uploadTaskAntecedent =
-            doc1.putFile(user.documentAntecedentes!);
+            doc1.putFile(widget.user.documentAntecedentes!);
         await uploadTaskAntecedent.whenComplete(() {});
       }
 
@@ -306,7 +306,7 @@ class _Body extends ConsumerState<Body> {
       await uploadTaskLicencia.whenComplete(() {});
 
       return true;
-    } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException {
       return false;
     }
   }
@@ -320,11 +320,11 @@ class _Body extends ConsumerState<Body> {
 
   Widget cambiarmage() {
     if (imagePropiedad != null) {
-      user.documentVehicle = imagePropiedad;
+      widget.user.documentVehicle = imagePropiedad;
       return Image.file(imagePropiedad!,
           height: SizeConfig.screenHeight * 0.50);
     } else {
-      user.documentVehicle = null;
+      widget.user.documentVehicle = null;
       return SvgPicture.asset(carnetPropiedad,
           height: SizeConfig.screenHeight * 0.50);
     }

@@ -1,22 +1,19 @@
+import 'package:joiedriver/home/home.dart';
 import 'package:joiedriver/pedidos.dart';
 import 'package:joiedriver/profile.dart';
-import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
-import 'package:geolocator/geolocator.dart';
 import 'GraphiStats.dart';
 import 'colors.dart';
-import 'mapa_principal.dart';
 
 class Statics extends StatefulWidget {
-  static const String routeName = '/Register';
+  const Statics({Key? key}) : super(key: key);
+  static const String routeName = '/estadistica';
   @override
-  createState() =>  _StaticsState();
+  createState() => _StaticsState();
 }
 
 class _StaticsState extends State<Statics> {
-
-  static const String routeName = '/estadistica';
   Color color_icon_inicio = blue;
   Color color_icon_historial = blue;
   Color color_icon_perfil = blue;
@@ -24,27 +21,36 @@ class _StaticsState extends State<Statics> {
   final ScrollController _controller = ScrollController();
   final double _bottomNavBarHeight = 80;
   late final ScrollListener _model =
-  ScrollListener.initialise(_controller, _bottomNavBarHeight);
+      ScrollListener.initialise(_controller, _bottomNavBarHeight);
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: blue,
-        leading:
-        GestureDetector(
-          onTap: (){},
+        leading: GestureDetector(
+          onTap: () {},
           child: SvgPicture.asset(
             "assets/images/perfil_principal.svg",
             width: 24.0,
             color: Colors.white,
           ),
         ),
-        title:Center(
-          child:  Text("Ganancias", style: TextStyle(fontFamily: "Monserrat", fontWeight: FontWeight.bold, fontSize: 20.0), textAlign: TextAlign.left,),
+        title: const Center(
+          child: Text(
+            "Ganancias",
+            style: TextStyle(
+                fontFamily: "Monserrat",
+                fontWeight: FontWeight.bold,
+                fontSize: 20.0),
+            textAlign: TextAlign.left,
+          ),
         ),
-        actions: [Container(width: 24.0, height: 24.0,)],
+        actions: const [
+          SizedBox(
+            width: 24.0,
+            height: 24.0,
+          )
+        ],
       ),
       body: animacion(context),
     );
@@ -57,15 +63,18 @@ class _StaticsState extends State<Statics> {
         Container(
           height: 10.0,
         ),
-        Text(
+        const Text(
           'Su ganancia el dia de hoy es de: 180.000 \$',
-          style: TextStyle(fontFamily: "Monserrat", fontWeight: FontWeight.bold, fontSize: 14.0, color: blue),
+          style: TextStyle(
+              fontFamily: "Monserrat",
+              fontWeight: FontWeight.bold,
+              fontSize: 14.0,
+              color: blue),
           textAlign: TextAlign.center,
         ),
         // Graficos
-        GraphicPie(),
+        const GraphicPie(),
         //Fin de Graficos
-
 
         item("Viajes de Hoy", 5),
         item("Viajes Completados", 96),
@@ -76,26 +85,34 @@ class _StaticsState extends State<Statics> {
         Container(
           height: 20.0,
         ),
-        Text(
+        const Text(
           'Su ganancia en JoieDriver es de:',
-          style: TextStyle(fontFamily: "Monserrat", fontWeight: FontWeight.bold, fontSize: 14.0, color: blue),
+          style: TextStyle(
+              fontFamily: "Monserrat",
+              fontWeight: FontWeight.bold,
+              fontSize: 14.0,
+              color: blue),
           textAlign: TextAlign.center,
         ),
         Container(
           height: 10.0,
         ),
-        Text(
+        const Text(
           '5.00.124 \$',
-          style: TextStyle(fontFamily: "Monserrat", fontWeight: FontWeight.bold, fontSize: 14.0, color: blue),
+          style: TextStyle(
+              fontFamily: "Monserrat",
+              fontWeight: FontWeight.bold,
+              fontSize: 14.0,
+              color: blue),
           textAlign: TextAlign.center,
         ),
         Container(
           height: 20.0,
         ),
-
       ],
     );
   }
+
   AnimatedBuilder animacion(BuildContext context) {
     return AnimatedBuilder(
       animation: _model,
@@ -114,156 +131,126 @@ class _StaticsState extends State<Statics> {
       },
     );
   }
-  Container bottomNavBar(BuildContext context) {
-    return Container(
+
+  SizedBox bottomNavBar(BuildContext context) {
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Row(
-
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ElevatedButton(onPressed: () async {
-    Future<Position> coord =  _determinePosition();
-    double longitude = await coord.then((value) => value.longitude);
-    double latitude = await coord.then((value) => value.latitude);
-    Navigator.push(
-    context,
-    MaterialPageRoute(
-    builder: (context) => MapaMenu(longitude: longitude, latitude: latitude,)));
-    },
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()));
+            },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_inicio,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_inicio,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/inicio.svg",
               width: 40,
               color: Colors.white,
-
             ),
-
           ),
-
           Container(
             width: 10,
           ),
-          ElevatedButton(onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Pedidos()));
-          },
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Pedidos()));
+            },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_historial,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_historial,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/historial.svg",
               width: 40,
               color: Colors.white,
             ),
-
           ),
           Container(
             width: 10,
           ),
-          ElevatedButton(onPressed: () {
-          },
+          ElevatedButton(
+            onPressed: () {},
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_ingresos,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_ingresos,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/ingresos.svg",
               width: 40,
               color: Colors.white,
             ),
-
           ),
           Container(
             width: 10,
           ),
-          ElevatedButton(onPressed: () {
-            setState(() {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Profile()));
-
-            });
-
-          },
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const Profile()));
+              });
+            },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding: EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_perfil,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_perfil,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/perfil.svg",
               width: 40,
               color: Colors.white,
             ),
-
           ),
         ],
       ),
     );
   }
 
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
-  }
-
   Padding item(String title, int count) {
     return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title,
-               style: TextStyle(fontFamily: "Monserrat", fontWeight: FontWeight.bold, fontSize: 16.0),
-              ),
-              Text(
-                '$count',
-                  style: TextStyle(fontFamily: "Monserrat", fontWeight: FontWeight.bold, fontSize: 16.0),
-              ),
-            ],
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+                fontFamily: "Monserrat",
+                fontWeight: FontWeight.bold,
+                fontSize: 16.0),
           ),
-        );
+          Text(
+            '$count',
+            style: const TextStyle(
+                fontFamily: "Monserrat",
+                fontWeight: FontWeight.bold,
+                fontSize: 16.0),
+          ),
+        ],
+      ),
+    );
   }
-
 }
 
 class ScrollListener extends ChangeNotifier {

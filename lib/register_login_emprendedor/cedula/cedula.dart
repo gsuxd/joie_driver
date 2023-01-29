@@ -3,11 +3,9 @@ import '../../register_login_emprendedor/registro/user_data_register.dart';
 import '../size_config.dart';
 import '/register_login_emprendedor/cedula/components/body_cardP.dart';
 
-
-
 class Cedula extends StatelessWidget {
-  RegisterUser user;
-  Cedula(this.user, {Key? key}) : super(key: key);
+  final RegisterUser user;
+  const Cedula(this.user, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +15,7 @@ class Cedula extends StatelessWidget {
         title: const Text('Por tu seguridad y la nuestra'),
         centerTitle: true,
       ),
-      body:  Body(user),
+      body: Body(user),
     );
   }
 }

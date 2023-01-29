@@ -3,18 +3,16 @@ import 'package:flutter/material.dart';
 import '../size_config.dart';
 import 'components/body_propiety.dart';
 
-
 class PropiedadScreen extends StatelessWidget {
-  static String routeName = '/propiety';
-  RegisterUser user;
-  PropiedadScreen(this.user, {Key? key}) : super(key: key);
+  static const String routeName = '/propiety';
+  final RegisterUser user;
+  const PropiedadScreen(this.user, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Scaffold(
-
-      body: Body(user:user),
+      body: Body(user: user),
     );
   }
 }

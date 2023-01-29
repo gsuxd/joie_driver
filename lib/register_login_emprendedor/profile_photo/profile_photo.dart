@@ -3,11 +3,9 @@ import '../../register_login_emprendedor/registro/user_data_register.dart';
 import '../size_config.dart';
 import '/register_login_emprendedor/profile_photo/components/body_cardP.dart';
 
-
-
 class ProfilePhoto extends StatelessWidget {
-  RegisterUser user;
-  ProfilePhoto(this.user, {Key? key}) : super(key: key);
+  final RegisterUser user;
+  const ProfilePhoto(this.user, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +15,7 @@ class ProfilePhoto extends StatelessWidget {
         title: const Text('Por tu seguridad y la nuestra'),
         centerTitle: true,
       ),
-      body:  Body(user),
+      body: Body(user),
     );
   }
 }

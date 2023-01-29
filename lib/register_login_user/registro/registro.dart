@@ -16,7 +16,7 @@ class RegistroUser extends StatelessWidget {
               },
               icon: const Icon(Icons.keyboard_arrow_left)),
           title: const Text('Registro')),
-      body: Body(),
+      body: const Body(),
     );
   }
 }

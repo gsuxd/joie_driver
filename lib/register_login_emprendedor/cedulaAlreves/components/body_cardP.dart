@@ -7,21 +7,19 @@ import '../../conts.dart';
 import '../../size_config.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+
 class Body extends StatefulWidget {
-  RegisterUser  user;
-  Body(this.user, {Key? key}) : super(key: key);
+  final RegisterUser user;
+  const Body(this.user, {Key? key}) : super(key: key);
   @override
-  createState() =>  _Body(user);
+  createState() => _Body();
 }
 
 class _Body extends State<Body> {
-  RegisterUser user;
-  _Body(this.user);
   File? cedulaR;
-  late Widget imageWiew ;
+  late Widget imageWiew;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     imageWiew = cambiarmage();
   }
@@ -58,11 +56,12 @@ class _Body extends State<Body> {
               child: ButtonDefEmprendedor(
                   text: 'Siguiente',
                   press: () {
-                    if(user.cedulaR != null){
+                    if (widget.user.cedulaR != null) {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AntecedentsScreen(user)));
+                              builder: (context) =>
+                                  AntecedentsScreen(widget.user)));
                     }
                   })),
           const Spacer(),
@@ -71,25 +70,23 @@ class _Body extends State<Body> {
     );
   }
 
-  Future getImage () async {
+  Future getImage() async {
     ImagePicker imegaTemp = ImagePicker();
     var tempImage = await imegaTemp.pickImage(source: ImageSource.camera);
-    cedulaR =  File(tempImage!.path);
-    setState(()  {
-
+    cedulaR = File(tempImage!.path);
+    setState(() {
       imageWiew = cambiarmage();
-
     });
   }
 
-  Widget cambiarmage(){
-
-    if(cedulaR != null){
-      user.cedulaR = cedulaR;
-      return  Image.file(cedulaR!, height: SizeConfig.screenHeight * 0.50);
-    }else{
-      user.cedulaR = null;
-      return SvgPicture.asset(cedularImg, height: SizeConfig.screenHeight * 0.50);
+  Widget cambiarmage() {
+    if (cedulaR != null) {
+      widget.user.cedulaR = cedulaR;
+      return Image.file(cedulaR!, height: SizeConfig.screenHeight * 0.50);
+    } else {
+      widget.user.cedulaR = null;
+      return SvgPicture.asset(cedularImg,
+          height: SizeConfig.screenHeight * 0.50);
     }
   }
 }

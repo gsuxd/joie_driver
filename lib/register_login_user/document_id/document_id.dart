@@ -3,16 +3,15 @@ import 'package:flutter/material.dart';
 import '../size_config.dart';
 import 'components/body_propiety.dart';
 
-
 class DocumentId extends StatelessWidget {
-  RegisterUser user;
-  DocumentId(this.user, {Key? key}) : super(key: key);
+  final RegisterUser user;
+  const DocumentId(this.user, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Scaffold(
-      body: Body(user:user),
+      body: Body(user: user),
     );
   }
 }

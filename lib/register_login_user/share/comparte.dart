@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import '../conts.dart';
 import '../share/components/body.dart';
 import '../size_config.dart';
 
 class ComparteYGana extends StatefulWidget {
   static String routeName = '/comparte';
-  ComparteYGana({Key? key}) : super(key: key);
+  const ComparteYGana({Key? key}) : super(key: key);
 
   @override
   _ComparteYGanaState createState() => _ComparteYGanaState();
