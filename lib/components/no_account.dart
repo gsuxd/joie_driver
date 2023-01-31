@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:joiedriver/choose/choose.dart';
-import '../register_login_user/conts.dart';
+import 'package:joiedriver/conts.dart';
+import '../registro/main.dart';
 
 class NoAccount extends StatelessWidget {
   const NoAccount({
@@ -25,7 +25,7 @@ class NoAccount extends StatelessWidget {
         GestureDetector(
           onTap: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const ChooseScreen()));
+                MaterialPageRoute(builder: (context) => const Registro()));
           },
           child: const Text(
             'Registrate',

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../register_login_emprendedor/conts.dart';
-import '../register_login_emprendedor/size_config.dart';
-import '../register_login_emprendedor/termin_y_condiciones/terminos_y_condiciones.dart';
+import 'package:joiedriver/conts.dart';
+import 'package:joiedriver/registro/pages/terminos_condiciones/terminos_condiciones.dart';
+import 'package:joiedriver/size_config.dart';
 
 class NoAccountEmprendedor extends StatelessWidget {
   const NoAccountEmprendedor({
@@ -28,8 +28,7 @@ class NoAccountEmprendedor extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        const TerminosCondicionesEmprendedor()));
+                    builder: (context) => const TerminosCondiciones()));
           },
           child: Text(
             'Registrate',

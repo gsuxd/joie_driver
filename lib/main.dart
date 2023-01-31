@@ -1,7 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:convert';
+
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,15 +10,21 @@ import 'package:joiedriver/blocs/user/user_bloc.dart';
 import 'package:joiedriver/home/home.dart';
 import 'package:joiedriver/home_user/home.dart';
 import 'package:joiedriver/loadingScreen.dart';
-import 'package:joiedriver/register_login_chofer/theme.dart';
-import 'package:joiedriver/register_login_user/sign_in/log_in.dart';
+import 'package:joiedriver/registro/bloc/registro_bloc.dart';
+import 'package:joiedriver/theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'blocs/carrera/carrera_bloc.dart';
 import 'generated/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'notifications/notification_controller.dart';
+import 'sign_in/log_in.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp().then((value) {
+
+  Firebase.initializeApp().then((value) async {
+    final _prefs = await SharedPreferences.getInstance();
     runApp(ProviderScope(
       child: MultiBlocProvider(
         providers: [
@@ -35,6 +40,8 @@ Future<void> main() async {
           BlocProvider(
             create: (context) => CarreraBloc(),
           ),
+          if (!(_prefs.containsKey("user")))
+            BlocProvider(create: (_) => RegistroBloc())
         ],
         child: const MyApp(),
       ),
@@ -42,10 +49,24 @@ Future<void> main() async {
   });
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    NotificationController.initializeLocalNotifications();
+    NotificationController.startListeningNotificationEvents();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -55,6 +76,7 @@ class MyApp extends StatelessWidget {
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
+      navigatorKey: MyApp.navigatorKey,
       title: 'Conductores',
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,

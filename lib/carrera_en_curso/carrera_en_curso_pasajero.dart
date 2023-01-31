@@ -138,10 +138,10 @@ class _CarreraEnCursoPagePasajeroState
               target: LatLng(
                   (context.watch<PositionBloc>().state as PositionObtained)
                       .location
-                      .latitude!,
+                      .latitude,
                   (context.watch<PositionBloc>().state as PositionObtained)
                       .location
-                      .longitude!),
+                      .longitude),
               zoom: 18,
             ),
             markers: {

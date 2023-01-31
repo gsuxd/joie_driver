@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.17+17
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.15.0 <3.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -36,8 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   transition_customer: ^0.0.5
   google_maps_flutter: ^2.1.0
-  permission_handler: ^8.2.6
-  geolocator: ^7.7.1
+  permission_handler: ^10.2.0
   fluttertoast: ^8.0.8
   flutter_svg: ^1.0.3
   syncfusion_flutter_charts: ^19.3.54
@@ -64,6 +63,9 @@ dependencies:
   bloc: ^8.1.0
   equatable: ^2.0.3
   dio: ^4.0.6
+  awesome_notifications: ^0.7.4+1
+  flutter_isolate: ^2.0.4
+  geolocator: ^9.0.2
 
 dev_dependencies:
   flutter_test:

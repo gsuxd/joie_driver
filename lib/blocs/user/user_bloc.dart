@@ -5,8 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:joiedriver/conts.dart';
+import 'package:joiedriver/home/home.dart';
 import 'package:joiedriver/home_user/home.dart';
-import 'package:joiedriver/register_login_user/conts.dart';
 import 'package:joiedriver/singletons/carro_data.dart';
 import 'package:joiedriver/singletons/user_data.dart';
 import 'package:flutter/material.dart';
@@ -104,7 +105,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             emit(UserLogged(u, value.reference));
             prefs.setString("user", jsonEncode(u.toJson()));
             Navigator.of(event.context).pushReplacement(
-                MaterialPageRoute(builder: (_) => const HomeScreenUser()));
+                MaterialPageRoute(builder: (_) => const HomeScreen()));
             return;
           } else {
             await FirebaseFirestore.instance

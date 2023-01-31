@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:joiedriver/blocs/carrera/carrera_bloc.dart';
 import 'package:joiedriver/blocs/position/position_bloc.dart';
-import 'package:joiedriver/blocs/user/user_bloc.dart';
 import 'package:joiedriver/home_user/components/appBar.dart';
-import 'package:location/location.dart';
 import '/components/navigation_drawer.dart';
 import 'bloc/cars_bloc.dart';
 import 'components/map_view_pasajeros.dart';
@@ -39,8 +35,8 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
             );
           }
           if (state is PositionError) {
-            return const Center(
-              child: Text('Error'),
+            return Center(
+              child: Text('Error: ${state.message}'),
             );
           }
           return BlocProvider(

@@ -4,7 +4,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:joiedriver/blocs/position/position_bloc.dart';
 import 'package:joiedriver/blocs/user/user_bloc.dart';
-import 'package:joiedriver/register_login_user/conts.dart';
+import 'package:joiedriver/conts.dart';
 import 'package:joiedriver/solicitar_carrera/components/textedit.dart';
 
 import 'pages/selectBank.dart';
@@ -36,7 +36,7 @@ class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
       formKey.currentState!.save();
       final location =
           (context.read<PositionBloc>().state as PositionObtained).location;
-      data['inicio'] = LatLng(location.latitude!, location.longitude!);
+      data['inicio'] = LatLng(location.latitude, location.longitude);
       data['destino'] = widget.pointB;
 
       data['pasajeroId'] =

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:joiedriver/singletons/user_data.dart';
-import '../register_login_chofer/conts.dart';
-import '../register_login_chofer/size_config.dart';
+import '../conts.dart';
+import '../size_config.dart';
 
 class ProfileCard extends StatelessWidget {
   const ProfileCard({

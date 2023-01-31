@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:joiedriver/blocs/position/position_bloc.dart';
 import 'package:joiedriver/home_user/bloc/cars_bloc.dart';
-import 'package:joiedriver/register_login_chofer/conts.dart';
+import 'package:joiedriver/conts.dart';
 import 'package:joiedriver/solicitar_carrera/index.dart';
 
 class MapViewPasajeros extends StatefulWidget {
@@ -42,8 +42,8 @@ class _MapViewPasajerosState extends State<MapViewPasajeros> {
                             CameraUpdate.newCameraPosition(CameraPosition(
                           zoom: 15,
                           target: LatLng(
-                            state.location.latitude!,
-                            state.location.longitude!,
+                            state.location.latitude,
+                            state.location.longitude,
                           ),
                         )));
                       }
@@ -55,8 +55,8 @@ class _MapViewPasajerosState extends State<MapViewPasajeros> {
                         });
                       },
                       initialCameraPosition: CameraPosition(
-                        target: LatLng(positionState.location.latitude!,
-                            positionState.location.longitude!),
+                        target: LatLng(positionState.location.latitude,
+                            positionState.location.longitude),
                         zoom: 15,
                       ),
                       markers: {
@@ -73,8 +73,8 @@ class _MapViewPasajerosState extends State<MapViewPasajeros> {
                                   })),
                         Marker(
                           markerId: const MarkerId('current_location'),
-                          position: LatLng(positionState.location.latitude!,
-                              positionState.location.longitude!),
+                          position: LatLng(positionState.location.latitude,
+                              positionState.location.longitude),
                         ),
                         ...(context.watch<CarsBloc>().state as CarsLoaded).cars
                       },

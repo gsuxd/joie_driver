@@ -23,6 +23,7 @@ if (flutterVersionName == null) {
 
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 apply plugin: 'com.google.gms.google-services'
 
@@ -34,11 +35,19 @@ android {
     if (keystorePropertiesFile.exists()) {
         keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
     }
-        compileSdkVersion 31
+        compileSdkVersion 33
 
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
             targetCompatibility JavaVersion.VERSION_1_8
+        }
+
+        kotlinOptions {
+            jvmTarget = '1.8'
+        }
+
+        sourceSets {
+            main.java.srcDirs += 'src/main/kotlin'
         }
 
         defaultConfig {
@@ -46,8 +55,8 @@ android {
             applicationId "com.ciddras.joiedriver"
             versionCode 2
             versionName "1.0.1"
-            minSdkVersion 20
-            targetSdkVersion 30
+            minSdkVersion 21
+            targetSdkVersion 33
             versionCode flutterVersionCode.toInteger()
             versionName flutterVersionName
             multiDexEnabled true
@@ -74,7 +83,6 @@ android {
                 }
                 signingConfig signingConfigs.release
                 minifyEnabled true
-                useProguard true
 
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             }

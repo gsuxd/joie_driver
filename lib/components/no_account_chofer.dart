@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../register_login_chofer/conts.dart';
-import '../register_login_chofer/size_config.dart';
-import '../register_login_chofer/termin_y_condiciones/terminos_y_condiciones.dart';
+import 'package:joiedriver/registro/pages/terminos_condiciones/terminos_condiciones.dart';
+import '../conts.dart';
+import '../size_config.dart';
 
 class NoAccountChofer extends StatelessWidget {
   const NoAccountChofer({

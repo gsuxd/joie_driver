@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../register_login_chofer/conts.dart';
-import '../register_login_chofer/size_config.dart';
+import '../conts.dart';
+import '../size_config.dart';
 import 'default_button.dart';
 import 'profile_card.dart';
 

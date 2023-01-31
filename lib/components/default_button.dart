@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../register_login_user/conts.dart';
-
+import 'package:joiedriver/conts.dart';
 
 class ButtonDef extends StatelessWidget {
   const ButtonDef({
@@ -24,8 +23,7 @@ class ButtonDef extends StatelessWidget {
           onPressed: press,
           child: Text(
             text,
-            style: const TextStyle(
-                color: Colors.white, fontSize: (18)),
+            style: const TextStyle(color: Colors.white, fontSize: (18)),
           )),
     );
   }

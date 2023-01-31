@@ -1,5 +1,5 @@
 import 'dart:async';
-import '../register_login_chofer/conts.dart';
+import '../conts.dart';
 
 class Valitor {
   final validarPassword = StreamTransformer<String, String>.fromHandlers(
