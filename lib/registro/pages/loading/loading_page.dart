@@ -17,8 +17,6 @@ class LoadingPage extends StatelessWidget {
         centerTitle: true,
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           BlocBuilder<RegistroBloc, RegistroState>(
             builder: (context, state) {

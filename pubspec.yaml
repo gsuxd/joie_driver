@@ -66,6 +66,7 @@ dependencies:
   awesome_notifications: ^0.7.4+1
   flutter_isolate: ^2.0.4
   geolocator: ^9.0.2
+  camera: ^0.10.3
 
 dev_dependencies:
   flutter_test:
