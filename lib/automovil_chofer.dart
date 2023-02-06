@@ -1,7 +1,14 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:get_it/get_it.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:joiedriver/pedidos.dart';
 import 'package:joiedriver/profile.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
+import 'package:joiedriver/singletons/carro_data.dart';
+import 'package:joiedriver/singletons/user_data.dart';
 import 'colors.dart';
 import 'estatics.dart';
 
@@ -31,6 +38,52 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
   bool color = false;
   bool capacidad = false;
 
+  late CarroData carData;
+
+  Future _getImage() async {
+    ImagePicker imegaTemp = ImagePicker();
+    var tempImage = await imegaTemp.pickImage(source: ImageSource.camera);
+    return File(tempImage!.path);
+  }
+
+  String? _newImage;
+
+  void _changeImage() async {
+    setState(() {
+      _isLoading = true;
+    });
+    final image = await _getImage();
+    if (image != null) {
+      try {
+        final newImage = await FirebaseStorage.instance
+            .ref()
+            .child(GetIt.I.get<UserData>().email)
+            .child("Vehicle.jpg")
+            .putFile(image);
+        _newImage = await newImage.ref.getDownloadURL();
+        setState(() {});
+        if (_newImage != null) {
+          GetIt.I.get<UserData>().carroData!.picture = _newImage!;
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Error al cargar la imagen"),
+        ));
+      }
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    carData = GetIt.I.get<UserData>().carroData!;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,7 +107,7 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
               textAlign: TextAlign.center,
             ),
           ),
-          actions: [conectSwitch(context)],
+          actions: [ConectSwitch(context)],
         ),
         backgroundColor: Colors.white,
         body: Stack(
@@ -64,55 +117,61 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    GestureDetector(
-                      onTap: () {},
-                      child: Stack(children: [
-                        Image.network(
-                          "https://carvin-info.com/wp-content/uploads/2019/05/mercedes_benz-vin-number.jpg",
-                          width: MediaQuery.of(context).size.width,
-                          height: 150.0,
-                          fit: BoxFit.cover,
-                        ),
-                        Positioned(
-                          bottom: 5,
-                          right: 10,
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              primary: blue,
-                              shape: const CircleBorder(),
-                            ),
-                            child: SvgPicture.asset(
-                              "assets/images/foto_de_perfil.svg",
-                              height: 25.0,
-                              color: Colors.white,
-                            ),
+                    Stack(children: [
+                      Image.network(
+                        carData.picture,
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height * 0.3,
+                        fit: BoxFit.cover,
+                      ),
+                      Positioned(
+                        bottom: 5,
+                        right: 10,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (_isLoading) {
+                              return;
+                            }
+                            _changeImage();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: blue,
+                            shape: const CircleBorder(),
                           ),
+                          child: _isLoading
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                              : SvgPicture.asset(
+                                  "assets/images/foto_de_perfil.svg",
+                                  height: 25.0,
+                                  color: Colors.white,
+                                ),
                         ),
-                      ]),
-                    )
+                      ),
+                    ])
                   ],
                 ),
                 Container(
                   height: 30.0,
                 ),
-                itemMarca(marcaText, "assets/images/modelo.svg"),
+                itemMarca(carData.brand, "assets/images/modelo.svg"),
                 Container(
                   height: 20.0,
                 ),
-                itemAnio(anioText, "assets/images/edad.svg"),
+                itemAnio(carData.year, "assets/images/edad.svg"),
                 Container(
                   height: 20.0,
                 ),
-                itemPlaca(placaText, "assets/images/placa.svg"),
+                itemPlaca(carData.plate, "assets/images/placa.svg"),
                 Container(
                   height: 20.0,
                 ),
-                itemColor(colorText, "assets/images/color.svg"),
+                itemColor(carData.color, "assets/images/color.svg"),
                 Container(
                   height: 20.0,
                 ),
-                itemCapacidad(capacidadText, "assets/images/capacidad.svg"),
+                itemCapacidad(carData.capacity, "assets/images/capacidad.svg"),
                 Container(
                   height: 70.0,
                 ),
@@ -477,10 +536,10 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
             onPressed: () {},
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_inicio,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_inicio,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -494,15 +553,15 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Pedidos()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Pedidos()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_historial,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_historial,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -516,15 +575,15 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Statics()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Statics()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_ingresos,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_ingresos,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -540,15 +599,15 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
             onPressed: () {
               setState(() {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Profile()));
+                    MaterialPageRoute(builder: (context) => const Profile()));
               });
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_perfil,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_perfil,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -562,7 +621,7 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
     );
   }
 
-  Widget conectSwitch(BuildContext context) {
+  Widget ConectSwitch(BuildContext context) {
     return Switch(
       value: isSwitched,
       onChanged: (value) {

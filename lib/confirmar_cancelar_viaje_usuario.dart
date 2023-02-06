@@ -2,6 +2,7 @@ import 'package:joiedriver/pedidos.dart';
 import 'package:joiedriver/perfil_usuario.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
+
 import 'asistencia_tecnica.dart';
 import 'colors.dart';
 import 'confirmar_cancelar_viaje.dart';
@@ -21,7 +22,6 @@ class _PedidosState extends State<PedidosCancelarConfirmarUsuario> {
   Color color_icon_ingresos = blue;
   String state = "Bogota";
   bool isSwitched = false;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,9 +92,9 @@ class _PedidosState extends State<PedidosCancelarConfirmarUsuario> {
                         Container(
                           height: 20,
                         ),
-                        Text(
+                        const Text(
                           "Las cancelaciones frecuentes de carreras afectan su calificacion y puede acarrear suspensiones del servicio",
-                          style: const TextStyle(
+                          style: TextStyle(
                               color: Colors.black87, fontFamily: "Monserrat"),
                           textAlign: TextAlign.center,
                         ),
@@ -140,7 +140,7 @@ class _PedidosState extends State<PedidosCancelarConfirmarUsuario> {
                               Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: blue,
+                              backgroundColor: blue,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(35.0),
                                 //side: BorderSide(width: 1, color: Colors.black54),
@@ -163,15 +163,15 @@ class _PedidosState extends State<PedidosCancelarConfirmarUsuario> {
                                           const PedidosCancelarConfirmar()));
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.grey,
+                              backgroundColor: Colors.grey,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(35.0),
                                 //side: BorderSide(width: 1, color: Colors.black54),
                               ),
                             ),
-                            child: Text(
+                            child: const Text(
                               "Si Cancelar",
-                              style: const TextStyle(fontFamily: "Monserrat"),
+                              style: TextStyle(fontFamily: "Monserrat"),
                             ),
                           ),
                         ),
@@ -205,7 +205,7 @@ class _PedidosState extends State<PedidosCancelarConfirmarUsuario> {
         ));
   }
 
-  Widget conectSwitch(BuildContext context) {
+  Widget ConectSwitch(BuildContext context) {
     return Switch(
       value: isSwitched,
       onChanged: (value) {
@@ -238,10 +238,10 @@ class _PedidosState extends State<PedidosCancelarConfirmarUsuario> {
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_inicio,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_inicio,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -255,15 +255,15 @@ class _PedidosState extends State<PedidosCancelarConfirmarUsuario> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Pedidos()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Pedidos()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_historial,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_historial,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -284,10 +284,10 @@ class _PedidosState extends State<PedidosCancelarConfirmarUsuario> {
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_ingresos,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_ingresos,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -302,16 +302,18 @@ class _PedidosState extends State<PedidosCancelarConfirmarUsuario> {
           ElevatedButton(
             onPressed: () {
               setState(() {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => PerfilUsuario()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PerfilUsuario()));
               });
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_perfil,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_perfil,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(

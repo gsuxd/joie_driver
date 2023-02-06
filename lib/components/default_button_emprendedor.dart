@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../register_login_emprendedor/conts.dart';
-
+import 'package:joiedriver/conts.dart';
 
 class ButtonDefEmprendedor extends StatelessWidget {
   const ButtonDefEmprendedor({
@@ -24,8 +23,7 @@ class ButtonDefEmprendedor extends StatelessWidget {
           onPressed: press,
           child: Text(
             text,
-            style: const TextStyle(
-                color: Colors.white, fontSize: (18)),
+            style: const TextStyle(color: Colors.white, fontSize: (18)),
           )),
     );
   }

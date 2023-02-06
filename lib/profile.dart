@@ -1,18 +1,18 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:joiedriver/home/home.dart';
 import 'package:joiedriver/pedidos.dart';
 import 'package:firebase_database/firebase_database.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
-import 'package:geolocator/geolocator.dart';
 
-import 'blocs/user/user_bloc.dart';
 import 'colors.dart';
 import 'estatics.dart';
-import 'mapa_principal.dart';
 import 'singletons/user_data.dart';
 
 class Profile extends StatefulWidget {
   static const String routeName = '/Register';
+
+  const Profile({Key? key}) : super(key: key);
   @override
   createState() => _ProfileState();
 }
@@ -39,7 +39,7 @@ class _ProfileState extends State<Profile> {
               color: Colors.white,
             ),
           ),
-          title: Center(
+          title: const Center(
             child: Text(
               "Tu Perfil",
               style: TextStyle(
@@ -68,7 +68,7 @@ class _ProfileState extends State<Profile> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           "Hola",
                           style: TextStyle(
                               fontSize: 16,
@@ -77,9 +77,8 @@ class _ProfileState extends State<Profile> {
                               color: blue),
                         ),
                         Text(
-                          context.select<UserBloc, String>(
-                              (val) => (val.state as UserLogged).user.name),
-                          style: TextStyle(
+                          GetIt.I.get<UserData>().name,
+                          style: const TextStyle(
                               fontSize: 16,
                               fontFamily: "Monserrat",
                               fontWeight: FontWeight.bold,
@@ -96,9 +95,8 @@ class _ProfileState extends State<Profile> {
                     ),
                     CircleAvatar(
                       radius: 40,
-                      backgroundImage: NetworkImage(
-                          context.select<UserBloc, String>((val) =>
-                              (val.state as UserLogged).user.profilePicture)),
+                      backgroundImage:
+                          NetworkImage(GetIt.I.get<UserData>().profilePicture),
                     ),
                     Container(
                       width: 10,
@@ -110,14 +108,14 @@ class _ProfileState extends State<Profile> {
                 ),
                 Container(
                   color: blue,
-                  padding: EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                       top: 5.0, bottom: 5.0, right: 5.0, left: 5.0),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       itemMenu("Editar perfil", "assets/images/profile.svg"),
-                      itemMenu("Asistencia\Tecnica",
+                      itemMenu("AsistenciaTecnica",
                           "assets/images/asistencia_tecnica.svg"),
                       itemMenu(
                           "Notificaciones", "assets/images/notificaciones.svg"),
@@ -133,7 +131,7 @@ class _ProfileState extends State<Profile> {
                     Container(
                       width: 10.0,
                     ),
-                    Text(
+                    const Text(
                       "Mi Cuenta",
                       style: TextStyle(
                           color: Colors.black87,
@@ -153,7 +151,7 @@ class _ProfileState extends State<Profile> {
                     Container(
                       width: 20.0,
                     ),
-                    Text(
+                    const Text(
                       "Saldo",
                       style: TextStyle(
                           color: Colors.black87,
@@ -164,7 +162,7 @@ class _ProfileState extends State<Profile> {
                     Container(
                       width: 100.0,
                     ),
-                    Text(
+                    const Text(
                       "56.000 \$",
                       style: TextStyle(
                           fontSize: 16,
@@ -187,7 +185,7 @@ class _ProfileState extends State<Profile> {
                     Container(
                       width: 20.0,
                     ),
-                    Text(
+                    const Text(
                       "Calificacion",
                       style: TextStyle(
                           color: Colors.black87,
@@ -195,17 +193,15 @@ class _ProfileState extends State<Profile> {
                           fontFamily: "Monserrat",
                           fontWeight: FontWeight.bold),
                     ),
-                    Container(
-                      child: FutureBuilder(
-                        future: stars(),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<Widget> snapshot) {
-                          if (snapshot.hasData) {
-                            return snapshot.data!;
-                          }
-                          return Container();
-                        },
-                      ),
+                    FutureBuilder(
+                      future: stars(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<Widget> snapshot) {
+                        if (snapshot.hasData) {
+                          return snapshot.data!;
+                        }
+                        return Container();
+                      },
                     ),
                     Container(
                       width: 10.0,
@@ -215,7 +211,7 @@ class _ProfileState extends State<Profile> {
                     ),
                   ],
                 ),
-                Divider(
+                const Divider(
                   height: 20,
                   color: Colors.black54,
                   thickness: 4,
@@ -225,7 +221,7 @@ class _ProfileState extends State<Profile> {
                     Container(
                       width: 10.0,
                     ),
-                    Text(
+                    const Text(
                       "Refiere y Gana",
                       style: TextStyle(
                           color: Colors.black87,
@@ -245,7 +241,7 @@ class _ProfileState extends State<Profile> {
                     Container(
                       width: 20.0,
                     ),
-                    Text(
+                    const Text(
                       "Invitar Parcero",
                       style: TextStyle(
                           color: Colors.black87,
@@ -256,7 +252,7 @@ class _ProfileState extends State<Profile> {
                     Container(
                       width: 70.0,
                     ),
-                    Text(
+                    const Text(
                       " ",
                       style: TextStyle(
                           fontSize: 16,
@@ -279,7 +275,7 @@ class _ProfileState extends State<Profile> {
                     Container(
                       width: 20.0,
                     ),
-                    Text(
+                    const Text(
                       "Conoce Nuestros\nbeneficios",
                       style: TextStyle(
                           color: Colors.black87,
@@ -290,7 +286,7 @@ class _ProfileState extends State<Profile> {
                     Container(
                       width: 50.0,
                     ),
-                    Text(
+                    const Text(
                       " ",
                       style: TextStyle(
                           fontSize: 16,
@@ -315,7 +311,7 @@ class _ProfileState extends State<Profile> {
 
   Future<Row> stars() async {
     Query calificacionPonderada = FirebaseDatabase.instance
-        .reference()
+        .ref()
         .child('calificaciones/$usuario/calificacion');
     return calificacionPonderada.get().then((value) => dibujarEstrellas(3.7));
   }
@@ -325,17 +321,17 @@ class _ProfileState extends State<Profile> {
     if (calificacion == null) {
       return Row(
         children: [
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: TextStyle(
+            style: const TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -348,17 +344,17 @@ class _ProfileState extends State<Profile> {
     if (calificacion > 0 && calificacion < 0.5) {
       return Row(
         children: [
-          Icon(Icons.star_border_rounded),
-          Icon(Icons.star_border_rounded),
-          Icon(Icons.star_border_rounded),
-          Icon(Icons.star_border_rounded),
-          Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_border_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: TextStyle(
+            style: const TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -373,17 +369,17 @@ class _ProfileState extends State<Profile> {
           double.parse((calificacion).toStringAsFixed(1)).toString();
       return Row(
         children: [
-          Icon(Icons.star_half_rounded),
-          Icon(Icons.star_border_rounded),
-          Icon(Icons.star_border_rounded),
-          Icon(Icons.star_border_rounded),
-          Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_half_rounded),
+          const Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_border_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: TextStyle(
+            style: const TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -398,17 +394,17 @@ class _ProfileState extends State<Profile> {
           double.parse((calificacion).toStringAsFixed(1)).toString();
       return Row(
         children: [
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_border_rounded),
-          Icon(Icons.star_border_rounded),
-          Icon(Icons.star_border_rounded),
-          Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_border_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: TextStyle(
+            style: const TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -423,17 +419,17 @@ class _ProfileState extends State<Profile> {
           double.parse((calificacion).toStringAsFixed(1)).toString();
       return Row(
         children: [
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_half_rounded),
-          Icon(Icons.star_border_rounded),
-          Icon(Icons.star_border_rounded),
-          Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_half_rounded),
+          const Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_border_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: TextStyle(
+            style: const TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -448,17 +444,17 @@ class _ProfileState extends State<Profile> {
           double.parse((calificacion).toStringAsFixed(1)).toString();
       return Row(
         children: [
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_border_rounded),
-          Icon(Icons.star_border_rounded),
-          Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_border_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: TextStyle(
+            style: const TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -473,17 +469,17 @@ class _ProfileState extends State<Profile> {
           double.parse((calificacion).toStringAsFixed(1)).toString();
       return Row(
         children: [
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_half_rounded),
-          Icon(Icons.star_border_rounded),
-          Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_half_rounded),
+          const Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_border_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: TextStyle(
+            style: const TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -498,17 +494,17 @@ class _ProfileState extends State<Profile> {
           double.parse((calificacion).toStringAsFixed(1)).toString();
       return Row(
         children: [
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_border_rounded),
-          Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_border_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: TextStyle(
+            style: const TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -523,17 +519,17 @@ class _ProfileState extends State<Profile> {
           double.parse((calificacion).toStringAsFixed(1)).toString();
       return Row(
         children: [
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_half_rounded),
-          Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_half_rounded),
+          const Icon(Icons.star_border_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: TextStyle(
+            style: const TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -548,17 +544,17 @@ class _ProfileState extends State<Profile> {
           double.parse((calificacion).toStringAsFixed(1)).toString();
       return Row(
         children: [
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_border_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_border_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: TextStyle(
+            style: const TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -573,17 +569,17 @@ class _ProfileState extends State<Profile> {
           double.parse((calificacion).toStringAsFixed(1)).toString();
       return Row(
         children: [
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_half_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_half_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: TextStyle(
+            style: const TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -597,17 +593,17 @@ class _ProfileState extends State<Profile> {
           double.parse((calificacion).toStringAsFixed(1)).toString();
       return Row(
         children: [
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_rounded),
-          Icon(Icons.star_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_rounded),
+          const Icon(Icons.star_rounded),
           Container(
             width: 20.0,
           ),
           Text(
             calificacionPonderada,
-            style: TextStyle(
+            style: const TextStyle(
                 fontSize: 16,
                 fontFamily: "Monserrat",
                 fontWeight: FontWeight.bold,
@@ -618,7 +614,7 @@ class _ProfileState extends State<Profile> {
     }
 
     return Row(
-      children: [Icon(Icons.star_rounded)],
+      children: const [Icon(Icons.star_rounded)],
     );
   }
 
@@ -634,7 +630,7 @@ class _ProfileState extends State<Profile> {
           ),
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 12,
@@ -647,31 +643,23 @@ class _ProfileState extends State<Profile> {
   }
 
   Widget bottomNavBar(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ElevatedButton(
             onPressed: () async {
-              Future<Position> coord = _determinePosition();
-              double longitude = await coord.then((value) => value.longitude);
-              double latitude = await coord.then((value) => value.latitude);
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MapaMenu(
-                            longitude: longitude,
-                            latitude: latitude,
-                          )));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding:
-                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_inicio,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_inicio,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/inicio.svg",
@@ -684,16 +672,16 @@ class _ProfileState extends State<Profile> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Pedidos()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Pedidos()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding:
-                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_historial,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_historial,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/historial.svg",
@@ -706,16 +694,16 @@ class _ProfileState extends State<Profile> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Statics()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Statics()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding:
-                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_ingresos,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_ingresos,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/ingresos.svg",
@@ -737,11 +725,11 @@ class _ProfileState extends State<Profile> {
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding:
-                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_perfil,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_perfil,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/perfil.svg",
@@ -772,31 +760,5 @@ class _ProfileState extends State<Profile> {
       inactiveThumbColor: Colors.white,
       inactiveTrackColor: Colors.grey,
     );
-  }
-
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-    return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.bestForNavigation);
   }
 }

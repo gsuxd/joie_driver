@@ -1,13 +1,11 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:joiedriver/blocs/position/position_bloc.dart';
 import 'package:joiedriver/blocs/user/user_bloc.dart';
-import 'package:joiedriver/helpers/calculate_distance.dart';
-import 'package:joiedriver/register_login_user/conts.dart';
+import 'package:joiedriver/conts.dart';
 import 'package:joiedriver/solicitar_carrera/components/textedit.dart';
-import 'package:joiedriver/solicitar_carrera/models/PlacesResponse.dart';
 
 import 'pages/selectBank.dart';
 
@@ -26,14 +24,19 @@ class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
 
   final data = {};
 
+  Future<Location> getlocationfromaddress(String v) async {
+    List<Location> placemarks = await locationFromAddress(v);
+    var first = placemarks.first;
+    return first;
+  }
+
   void handleSubmit(BuildContext context) async {
     final isValid = formKey.currentState!.validate();
     if (isValid) {
       formKey.currentState!.save();
       final location =
           (context.read<PositionBloc>().state as PositionObtained).location;
-      data['inicio'] = LatLng(location.latitude!, location.longitude!);
-
+      data['inicio'] = LatLng(location.latitude, location.longitude);
       data['destino'] = widget.pointB;
 
       data['pasajeroId'] =
@@ -48,21 +51,11 @@ class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
     }
   }
 
-  Future<List<PlacesResponse>> _getResults(TextEditingValue value) async {
-    final res = await Dio().get(
-        "https://maps.googleapis.com/maps/api/place/textsearch/json?query=${value.text.replaceAll(" ", "%20")}&key=AIzaSyAEE30voT1-ycMD3-cxpq2m4oJcKrpLeRA");
-    final parsed = (res.data['results'] as List<dynamic>).map(
-      (e) => PlacesResponse.fromJson(e),
-    );
-    return parsed.toList();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 500,
+      height: 520,
       decoration: BoxDecoration(
-        color: Colors.white,
         border: Border.all(color: Colors.black, width: 2),
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
@@ -73,60 +66,31 @@ class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
         key: formKey,
         child: Column(
           children: [
-            Autocomplete(
-              optionsBuilder: _getResults,
-              displayStringForOption: (PlacesResponse option) =>
-                  option.formattedAddress,
-              fieldViewBuilder: (context, textEditingController, focusNode,
-                      onFieldSubmitted) =>
-                  CustomTextField(
-                      hintText: "Dirección de partida",
-                      validator: (v) {
-                        return null;
-                      },
-                      icon: "assets/images/A.png",
-                      focusNode: focusNode,
-                      controller: textEditingController),
-              onSelected: (v) {
-                data['partida'] = v;
+            CustomTextField(
+              hintText: "Dirección de partida",
+              validator: (v) {
+                return null;
+              },
+              icon: "assets/images/A.png",
+              onSaved: (value) {
+                data["partida"] = value;
               },
             ),
-            Autocomplete(
-              optionsBuilder: _getResults,
-              displayStringForOption: (PlacesResponse option) =>
-                  option.formattedAddress,
-              fieldViewBuilder: (context, textEditingController, focusNode,
-                      onFieldSubmitted) =>
-                  CustomTextField(
-                      hintText: "Dirección de destino",
-                      validator: (v) {
-                        return null;
-                      },
-                      icon: "assets/images/B.png",
-                      focusNode: focusNode,
-                      controller: textEditingController),
-              onSelected: (v) {
-                data['destino'] = v;
+            CustomTextField(
+              validator: (v) {
+                return null;
               },
+              hintText: "Dirección de destino",
+              icon: "assets/images/B.png",
+              onSaved: (value) => data["destino"] = value,
             ),
             CustomTextField(
               validator: (v) {
                 if (v!.isEmpty) {
                   return "Ingresa el monto a ofertar";
                 }
-                final pos =
-                    (context.read<PositionBloc>().state as PositionObtained)
-                        .location;
-                final distance = calculateDistance(
-                    LatLng(pos.latitude!, pos.longitude!), widget.pointB);
-                double min;
-                if (distance > 1.0) {
-                  min = distance * 5000;
-                } else {
-                  min = 5000;
-                }
-                if (int.parse(v) < min) {
-                  return "El monto debe ser mayor o igual a ${min.toInt()}";
+                if (int.parse(v) < 5000) {
+                  return "El monto debe ser mayor a 5000";
                 }
                 return null;
               },

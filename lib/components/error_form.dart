@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../register_login_chofer/size_config.dart';
+import '../size_config.dart';
 
 class FormError extends StatelessWidget {
   const FormError({

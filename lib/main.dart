@@ -1,36 +1,30 @@
+import 'dart:convert';
+
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:joiedriver/register_login_chofer/helpers/recoverProgressConductor.dart';
-import 'package:joiedriver/register_login_chofer/theme.dart';
-import 'package:joiedriver/register_login_emprendedor/helpers/recoverProgress.dart';
-import 'package:joiedriver/register_login_user/helpers/recoverProgress.dart';
-import 'package:joiedriver/register_login_user/sign_in/log_in.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:video_player/video_player.dart';
+import 'package:joiedriver/blocs/markers/markers_bloc.dart';
+import 'package:joiedriver/blocs/position/position_bloc.dart';
+import 'package:joiedriver/blocs/user/user_bloc.dart';
+import 'package:joiedriver/home/home.dart';
+import 'package:joiedriver/home_user/home.dart';
+import 'package:joiedriver/loadingScreen.dart';
+import 'package:joiedriver/registro/bloc/registro_bloc.dart';
+import 'package:joiedriver/theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'blocs/carrera/carrera_bloc.dart';
-import 'blocs/markers/markers_bloc.dart';
-import 'blocs/position/position_bloc.dart';
-import 'blocs/user/user_bloc.dart';
-import 'colors.dart';
 import 'generated/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 
-import 'home/home.dart';
-import 'home_user/home.dart';
-import 'loadingScreen.dart';
+import 'notifications/notification_controller.dart';
+import 'sign_in/log_in.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp().then((value) {
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
-    }
+
+  Firebase.initializeApp().then((value) async {
+    final _prefs = await SharedPreferences.getInstance();
     runApp(ProviderScope(
       child: MultiBlocProvider(
         providers: [
@@ -46,30 +40,43 @@ Future<void> main() async {
           BlocProvider(
             create: (context) => CarreraBloc(),
           ),
+          if (!(_prefs.containsKey("user")))
+            BlocProvider(create: (_) => RegistroBloc())
         ],
         child: const MyApp(),
       ),
     ));
   });
-  //runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    NotificationController.initializeLocalNotifications();
+    NotificationController.startListeningNotificationEvents();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.light,
       supportedLocales: S.delegate.supportedLocales,
       localizationsDelegates: const [
         S.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
       ],
+      navigatorKey: MyApp.navigatorKey,
       title: 'Conductores',
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
@@ -93,146 +100,38 @@ class MyApp extends StatelessWidget {
           bodyText2: TextStyle(color: Color.fromARGB(255, 6, 38, 63)),
         ),
       ),
-      darkTheme: ThemeData(
-        shadowColor: blue_dark,
-        primaryColor: blue_dark,
-        primaryColorDark: blue_dark,
-        //Se indica que el tema tiene un brillo oscuro
-        brightness: Brightness.dark,
-        primarySwatch: Colors.blue,
-        fontFamily: "Montserrat",
-        appBarTheme: const AppBarTheme(
-            centerTitle: true,
-            backgroundColor: Colors.blueAccent,
-            elevation: 0,
-            iconTheme: IconThemeData(
-              color: Color(0xFFFFFFFF),
-            ),
-            titleTextStyle: TextStyle(
-              color: Color(0xFFFFFFFF),
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              fontStyle: FontStyle.normal,
-            )),
-        inputDecorationTheme: inputDecorationTheme(),
-        textTheme: const TextTheme(
-          bodyText1: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-          bodyText2: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-        ),
-      ),
-      home: const MyHomePage(
-        title: 'JoieDriver',
-      ),
+      home: const MyHomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  EncryptedSharedPreferences encryptedSharedPreferences =
-      EncryptedSharedPreferences();
-  late VideoPlayerController _controller;
-  late double longitude;
-  late double latitude;
-
-  void _resume(context) async {
-    final _prefs = await EncryptedSharedPreferences().getInstance();
-    if (_prefs.getString("userType") != null) {
-      _prefs.setBool("isFailLogin", true);
-      switch (_prefs.getString("userType")) {
-        case "Conductor":
-          recoverProgressChofer(context);
-          break;
-        case "Emprendedor":
-          recoverProgressEmprendedor(context);
-          break;
-        default:
-          recoverProgressPasajero(context);
-      }
-    }
-  }
-
-  @override
-  void initState() {
-    _resume(context);
-    super.initState();
-    _controller = VideoPlayerController.asset("assets/videos/video.mp4")
-      ..initialize().then((_) {
-        // Once the video has been loaded we play the video and set looping to true.
-        _controller.play();
-        _controller.setLooping(true);
-        // Ensure the first frame is shown after the video is initialized.
-        setState(() {});
-        fetchUserOrder(context, 0.0, 0.0);
-      });
-  }
-
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: background_color,
-      body: Center(
-        child: SizedBox(
-          width: _controller.value.size.width,
-          height: _controller.value.size.height,
-          child: VideoPlayer(_controller),
-        ),
-      ),
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) {
+        if (state is UserNotLogged) {
+          return const LognInScreenUser();
+        }
+        if (state is UserLogged) {
+          switch (state.user.type) {
+            case "chofer":
+              return const HomeScreen();
+            default:
+              return const HomeScreenUser();
+          }
+        }
+        if (state is UserLoading) {
+          return const LoadingScreen();
+        }
+
+        return const Scaffold(
+          body: Center(
+            child: Text("Error de estado, porfavor reinicia la aplicación"),
+          ),
+        );
+      },
     );
-  }
-
-  Future<void> permiso() async {
-    if (await Permission.location.request().isGranted) {
-      // Permiso concedido
-    }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
-  }
-
-  void fetchUserOrder(BuildContext context, double longitude, double latitude) {
-    // Imagine that this function is fetching user info from another service or database.
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-            builder: (context) => BlocBuilder<UserBloc, UserState>(
-                  builder: (context, state) {
-                    if (state is UserNotLogged) {
-                      return const LognInScreenUser();
-                    }
-                    if (state is UserLogged) {
-                      switch (state.user.type) {
-                        case "Conductor":
-                          return const HomeScreen();
-                        case "Emprendedor":
-                          return const HomeScreen();
-                        default:
-                          return const HomeScreenUser();
-                      }
-                    }
-                    if (state is UserLoading) {
-                      return const LoadingScreen();
-                    }
-
-                    return const Scaffold(
-                      body: Center(
-                        child: Text(
-                            "Error de estado, porfavor reinicia la aplicación"),
-                      ),
-                    );
-                  },
-                )),
-        (route) => false);
   }
 }

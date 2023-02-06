@@ -15,10 +15,10 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.30+30
+version: 1.0.17+17
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.15.0 <3.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -35,43 +35,38 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   transition_customer: ^0.0.5
-  google_maps_flutter: ^2.2.1
+  google_maps_flutter: ^2.1.0
   permission_handler: ^10.2.0
-  geolocator: ^9.0.2
   fluttertoast: ^8.0.8
-  flutter_svg: ^1.1.6
-  syncfusion_flutter_charts: ^20.3.52
+  flutter_svg: ^1.0.3
+  syncfusion_flutter_charts: ^19.3.54
   video_player:
   firebase_database:
   firebase_core:
   intl: ^0.17.0
-  archive: ^3.3.2
-  image_picker: ^0.8.6
+  archive: ^3.3.0
+  image_picker:
   file_picker:
   flutter_riverpod:
   firebase_storage:
   date_field: ^3.0.1
   firebase_auth:
   cloud_firestore:
-  url_launcher: ^6.1.6
-  mailer: ^5.2.0
-  encrypted_shared_preferences: ^3.0.1
   flutter_localizations:
     sdk: flutter
   get_it: ^7.2.0
-  flutter_bloc: ^8.1.1
+  flutter_bloc: ^8.1.0
   location: ^4.4.0
   flutter_polyline_points: ^1.0.0
-  geocoding: ^2.0.5
+  geocoding: ^2.0.4
+  shared_preferences: ^2.0.15
   bloc: ^8.1.0
-  equatable: ^2.0.5
+  equatable: ^2.0.3
   dio: ^4.0.6
-  share_plus: ^6.0.1
-  google_sign_in: ^5.4.2
-  local_auth: ^2.1.2
-  flutter_google_places_hoc081098: ^1.1.0
-  google_api_headers: ^1.5.0
-  google_maps_webservice: ^0.0.20-nullsafety.5
+  awesome_notifications: ^0.7.4+1
+  flutter_isolate: ^2.0.4
+  geolocator: ^9.0.2
+  camera: ^0.10.3
 
 dev_dependencies:
   flutter_test:

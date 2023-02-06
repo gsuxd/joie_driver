@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+
 import 'colors.dart';
 
 class GraphicPie extends StatefulWidget {
@@ -57,7 +58,6 @@ class FoodData {
   final String stat;
   final int numb;
   final Color color;
-
   FoodData(
     this.stat,
     this.numb,

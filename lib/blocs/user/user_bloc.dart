@@ -1,18 +1,17 @@
 import 'dart:convert';
 
+import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:encrypted_shared_preferences/encrypted_shared_preferences.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:joiedriver/blocs/carrera/carrera_bloc.dart';
-import 'package:joiedriver/blocs/markers/markers_bloc.dart';
-import 'package:joiedriver/blocs/position/position_bloc.dart';
-import 'package:joiedriver/register_login_user/conts.dart';
+import 'package:joiedriver/conts.dart';
+import 'package:joiedriver/home/home.dart';
+import 'package:joiedriver/home_user/home.dart';
 import 'package:joiedriver/singletons/carro_data.dart';
 import 'package:joiedriver/singletons/user_data.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'user_event.dart';
 part 'user_state.dart';
@@ -21,7 +20,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc() : super(UserLoading()) {
     on<LoadUserEvent>(_handleLoadUser);
     on<LoginUserEvent>(_handleLogin);
-    on<LogOutUserEvent>(_handleLogOutUser);
   }
 
   late DocumentReference<Map<String, dynamic>> userSnapshot;
@@ -36,32 +34,22 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     await super.close();
   }
 
-  void _handleLogOutUser(LogOutUserEvent event, Emitter<UserState> emit) async {
-    emit(UserLoading());
-    final prefs = await EncryptedSharedPreferences().getInstance();
-    if (userSnapshot.path.contains("users")) {
-      await userSnapshot.update({"active": false});
-    }
-    prefs.clear();
-    await FirebaseAuth.instance.signOut();
-    emit(UserNotLogged());
-  }
-
   void _handleLoadUser(LoadUserEvent event, Emitter<UserState> emit) async {
     emit(UserLoading());
-    final prefs = await EncryptedSharedPreferences().getInstance();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getString("user") == null) {
       emit(UserNotLogged());
       return;
     }
     final UserData user =
         UserData.fromJson(jsonDecode(prefs.getString("user")!));
+    late DocumentReference<Map<String, dynamic>> userSnapshot;
     switch (user.type) {
-      case 'Conductor':
+      case 'chofer':
         userSnapshot =
             FirebaseFirestore.instance.collection("users").doc(user.email);
         break;
-      case 'Emprendedor':
+      case 'emprendedor':
         userSnapshot = FirebaseFirestore.instance
             .collection("usersEmprendedor")
             .doc(user.email);
@@ -77,7 +65,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   void _handleLogin(LoginUserEvent event, Emitter<UserState> emit) async {
     emit(UserLoading());
     try {
-      final prefs = await EncryptedSharedPreferences().getInstance();
+      final prefs = await SharedPreferences.getInstance();
       final user = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: event.email, password: event.password);
       await FirebaseFirestore.instance
@@ -93,7 +81,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               referralsCode: value['code'],
               email: FirebaseAuth.instance.currentUser!.email!,
               genero: value['gender'],
-              type: "Conductor",
+              type: "chofer",
               profilePicture: await FirebaseStorage.instance
                   .ref()
                   .child(
@@ -114,11 +102,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             );
             value.reference.update({"active": true});
             userSnapshot = value.reference;
-            prefs.setString("user", jsonEncode(u.toJson()));
             emit(UserLogged(u, value.reference));
-            // Navigator.of(event.context).pushAndRemoveUntil(
-            //     MaterialPageRoute(builder: (_) => const HomeScreenUser()),
-            //     (route) => false);
+            prefs.setString("user", jsonEncode(u.toJson()));
+            Navigator.of(event.context).pushReplacement(
+                MaterialPageRoute(builder: (_) => const HomeScreen()));
             return;
           } else {
             await FirebaseFirestore.instance
@@ -134,12 +121,15 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                     referralsCode: value['code'],
                     email: FirebaseAuth.instance.currentUser!.email!,
                     genero: value['gender'],
-                    type: "Pasajero",
+                    type: "pasajero",
                     profilePicture: await FirebaseStorage.instance
                         .ref()
                         .child(
                             "${FirebaseAuth.instance.currentUser!.email!}/ProfilePhoto.jpg")
                         .getDownloadURL(),
+                  );
+                  emit(
+                    UserLogged(u, value.reference),
                   );
                   prefs.setString(
                     "user",
@@ -148,12 +138,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                     ),
                   );
                   userSnapshot = value.reference;
-                  emit(
-                    UserLogged(u, value.reference),
-                  );
-                  // Navigator.of(event.context).pushAndRemoveUntil(
-                  //     MaterialPageRoute(builder: (_) => const HomeScreenUser()),
-                  //     (route) => false);
+                  Navigator.of(event.context).pushReplacement(MaterialPageRoute(
+                      builder: (_) => const HomeScreenUser()));
                   return;
                 } else {
                   await FirebaseFirestore.instance
@@ -169,12 +155,15 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                           referralsCode: value['code'],
                           email: FirebaseAuth.instance.currentUser!.email!,
                           genero: value['gender'],
-                          type: "Emprendedor",
+                          type: "emprendedor",
                           profilePicture: await FirebaseStorage.instance
                               .ref()
                               .child(
                                   "${FirebaseAuth.instance.currentUser!.email!}/ProfilePhoto.jpg")
                               .getDownloadURL(),
+                        );
+                        emit(
+                          UserLogged(u, value.reference),
                         );
                         prefs.setString(
                           "user",
@@ -183,13 +172,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                           ),
                         );
                         userSnapshot = value.reference;
-                        emit(
-                          UserLogged(u, value.reference),
-                        );
-                        // Navigator.of(event.context).pushAndRemoveUntil(
-                        //     MaterialPageRoute(
-                        //         builder: (_) => const HomeScreenUser()),
-                        //     (route) => false);
+                        Navigator.of(event.context).pushReplacement(
+                            MaterialPageRoute(
+                                builder: (_) => const HomeScreenUser()));
                       }
                     },
                   );

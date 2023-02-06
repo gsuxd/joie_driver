@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../register_login_chofer/conts.dart';
-import '../register_login_chofer/size_config.dart';
-
+import 'package:get_it/get_it.dart';
+import 'package:joiedriver/singletons/user_data.dart';
+import '../conts.dart';
+import '../size_config.dart';
 
 class ProfileCard extends StatelessWidget {
   const ProfileCard({
@@ -35,14 +36,14 @@ class ProfileCard extends StatelessWidget {
                   width: getPropertieScreenWidth(5),
                 ),
                 Text(
-                  'User',
+                  GetIt.I.get<UserData>().name,
                   style: title1,
                   textAlign: TextAlign.start,
                 ),
               ],
             ),
             Text(
-              'Nombre',
+              GetIt.I.get<UserData>().lastName,
               style: heading1,
               textAlign: TextAlign.start,
             ),

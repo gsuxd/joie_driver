@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../register_login_chofer/conts.dart';
-
+import '../conts.dart';
 
 class ButtonDefChofer extends StatelessWidget {
   const ButtonDefChofer({
@@ -24,8 +23,7 @@ class ButtonDefChofer extends StatelessWidget {
           onPressed: press,
           child: Text(
             text,
-            style: const TextStyle(
-                color: Colors.white, fontSize: (18)),
+            style: const TextStyle(color: Colors.white, fontSize: (18)),
           )),
     );
   }

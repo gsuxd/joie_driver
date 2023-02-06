@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
-import '../register_login_user/conts.dart';
-import '../register_login_user/size_config.dart';
-
-
+import 'package:joiedriver/conts.dart';
+import 'package:joiedriver/size_config.dart';
 
 class SocialCardUser extends StatelessWidget {
   const SocialCardUser({

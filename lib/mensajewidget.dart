@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'colors.dart';
 
 class MensajeWidget extends StatelessWidget {
@@ -7,25 +8,19 @@ class MensajeWidget extends StatelessWidget {
   final DateTime fecha;
   final String usuario;
 
-  MensajeWidget(this.texto, this.fecha, this.usuario);
-
-  Color caja = blue;
-  CrossAxisAlignment alineacion = CrossAxisAlignment.end;
+  const MensajeWidget(this.texto, this.fecha, this.usuario, {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (usuario == "asistente") {
-      caja = Colors.blueGrey.shade300;
-      alineacion = CrossAxisAlignment.start;
-      return sms2();
+    if (usuario != "UsuarioPrueba") {
+      return sms2(Colors.blueGrey, CrossAxisAlignment.start);
     } else {
-      caja = blue;
-      alineacion = CrossAxisAlignment.end;
-      return sms();
+      return sms(blue, CrossAxisAlignment.end);
     }
   }
 
-  Column sms() {
+  Column sms(Color caja, CrossAxisAlignment alineacion) {
     return Column(
       crossAxisAlignment: alineacion,
       children: [
@@ -69,7 +64,7 @@ class MensajeWidget extends StatelessWidget {
     );
   }
 
-  Column sms2() {
+  Column sms2(Color caja, CrossAxisAlignment alineacion) {
     return Column(
       crossAxisAlignment: alineacion,
       children: [

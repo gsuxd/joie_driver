@@ -26,14 +26,13 @@ class _MapViewState extends State<MapView> {
       if (state is PositionObtained) {
         return GoogleMap(
           initialCameraPosition: CameraPosition(
-              target:
-                  LatLng(state.location.latitude!, state.location.longitude!),
+              target: LatLng(state.location.latitude, state.location.longitude),
               zoom: 14.5),
           markers: {
             Marker(
                 markerId: const MarkerId('current'),
-                position: LatLng(
-                    state.location.latitude!, state.location.longitude!)),
+                position:
+                    LatLng(state.location.latitude, state.location.longitude)),
           },
           onMapCreated: (mapController) {
             _controller.complete(mapController);

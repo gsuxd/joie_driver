@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:joiedriver/blocs/user/user_bloc.dart';
-import '../register_login_chofer/conts.dart';
-import '../register_login_chofer/size_config.dart';
+import '../conts.dart';
+import '../size_config.dart';
 import 'default_button.dart';
 import 'profile_card.dart';
 
@@ -11,7 +9,6 @@ class NavigationDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
     return Drawer(
       child: SafeArea(
         child: Column(children: [
@@ -30,11 +27,7 @@ class NavigationDrawer extends StatelessWidget {
           SizedBox(
             height: getPropertieScreenHeight(20),
           ),
-          ButtonDef(
-              text: "Cerrar Cesión",
-              press: () {
-                context.read<UserBloc>().add(LogOutUserEvent(context));
-              }),
+          ButtonDef(text: "Cerrar Cesión", press: () {}),
         ]),
       ),
     );

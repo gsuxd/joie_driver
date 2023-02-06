@@ -1,3 +1,4 @@
+import 'package:joiedriver/home_user/home.dart';
 import 'package:joiedriver/pedidos.dart';
 import 'package:joiedriver/perfil_usuario.dart';
 import 'package:joiedriver/reporte_dao_chofer.dart';
@@ -7,9 +8,9 @@ import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
 import 'colors.dart';
 import 'main.dart';
-import 'mapa_principal_usuario.dart';
 
 class ReportarChofer extends StatefulWidget {
+  const ReportarChofer({Key? key}) : super(key: key);
   @override
   createState() => _PedidosState();
 }
@@ -25,7 +26,6 @@ class _PedidosState extends State<ReportarChofer> {
   String state = "Calificar";
   final TextEditingController _controllerText = TextEditingController();
   int solicitudPedido = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,7 +146,7 @@ class _PedidosState extends State<ReportarChofer> {
         ));
   }
 
-  Widget conectSwitch(BuildContext context) {
+  Widget ConectSwitch(BuildContext context) {
     return Switch(
       value: isSwitched,
       onChanged: (value) {
@@ -166,7 +166,7 @@ class _PedidosState extends State<ReportarChofer> {
     );
   }
 
-  SizedBox alert(String title, int category) {
+  Widget alert(String title, int category) {
     return SizedBox(
       height: 200,
       child: Column(
@@ -188,7 +188,7 @@ class _PedidosState extends State<ReportarChofer> {
             padding: const EdgeInsets.only(
                 left: 5.0, right: 5.0, top: 10.0, bottom: 5.0),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(const Radius.circular(10.0)),
+              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
               border: Border.all(width: 1, color: blue),
             ),
             child: Align(
@@ -229,7 +229,7 @@ class _PedidosState extends State<ReportarChofer> {
                     setState(() {});
                   },
                   style: ElevatedButton.styleFrom(
-                      primary: Colors.grey,
+                      backgroundColor: Colors.grey,
                       shape: const RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.all(Radius.circular(10.0)))),
@@ -251,10 +251,10 @@ class _PedidosState extends State<ReportarChofer> {
                 height: 22,
                 child: ElevatedButton(
                     onPressed: () {
-                      Query n_reportes =
+                      Query nReportes =
                           ReporteDaoChofer.obtenerReporteIndividual(
                               "usuarioPruebaNuevo");
-                      n_reportes.get().then((value) => nodes.add(value.value));
+                      nReportes.get().then((value) => nodes.add(value.value));
 
                       //n_reportes.onValue.forEach((v) => nodes.add(v));
                       fetchUserOrder(
@@ -263,7 +263,7 @@ class _PedidosState extends State<ReportarChofer> {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                        primary: blue,
+                        backgroundColor: blue,
                         shape: const RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10.0)))),
@@ -319,20 +319,17 @@ class _PedidosState extends State<ReportarChofer> {
         fecha: DateTime.now(),
         nombre_apellido: 'Carlos Ortiz',
         usuario_receptor: 'usuarioPruebaNuevo');
-    ReporteDaoChofer reporteDao = ReporteDaoChofer();
+    ReporteDaoChofer reporteDao = const ReporteDaoChofer();
     reporteDao.guardarReporte(
       _reporte,
     );
     Navigator.pop(context);
     _controllerText.clear();
     solicitudPedido = 1;
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => MapaMenuUsuario(
-                  latitude: 0.0,
-                  longitude: 0.0,
-                )));
+
+    print(n_elementos + 1);
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => const HomeScreenUser()));
   }
 
   GestureDetector item(String title, int category) {
@@ -341,7 +338,7 @@ class _PedidosState extends State<ReportarChofer> {
         context: context,
         builder: (BuildContext context) => AlertDialog(
           content: alert(title, category),
-          contentPadding: EdgeInsets.all(10.0),
+          contentPadding: const EdgeInsets.all(10.0),
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10.0))),
           elevation: 48,
@@ -382,7 +379,7 @@ class _PedidosState extends State<ReportarChofer> {
     );
   }
 
-  SizedBox bottomNavBar(BuildContext context) {
+  Widget bottomNavBar(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Row(
@@ -390,15 +387,15 @@ class _PedidosState extends State<ReportarChofer> {
         children: [
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => MyApp()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const MyApp()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_inicio,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_inicio,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -413,14 +410,14 @@ class _PedidosState extends State<ReportarChofer> {
           ElevatedButton(
             onPressed: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Pedidos()));
+                  context, MaterialPageRoute(builder: (context) => const Pedidos()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_historial,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_historial,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -434,15 +431,17 @@ class _PedidosState extends State<ReportarChofer> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ReportarChofer()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ReportarChofer()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_ingresos,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_ingresos,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -457,16 +456,18 @@ class _PedidosState extends State<ReportarChofer> {
           ElevatedButton(
             onPressed: () {
               setState(() {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => PerfilUsuario()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PerfilUsuario()));
               });
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_perfil,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_perfil,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(

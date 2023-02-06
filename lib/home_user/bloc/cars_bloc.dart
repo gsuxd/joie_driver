@@ -3,8 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:joiedriver/blocs/position/position_bloc.dart';
 import 'package:joiedriver/helpers/calculate_distance.dart';
-import 'package:location/location.dart';
 
 part 'cars_event.dart';
 part 'cars_state.dart';
@@ -25,8 +25,8 @@ class CarsBloc extends Bloc<CarsEvent, CarsState> {
         }
         final distance = calculateDistance(
             LatLng(
-              event.location.latitude!,
-              event.location.longitude!,
+              event.location.latitude,
+              event.location.longitude,
             ),
             LatLng(
                 data["location"]["latitude"], data["location"]["longitude"]));

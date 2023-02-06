@@ -7,28 +7,21 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'mensajewidget.dart';
 
 class ListaMensajes extends StatefulWidget {
-  final mensajeDAO = MensajeDAO();
+  final mensajeDAO = const MensajeDAO();
   final String id_chat;
   final String usuario;
-
-  ListaMensajes(this.id_chat, this.usuario);
-
+  const ListaMensajes(this.id_chat, this.usuario, {Key? key}) : super(key: key);
   @override
-  ListaMensajesState createState() => ListaMensajesState(id_chat, usuario);
+  ListaMensajesState createState() => ListaMensajesState();
 }
 
 class ListaMensajesState extends State<ListaMensajes> {
-  final String id_chat;
-  final String usuario;
-
-  ListaMensajesState(this.id_chat, this.usuario);
-
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _mensajeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollHaciaAbajo());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollHaciaAbajo());
 
     return Scaffold(
         appBar: AppBar(
@@ -67,8 +60,9 @@ class ListaMensajesState extends State<ListaMensajes> {
 
   void _enviarMensaje() {
     if (_puedoEnviarMensaje()) {
-      final mensaje = Mensaje(_mensajeController.text, DateTime.now(), usuario);
-      MensajeDAO.guardarMensaje(mensaje, usuario, id_chat);
+      final mensaje =
+          Mensaje(_mensajeController.text, DateTime.now(), widget.usuario);
+      MensajeDAO.guardarMensaje(mensaje, widget.usuario, widget.id_chat);
       _mensajeController.clear();
       setState(() {});
     }
@@ -82,7 +76,7 @@ class ListaMensajesState extends State<ListaMensajes> {
         child: FirebaseAnimatedList(
           //shrinkWrap: true,
           controller: _scrollController,
-          query: widget.mensajeDAO.getMensajes(usuario, id_chat),
+          query: widget.mensajeDAO.getMensajes(widget.usuario, widget.id_chat),
           itemBuilder: (context, snapshot, animation, index) {
             final json = snapshot.value as Map<dynamic, dynamic>;
             final mensaje = Mensaje.fromJson(json);

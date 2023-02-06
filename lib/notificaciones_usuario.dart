@@ -10,8 +10,8 @@ import 'notificaciones_usuario_dao.dart';
 import 'notificacionwidget.dart';
 
 class ListaNotificacionesUsuario extends StatefulWidget {
-  ListaNotificacionesUsuario({Key? key}) : super(key: key);
-  final notificacionDAO = NotificacionUsuarioDAO();
+  const ListaNotificacionesUsuario({Key? key}) : super(key: key);
+  final notificacionDAO = const NotificacionUsuarioDAO();
 
   @override
   ListaNotificacionesUsuarioState createState() =>
@@ -22,15 +22,13 @@ class ListaNotificacionesUsuarioState
     extends State<ListaNotificacionesUsuario> {
   String usuario = "UsuarioPrueba";
   final ScrollController _scrollController = ScrollController();
-  final TextEditingController _mensajeController = TextEditingController();
   Color color_icon_inicio = blue;
   Color color_icon_historial = blue;
   Color color_icon_perfil = blue;
   Color color_icon_ingresos = blue;
-
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollHaciaAbajo());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollHaciaAbajo());
 
     return Scaffold(
         appBar: AppBar(
@@ -75,7 +73,7 @@ class ListaNotificacionesUsuarioState
     }
   }
 
-  SizedBox bottomNavBar(BuildContext context) {
+  Widget bottomNavBar(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Row(
@@ -85,10 +83,10 @@ class ListaNotificacionesUsuarioState
             onPressed: () {},
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_inicio,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_inicio,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -102,15 +100,15 @@ class ListaNotificacionesUsuarioState
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Pedidos()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Pedidos()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_historial,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_historial,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -129,10 +127,10 @@ class ListaNotificacionesUsuarioState
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_ingresos,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_ingresos,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -148,15 +146,15 @@ class ListaNotificacionesUsuarioState
             onPressed: () {
               setState(() {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Profile()));
+                    MaterialPageRoute(builder: (context) => const Profile()));
               });
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_perfil,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_perfil,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(

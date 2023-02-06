@@ -1,3 +1,4 @@
+import 'package:joiedriver/home_user/home.dart';
 import 'package:joiedriver/pedidos.dart';
 import 'package:joiedriver/perfil_usuario.dart';
 import 'package:joiedriver/reporte_dao_usuario.dart';
@@ -7,9 +8,9 @@ import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
 import 'colors.dart';
 import 'main.dart';
-import 'mapa_principal_usuario.dart';
 
 class ReportarUsuario extends StatefulWidget {
+  const ReportarUsuario({Key? key}) : super(key: key);
   @override
   createState() => _PedidosState();
 }
@@ -25,7 +26,6 @@ class _PedidosState extends State<ReportarUsuario> {
   String state = "Calificar";
   final TextEditingController _controllerText = TextEditingController();
   int solicitudPedido = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +49,7 @@ class _PedidosState extends State<ReportarUsuario> {
               textAlign: TextAlign.center,
             ),
           ),
-          actions: [conectSwitch(context)],
+          actions: [ConectSwitch(context)],
         ),
         backgroundColor: Colors.white,
         body: Stack(
@@ -130,7 +130,7 @@ class _PedidosState extends State<ReportarUsuario> {
         ));
   }
 
-  Widget conectSwitch(BuildContext context) {
+  Widget ConectSwitch(BuildContext context) {
     return Switch(
       value: isSwitched,
       onChanged: (value) {
@@ -213,7 +213,7 @@ class _PedidosState extends State<ReportarUsuario> {
                     setState(() {});
                   },
                   style: ElevatedButton.styleFrom(
-                      primary: Colors.grey,
+                      backgroundColor: Colors.grey,
                       shape: const RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.all(Radius.circular(10.0)))),
@@ -235,10 +235,10 @@ class _PedidosState extends State<ReportarUsuario> {
                 height: 22,
                 child: ElevatedButton(
                     onPressed: () {
-                      Query n_reportes =
+                      Query nReportes =
                           ReporteDaoUsuario.obtenerReporteIndividual(
                               "usuarioPrueba333");
-                      n_reportes.get().then((value) => nodes.add(value.value));
+                      nReportes.get().then((value) => nodes.add(value.value));
 
                       //n_reportes.onValue.forEach((v) => nodes.add(v));
                       fetchUserOrder(
@@ -247,7 +247,7 @@ class _PedidosState extends State<ReportarUsuario> {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                        primary: blue,
+                        backgroundColor: blue,
                         shape: const RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10.0)))),
@@ -309,13 +309,8 @@ class _PedidosState extends State<ReportarUsuario> {
     solicitudPedido = 1;
 
     print(n_elementos + 1);
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => MapaMenuUsuario(
-                  latitude: 0.0,
-                  longitude: 0.0,
-                )));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => const HomeScreenUser()));
   }
 
   GestureDetector item(String title, int category) {
@@ -378,10 +373,10 @@ class _PedidosState extends State<ReportarUsuario> {
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_inicio,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_inicio,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -396,14 +391,14 @@ class _PedidosState extends State<ReportarUsuario> {
           ElevatedButton(
             onPressed: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Pedidos()));
+                  context, MaterialPageRoute(builder: (context) => const Pedidos()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_historial,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_historial,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -417,15 +412,17 @@ class _PedidosState extends State<ReportarUsuario> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ReportarUsuario()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ReportarUsuario()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_ingresos,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_ingresos,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -440,16 +437,18 @@ class _PedidosState extends State<ReportarUsuario> {
           ElevatedButton(
             onPressed: () {
               setState(() {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => PerfilUsuario()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PerfilUsuario()));
               });
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_perfil,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_perfil,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(

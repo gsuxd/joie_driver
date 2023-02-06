@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import '../register_login_chofer/conts.dart';
-import '../register_login_chofer/size_config.dart';
-import '../register_login_chofer/splash/components/default_button.dart';
-import '../register_login_chofer/termin_y_condiciones/terminos_y_condiciones.dart';
+import 'package:joiedriver/registro/pages/terminos_condiciones/terminos_condiciones.dart';
+import '../conts.dart';
+import '../size_config.dart';
 
 class NoAccountChofer extends StatelessWidget {
   const NoAccountChofer({
@@ -11,30 +10,25 @@ class NoAccountChofer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
-      Padding(
-        padding: const EdgeInsets.only(
-        bottom: 20, left: 10, right: 10
-    ),
-    child:  Column(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           '¿No tienes cuenta Joie Driver?',
           style: TextStyle(
-            fontSize: getPropertieScreenWidth(18),
+            fontSize: getPropertieScreenWidth(16),
             color: jtextColorSec,
           ),
         ),
-        const SizedBox(
-          height: 10,
+        SizedBox(
+          width: getPropertieScreenWidth(10),
         ),
         GestureDetector(
           onTap: () {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const TerminosCondicionesChofer()));
+                    builder: (context) => const TerminosCondiciones()));
           },
           child: Text(
             'Registrate',
@@ -42,7 +36,6 @@ class NoAccountChofer extends StatelessWidget {
           ),
         ),
       ],
-    )
-      );
+    );
   }
 }

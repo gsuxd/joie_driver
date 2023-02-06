@@ -6,25 +6,17 @@ class CustomTextField extends StatefulWidget {
       required this.icon,
       this.value,
       this.keyboardType,
-      this.controller,
-      this.focusNode,
-      this.onSubmitted,
-      this.onTap,
       required this.validator,
       required this.hintText,
-      this.onSaved})
+      required this.onSaved})
       : super(key: key);
 
   final String icon;
-  final dynamic onSubmitted;
-  final FocusNode? focusNode;
-  final TextEditingController? controller;
   final String? value;
   final TextInputType? keyboardType;
-  final void Function()? onTap;
   final String? Function(String?)? validator;
   final String hintText;
-  final void Function(String?)? onSaved;
+  final void Function(String?) onSaved;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -62,11 +54,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
             child: TextFormField(
               validator: widget.validator,
               onSaved: widget.onSaved,
-              onFieldSubmitted: widget.onSubmitted,
               keyboardType: widget.keyboardType ?? TextInputType.text,
-              focusNode: widget.focusNode ?? _focusNode,
-              controller: widget.controller,
-              onTap: widget.onTap,
+              focusNode: _focusNode,
               decoration: InputDecoration(
                 border: InputBorder.none,
                 enabledBorder: InputBorder.none,

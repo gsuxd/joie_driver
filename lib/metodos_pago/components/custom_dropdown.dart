@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:joiedriver/conts.dart';
 import 'package:joiedriver/metodos_pago/components/nuevo_metodo.dart';
-
-import '../../register_login_emprendedor/conts.dart';
 import '../bloc/metodos_pago_bloc.dart';
 
 // ignore: must_be_immutable

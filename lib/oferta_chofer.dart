@@ -8,7 +8,6 @@ import 'estatics.dart';
 
 class Oferta extends StatefulWidget {
   const Oferta({Key? key}) : super(key: key);
-
   @override
   createState() => _OfertaState();
 }
@@ -24,7 +23,6 @@ class _OfertaState extends State<Oferta> {
   double progreso = 1;
   int duracion = 5000;
   bool solicitar = true;
-
   void startTime() {
     Timer.periodic(Duration(milliseconds: duracion), (timer) {
       setState(() {
@@ -167,7 +165,7 @@ class _OfertaState extends State<Oferta> {
   }
 
   Container ofertaItem(BuildContext context, String name, String rate,
-      double price, int min, String url_img) {
+      double price, int min, String urlImg) {
     return Container(
       margin:
           const EdgeInsets.only(top: 0.0, bottom: 5.0, left: 10.0, right: 10.0),
@@ -198,7 +196,7 @@ class _OfertaState extends State<Oferta> {
                 children: [
                   CircleAvatar(
                     radius: 30,
-                    backgroundImage: AssetImage(url_img),
+                    backgroundImage: AssetImage(urlImg),
                   ),
                   Container(
                     width: 5.0,
@@ -259,8 +257,8 @@ class _OfertaState extends State<Oferta> {
                 child: ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.grey,
-                    onPrimary: Colors.white,
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.grey,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(35.0),
                       //side: BorderSide(width: 1, color: Colors.black54),
@@ -283,8 +281,8 @@ class _OfertaState extends State<Oferta> {
                 child: ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                    primary: blue,
-                    onPrimary: Colors.white,
+                    foregroundColor: Colors.white,
+                    backgroundColor: blue,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(35.0),
                       //side: BorderSide(width: 1, color: Colors.black54),
@@ -309,7 +307,7 @@ class _OfertaState extends State<Oferta> {
     );
   }
 
-  SizedBox bottomNavBar(BuildContext context) {
+  Widget bottomNavBar(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Row(
@@ -319,10 +317,10 @@ class _OfertaState extends State<Oferta> {
             onPressed: () {},
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_inicio,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_inicio,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -336,15 +334,15 @@ class _OfertaState extends State<Oferta> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Pedidos()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Pedidos()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_historial,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_historial,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -363,10 +361,10 @@ class _OfertaState extends State<Oferta> {
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_ingresos,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_ingresos,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -382,15 +380,15 @@ class _OfertaState extends State<Oferta> {
             onPressed: () {
               setState(() {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Profile()));
+                    MaterialPageRoute(builder: (context) => const Profile()));
               });
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_perfil,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_perfil,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(

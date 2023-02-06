@@ -1,14 +1,15 @@
+import 'package:joiedriver/home/home.dart';
 import 'package:joiedriver/pedido_time.dart';
 import 'package:joiedriver/pedidos.dart';
 import 'package:joiedriver/profile.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
-import 'package:geolocator/geolocator.dart';
 import 'colors.dart';
 import 'estatics.dart';
-import 'mapa_principal.dart';
 
 class Pedido extends StatefulWidget {
+  const Pedido({Key? key}) : super(key: key);
+
   @override
   createState() => _PedidoState();
 }
@@ -55,7 +56,7 @@ class _PedidoState extends State<Pedido> {
               textAlign: TextAlign.center,
             ),
           ),
-          actions: [conectSwitch(context)],
+          actions: [ConectSwitch(context)],
         ),
         backgroundColor: Colors.white,
         body: Stack(
@@ -148,15 +149,17 @@ class _PedidoState extends State<Pedido> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => PedidosTime()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const PedidosTime()));
                   },
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
+                    backgroundColor: Colors.blueAccent,
                     padding: const EdgeInsets.only(
                         top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
                     shadowColor: Colors.grey,
-                    primary: Colors.blueAccent,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(40.0),
                     ),
@@ -204,10 +207,9 @@ class _PedidoState extends State<Pedido> {
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          elevation: 0,
+                          elevation: 0, backgroundColor: Colors.blueAccent,
                           // padding: EdgeInsets.only(top: 0.0, bottom: 0.0, left: 0.0, right: 0.0),
                           shadowColor: Colors.grey,
-                          primary: Colors.blueAccent,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(40.0),
                           ),
@@ -256,9 +258,9 @@ class _PedidoState extends State<Pedido> {
         ));
   }
 
-  Container percent(
-      double porcetaje, String porcentajeS, int select, Color color_select) {
-    return Container(
+  SizedBox percent(
+      double porcetaje, String porcentajeS, int select, Color colorSelect) {
+    return SizedBox(
         width: 52.0,
         height: 30.0,
         child: ElevatedButton(
@@ -304,10 +306,9 @@ class _PedidoState extends State<Pedido> {
             });
           },
           style: ElevatedButton.styleFrom(
-            elevation: 0,
+            elevation: 0, backgroundColor: Colors.blueAccent,
             //padding: EdgeInsets.only(top: 5.0, bottom: 5.0, left: 10.0, right: 10.0),
             shadowColor: Colors.grey,
-            primary: Colors.blueAccent,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
             ),
@@ -315,12 +316,12 @@ class _PedidoState extends State<Pedido> {
           child: Text(
             "$porcentajeS%",
             style: TextStyle(
-                color: color_select, fontFamily: "Monserrat", fontSize: 9),
+                color: colorSelect, fontFamily: "Monserrat", fontSize: 9),
           ),
         ));
   }
 
-  Widget conectSwitch(BuildContext context) {
+  Widget ConectSwitch(BuildContext context) {
     return Switch(
       value: isSwitched,
       onChanged: (value) {
@@ -340,7 +341,7 @@ class _PedidoState extends State<Pedido> {
     );
   }
 
-  SizedBox bottomNavBar(BuildContext context) {
+  Widget bottomNavBar(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Row(
@@ -348,23 +349,15 @@ class _PedidoState extends State<Pedido> {
         children: [
           ElevatedButton(
             onPressed: () async {
-              Future<Position> coord = _determinePosition();
-              double longitude = await coord.then((value) => value.longitude);
-              double latitude = await coord.then((value) => value.latitude);
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MapaMenu(
-                            longitude: longitude,
-                            latitude: latitude,
-                          )));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_inicio,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_inicio,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -378,15 +371,15 @@ class _PedidoState extends State<Pedido> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Pedidos()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Pedidos()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_historial,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_historial,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -400,15 +393,15 @@ class _PedidoState extends State<Pedido> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Statics()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Statics()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_ingresos,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_ingresos,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -424,15 +417,15 @@ class _PedidoState extends State<Pedido> {
             onPressed: () {
               setState(() {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Profile()));
+                    MaterialPageRoute(builder: (context) => const Profile()));
               });
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_perfil,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_perfil,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -444,30 +437,5 @@ class _PedidoState extends State<Pedido> {
         ],
       ),
     );
-  }
-
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-    return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.bestForNavigation);
   }
 }

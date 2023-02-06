@@ -1,18 +1,20 @@
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:joiedriver/blocs/user/user_bloc.dart';
 import 'package:joiedriver/pedidos.dart';
 import 'package:joiedriver/profile.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
+import 'package:joiedriver/singletons/user_data.dart';
 import 'automovil_chofer.dart';
 import 'colors.dart';
 import 'estatics.dart';
 
 class PerfilChofer extends StatefulWidget {
+  const PerfilChofer({Key? key}) : super(key: key);
+
   @override
   createState() => _PerfilUsuarioState();
 }
@@ -47,14 +49,13 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
       try {
         final newImage = await FirebaseStorage.instance
             .ref()
-            .child((context.read<UserBloc>().state as UserLogged).user.email)
+            .child(GetIt.I.get<UserData>().email)
             .child("ProfilePhoto.jpg")
             .putFile(image);
         _newImage = await newImage.ref.getDownloadURL();
         setState(() {});
         if (_newImage != null) {
-          (context.read<UserBloc>().state as UserLogged).user.profilePicture =
-              _newImage!;
+          GetIt.I.get<UserData>().profilePicture = _newImage!;
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -85,7 +86,7 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
           title: Center(
             child: Text(
               titleAppBar,
-              style: TextStyle(
+              style: const TextStyle(
                   fontFamily: "Monserrat",
                   fontWeight: FontWeight.bold,
                   fontSize: 20.0),
@@ -115,10 +116,8 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
                       child: Stack(children: [
                         CircleAvatar(
                           backgroundImage: !_isLoading
-                              ? NetworkImage(context.select<UserBloc, String>(
-                                  (val) => (val.state as UserLogged)
-                                      .user
-                                      .profilePicture))
+                              ? NetworkImage(
+                                  GetIt.I.get<UserData>().profilePicture)
                               : null,
                           child: _isLoading
                               ? const Center(
@@ -133,7 +132,7 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
                           child: ElevatedButton(
                             onPressed: () {},
                             style: ElevatedButton.styleFrom(
-                              primary: blue,
+                              backgroundColor: blue,
                               shape: const CircleBorder(),
                             ),
                             child: SvgPicture.asset(
@@ -162,26 +161,17 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
                 Container(
                   height: 20.0,
                 ),
-                item(
-                    context.select<UserBloc, String>(
-                        (val) => (val.state as UserLogged).user.name),
+                item(GetIt.I.get<UserData>().name,
                     "assets/images/nombre_y_apellido.svg"),
                 Container(
                   height: 20.0,
                 ),
-                item(
-                    context.select<UserBloc, String>(
-                        (val) => (val.state as UserLogged).user.lastName),
+                item(GetIt.I.get<UserData>().lastName,
                     "assets/images/nombre_y_apellido.svg"),
                 Container(
                   height: 20.0,
                 ),
-                item(
-                    context.select<UserBloc, String>((val) =>
-                        (val.state as UserLogged)
-                            .user
-                            .birthDate
-                            .substring(0, 10)),
+                item(GetIt.I.get<UserData>().birthDate.substring(0, 10),
                     "assets/images/edad.svg"),
                 Container(
                   height: 20.0,
@@ -191,16 +181,12 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
                   height: 20.0,
                 ),
                 item(
-                    context.select<UserBloc, String>(
-                        (val) => (val.state as UserLogged).user.genero),
-                    "assets/images/genero.svg"),
+                    GetIt.I.get<UserData>().genero, "assets/images/genero.svg"),
                 Container(
                   height: 20.0,
                 ),
                 itemCorreo(
-                    context.select<UserBloc, String>(
-                        (val) => (val.state as UserLogged).user.email),
-                    "assets/images/correo.svg"),
+                    GetIt.I.get<UserData>().email, "assets/images/correo.svg"),
                 Container(
                   height: 20.0,
                 ),
@@ -250,7 +236,7 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
                 },
                 child: Text(
                   title,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.black54,
                       fontFamily: "Monserrat",
                       fontSize: 16.0),
@@ -271,11 +257,11 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
                 onChanged: (text) {
                   setState(() {});
                 },
-                style: TextStyle(
+                style: const TextStyle(
                     color: Colors.black45,
                     fontFamily: "Monserrat",
                     fontSize: 12),
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: "Ciudad",
                   labelText: '',
                   labelStyle: TextStyle(fontFamily: "Monserrat", fontSize: 12),
@@ -319,7 +305,7 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
                 },
                 child: Text(
                   title,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.black54,
                       fontFamily: "Monserrat",
                       fontSize: 16.0),
@@ -340,11 +326,11 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
                 onChanged: (text) {
                   setState(() {});
                 },
-                style: TextStyle(
+                style: const TextStyle(
                     color: Colors.black45,
                     fontFamily: "Monserrat",
                     fontSize: 12),
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: "Correo",
                   labelText: '',
                   labelStyle: TextStyle(fontFamily: "Monserrat", fontSize: 12),
@@ -378,7 +364,7 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
         ),
         Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
               color: Colors.black54, fontFamily: "Monserrat", fontSize: 16.0),
         )
       ],
@@ -386,7 +372,7 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
   }
 
   Widget bottomNavBar(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -395,11 +381,11 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
             onPressed: () {},
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding:
-                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_inicio,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_inicio,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/inicio.svg",
@@ -413,15 +399,15 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
           ElevatedButton(
             onPressed: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Pedidos()));
+                  context, MaterialPageRoute(builder: (context) => const Pedidos()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding:
-                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_historial,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_historial,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/historial.svg",
@@ -435,15 +421,15 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
           ElevatedButton(
             onPressed: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Statics()));
+                  context, MaterialPageRoute(builder: (context) => const Statics()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding:
-                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_ingresos,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_ingresos,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/ingresos.svg",
@@ -458,16 +444,16 @@ class _PerfilUsuarioState extends State<PerfilChofer> {
             onPressed: () {
               setState(() {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Profile()));
+                    MaterialPageRoute(builder: (context) => const Profile()));
               });
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
-              padding:
-                  EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              backgroundColor: color_icon_perfil,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_perfil,
-              shape: CircleBorder(),
+              shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
               "assets/images/perfil.svg",

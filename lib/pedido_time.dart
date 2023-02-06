@@ -1,13 +1,15 @@
+import 'package:joiedriver/home/home.dart';
 import 'package:joiedriver/pedidos.dart';
 import 'package:joiedriver/profile.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
-import 'package:geolocator/geolocator.dart';
+
 import 'colors.dart';
 import 'estatics.dart';
-import 'mapa_principal.dart';
 
 class PedidosTime extends StatefulWidget {
+  const PedidosTime({Key? key}) : super(key: key);
+
   @override
   createState() => _PedidosTimeState();
 }
@@ -23,7 +25,6 @@ class _PedidosTimeState extends State<PedidosTime> {
   String puntoA = "Centro Comercial el Loco";
   String puntoB = "El Trebol, Avenida Buena Suerte";
   double monto = 56.00;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +48,7 @@ class _PedidosTimeState extends State<PedidosTime> {
               textAlign: TextAlign.center,
             ),
           ),
-          actions: [conectSwitch(context)],
+          actions: [ConectSwitch(context)],
         ),
         backgroundColor: Colors.white,
         body: Stack(
@@ -141,10 +142,10 @@ class _PedidosTimeState extends State<PedidosTime> {
       },
       style: ElevatedButton.styleFrom(
         elevation: 0,
+        backgroundColor: Colors.blueAccent,
         padding: const EdgeInsets.only(
             top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
         shadowColor: Colors.grey,
-        primary: Colors.blueAccent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(40.0),
         ),
@@ -160,7 +161,7 @@ class _PedidosTimeState extends State<PedidosTime> {
     );
   }
 
-  Widget conectSwitch(BuildContext context) {
+  Widget ConectSwitch(BuildContext context) {
     return Switch(
       value: isSwitched,
       onChanged: (value) {
@@ -180,7 +181,7 @@ class _PedidosTimeState extends State<PedidosTime> {
     );
   }
 
-  SizedBox bottomNavBar(BuildContext context) {
+  Widget bottomNavBar(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Row(
@@ -188,23 +189,15 @@ class _PedidosTimeState extends State<PedidosTime> {
         children: [
           ElevatedButton(
             onPressed: () async {
-              Future<Position> coord = _determinePosition();
-              double longitude = await coord.then((value) => value.longitude);
-              double latitude = await coord.then((value) => value.latitude);
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MapaMenu(
-                            longitude: longitude,
-                            latitude: latitude,
-                          )));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_inicio,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_inicio,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -218,15 +211,15 @@ class _PedidosTimeState extends State<PedidosTime> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Pedidos()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Pedidos()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_historial,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_historial,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -245,10 +238,10 @@ class _PedidosTimeState extends State<PedidosTime> {
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_ingresos,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_ingresos,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -264,15 +257,15 @@ class _PedidosTimeState extends State<PedidosTime> {
             onPressed: () {
               setState(() {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Profile()));
+                    MaterialPageRoute(builder: (context) => const Profile()));
               });
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_perfil,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_perfil,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -284,31 +277,5 @@ class _PedidosTimeState extends State<PedidosTime> {
         ],
       ),
     );
-  }
-
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-    return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.bestForNavigation);
   }
 }

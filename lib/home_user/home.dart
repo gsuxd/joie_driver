@@ -1,12 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide NavigationDrawer;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joiedriver/blocs/position/position_bloc.dart';
-import 'package:joiedriver/blocs/user/user_bloc.dart';
 import 'package:joiedriver/home_user/components/appBar.dart';
 import '/components/navigation_drawer.dart';
 import 'bloc/cars_bloc.dart';
 import 'components/map_view_pasajeros.dart';
-import 'markersBloc/points_bloc.dart';
 
 class HomeScreenUser extends StatefulWidget {
   static String routeName = '/home';
@@ -26,37 +24,28 @@ class _HomeScreenUserState extends State<HomeScreenUser> {
 
   @override
   Widget build(BuildContext context) {
-          return Scaffold(
-            appBar: (context.watch<UserBloc>().state) is UserLogged
-            ? const Appbar()
-            : null,
-        drawer: const NavigationDrawer(),
-        body: BlocBuilder<PositionBloc, PositionState>(
-          builder: (context, state) {
-            if (state is PositionLoading || state is PositionInitial) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            if (state is PositionError) {
-              return const Center(
-                child: Text('Error'),
-              );
-            }
-            return MultiBlocProvider(
-              providers: [
-                BlocProvider(
-                  create: (context) => CarsBloc()
-                    ..add(LoadNearCars((state as PositionObtained).location)),
-                ),
-                BlocProvider(
-                  create: (context) => PointsBloc(),
-                ),
-              ],
-              child: const MapViewPasajeros(),
+    return Scaffold(
+      appBar: const Appbar(),
+      drawer: const NavigationDrawer(),
+      body: BlocBuilder<PositionBloc, PositionState>(
+        builder: (context, state) {
+          if (state is PositionLoading || state is PositionInitial) {
+            return const Center(
+              child: CircularProgressIndicator(),
             );
-          },
-        ),
+          }
+          if (state is PositionError) {
+            return Center(
+              child: Text('Error: ${state.message}'),
+            );
+          }
+          return BlocProvider(
+            create: (context) => CarsBloc()
+              ..add(LoadNearCars((state as PositionObtained).location)),
+            child: const MapViewPasajeros(),
+          );
+        },
+      ),
     );
   }
 }

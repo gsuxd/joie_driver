@@ -4,7 +4,7 @@ class Reporte {
   final String problema;
   final String descipcion;
   final DateTime fecha;
-  static const String _sms = "Estamos trabajando en solucionar tu problema, en la brevedad uno de nuestros asesores te contestarán";
+  static const String _sms = "Estamos trabajando en solucionar tu problema, en la brevedad unos de nuestros asesores te constestaran";
   static const String _emisor = "asistente";
 
   Reporte(this.usuario, this.tipo, this.problema, this.descipcion, this.fecha);

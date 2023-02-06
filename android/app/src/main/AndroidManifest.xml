@@ -5,8 +5,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
-
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
    <application
         android:label="Joiedriver"
         android:name="${applicationName}"
@@ -34,7 +34,7 @@
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
-       <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyC_J4j5V1a66kjkH-Z5UPzzFO7fF1RbG-0"/>
+       <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyAEE30voT1-ycMD3-cxpq2m4oJcKrpLeRA"/>
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />

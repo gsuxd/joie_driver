@@ -1,12 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
+import 'dart:isolate';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geocoding/geocoding.dart' hide Location;
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:joiedriver/blocs/carrera/carrera_bloc.dart';
-import 'package:joiedriver/blocs/user/user_bloc.dart';
-import 'package:location/location.dart';
+import 'package:flutter_isolate/flutter_isolate.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:joiedriver/services/position_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../carrera/carrera_bloc.dart';
 
 part 'position_event.dart';
 part 'position_state.dart';
@@ -15,63 +18,41 @@ class PositionBloc extends Bloc<PositionEvent, PositionState> {
   PositionBloc() : super(PositionInitial()) {
     on<GetPositionEvent>(_handleGetPosition);
   }
+
   void _handleGetPosition(
       GetPositionEvent event, Emitter<PositionState> emit) async {
     emit(PositionLoading());
-    final Location location = Location();
-    final context = event.context;
-    final user = (context.read<UserBloc>().state as UserLogged).user;
+    if ((await FlutterIsolate.runningIsolates).isNotEmpty) {
+      FlutterIsolate.killAll();
+    }
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    final ReceivePort port = ReceivePort();
+    await Geolocator.requestPermission();
     try {
-      await location.requestPermission();
-      await location.getLocation().then((value) {
-        if (user.type == 'Conductor') {
-          context.read<CarreraBloc>().add(
-                ListenCarrerasEvent(
-                    LatLng(
-                      value.latitude!,
-                      value.longitude!,
-                    ),
-                    context),
-              );
-        }
-        emit(PositionObtained(value));
-        return;
-      });
-      CollectionReference collection;
-      switch (user.type) {
-        case "Conductor":
-          {
-            collection = FirebaseFirestore.instance.collection("users");
-            break;
-          }
-        case "Emprendedor":
-          collection =
-              FirebaseFirestore.instance.collection("usersEmprendedores");
-          break;
-        default:
-          collection = FirebaseFirestore.instance.collection("usersPasajeros");
+      await FlutterIsolate.spawn(PositionService.initialize, [
+        port.sendPort,
+        _prefs.getString('user'),
+      ]);
+      if (jsonDecode(_prefs.getString('user')!)['type'] == 'chofer') {
+        event.context
+            .read<CarreraBloc>()
+            .add(ListenCarrerasEvent(event.context));
       }
-
-      final userRef = collection.doc(user.email);
-      final LocationData locationData = await location.getLocation();
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-          locationData.latitude!, locationData.longitude!);
-      var first = placemarks.first;
-      await for (final value in location.onLocationChanged) {
-        if (user.type == "Conductor") {
-          await userRef.update({
-            "location": {
-              "latitude": value.latitude,
-              "longitude": value.longitude
-            },
-            "city": first.locality,
-          });
+      await for (final message in port) {
+        if (message["error"] != null) {
+          emit(
+            PositionError(
+              message["error"],
+            ),
+          );
+          return;
         }
-        emit(PositionObtained(value));
+        emit(PositionObtained(
+            PositionGetted(message["latitude"], message["longitude"])));
         return;
       }
     } catch (e) {
-      e;
+      emit(PositionError(e.toString()));
     }
   }
 }

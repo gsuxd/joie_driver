@@ -1,12 +1,13 @@
+import 'package:joiedriver/home_user/home.dart';
 import 'package:joiedriver/pedidos.dart';
 import 'package:joiedriver/perfil_usuario.dart';
 import 'package:joiedriver/reporte.dart';
 import 'package:joiedriver/reporte_dao.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
+
 import 'colors.dart';
 import 'main.dart';
-import 'mapa_principal_usuario.dart';
 
 class AsistenciaTecnicaUsuario extends StatefulWidget {
   const AsistenciaTecnicaUsuario({Key? key}) : super(key: key);
@@ -23,7 +24,6 @@ class _PedidosState extends State<AsistenciaTecnicaUsuario> {
   String state = "Asistencia";
   final TextEditingController _controllerText = TextEditingController();
   int solicitudPedido = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -168,7 +168,7 @@ class _PedidosState extends State<AsistenciaTecnicaUsuario> {
                     setState(() {});
                   },
                   style: ElevatedButton.styleFrom(
-                      primary: Colors.grey,
+                      backgroundColor: Colors.grey,
                       shape: const RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.all(Radius.circular(10.0)))),
@@ -197,7 +197,7 @@ class _PedidosState extends State<AsistenciaTecnicaUsuario> {
                         _controllerText.text,
                         DateTime.now(),
                       );
-                      ReporteDao reporteDao = ReporteDao();
+                      ReporteDao reporteDao = const ReporteDao();
                       reporteDao.guardarReporte(_reporte, "UsuarioPrueba");
                       Navigator.pop(context);
                       _controllerText.clear();
@@ -205,13 +205,10 @@ class _PedidosState extends State<AsistenciaTecnicaUsuario> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => MapaMenuUsuario(
-                                    latitude: 0.0,
-                                    longitude: 0.0,
-                                  )));
+                              builder: (context) => const HomeScreenUser()));
                     },
                     style: ElevatedButton.styleFrom(
-                        primary: blue,
+                        backgroundColor: blue,
                         shape: const RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10.0)))),
@@ -307,10 +304,10 @@ class _PedidosState extends State<AsistenciaTecnicaUsuario> {
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_inicio,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_inicio,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -325,14 +322,14 @@ class _PedidosState extends State<AsistenciaTecnicaUsuario> {
           ElevatedButton(
             onPressed: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Pedidos()));
+                  context, MaterialPageRoute(builder: (context) => const Pedidos()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_historial,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_historial,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -353,10 +350,10 @@ class _PedidosState extends State<AsistenciaTecnicaUsuario> {
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_ingresos,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_ingresos,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -371,16 +368,18 @@ class _PedidosState extends State<AsistenciaTecnicaUsuario> {
           ElevatedButton(
             onPressed: () {
               setState(() {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => PerfilUsuario()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PerfilUsuario()));
               });
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_perfil,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_perfil,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(

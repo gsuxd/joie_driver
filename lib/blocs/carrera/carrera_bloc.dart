@@ -1,21 +1,17 @@
 import 'dart:async';
+import 'dart:isolate';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:joiedriver/blocs/position/position_bloc.dart';
+import 'package:flutter_isolate/flutter_isolate.dart';
+import 'package:joiedriver/blocs/carrera/carrera_listener.dart';
 import 'package:joiedriver/blocs/user/user_bloc.dart';
 import 'package:joiedriver/carrera_en_curso/bloc/carrera_en_curso_bloc.dart';
 import 'package:joiedriver/carrera_en_curso/carrera_en_curso_chofer.dart';
-import 'package:joiedriver/helpers/calculate_distance.dart';
 import 'package:joiedriver/home/home.dart';
 import 'package:joiedriver/solicitar_carrera/pages/waiting_screen.dart';
-
 import 'carrera_model.dart';
-import 'widgets/nueva_carrera_modal.dart';
 
 part 'carrera_event.dart';
 part 'carrera_state.dart';
@@ -28,7 +24,28 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
     on<AceptarOfertaEvent>(_handleAceptarOferta);
   }
 
+  void _handleListen(
+      ListenCarrerasEvent event, Emitter<CarreraState> emit) async {
+    if (_isRunnin) return;
+    context = event.context;
+    final ReceivePort port = ReceivePort("Listening trips");
+    final isolate = await FlutterIsolate.spawn(
+        CarreraListener.handleListen, [port.sendPort]);
+    _isRunnin = true;
+    await for (final message in port.asBroadcastStream()) {
+      if (message["error"] != null) {
+        _isRunnin = false;
+        isolate.kill(priority: Isolate.immediate);
+        return;
+      }
+      CarreraListener.showModal(
+          Carrera.fromJson(message["carrera"]), message["reference"], context);
+    }
+  }
+
+  bool _isRunnin = false;
   late BuildContext context;
+  CarreraListener? _carreraListener;
 
   void _handleAceptarOferta(
       AceptarOfertaEvent event, Emitter<CarreraState> emit) async {
@@ -41,8 +58,6 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
         .update({
       'active': false,
     });
-    _carrerasCercanasSubscription?.cancel();
-    _carrerasCercanasSubscription = null;
     emit(
       CarreraEnCurso(
         event.carreraRef,
@@ -70,10 +85,11 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
               .toJson()
         ])
       });
-      Navigator.of(context).pushReplacement(
+      Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
           builder: (context) => const HomeScreen(),
         ),
+        (route) => false,
       );
       _carrerasOfertada.add({
         "id": event.carreraRef.id,
@@ -93,8 +109,8 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
     for (var element in _carrerasOfertada) {
       element['subscription'].cancel();
     }
-    if (_carrerasCercanasSubscription != null) {
-      _carrerasCercanasSubscription!.cancel();
+    if (_carreraListener?.carrerasCercanasSubscription != null) {
+      _carreraListener?.carrerasCercanasSubscription!.cancel();
     }
     return super.close();
   }
@@ -138,138 +154,5 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
     emit(CarreraEnEspera(carrera));
     Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => WaitingScreen(carreraRef: ref)));
-  }
-
-  int _carrerasCercanasCount = 0;
-
-  Future<PolylineResult> getPolyPoints(
-      LatLng location, LatLng destination) async {
-    PolylinePoints polylinePoints = PolylinePoints();
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      "AIzaSyAEE30voT1-ycMD3-cxpq2m4oJcKrpLeRA",
-      PointLatLng(location.latitude, location.longitude),
-      PointLatLng(destination.latitude, destination.longitude),
-    );
-    return result;
-  }
-
-  void _showModal(Carrera carrera,
-      DocumentReference<Map<String, dynamic>> carreraRef) async {
-    final polypoints = await getPolyPoints(carrera.inicio, carrera.destino);
-    final distance = calculateDistance(carrera.inicio, carrera.destino);
-    final location =
-        (context.read<PositionBloc>().state as PositionObtained).location;
-    final iconSize = distance < 5
-        ? distance > 3
-            ? 12.0
-            : 4.0
-        : 13.0;
-    final choferIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(size: Size(iconSize, iconSize)),
-        "assets/images/coches-en-el-mapa.png");
-
-    final aPoint = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(size: Size(iconSize, iconSize)),
-        "assets/images/pint-A-indicator.png");
-
-    final bPoint = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(size: Size(iconSize, iconSize)),
-        "assets/images/pint-B-indicator.png");
-
-    final iconPasajero = await FirebaseStorage.instance
-        .ref()
-        .child("${carrera.pasajeroId}/ProfilePhoto.jpg")
-        .getDownloadURL();
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => NuevaCarreraModal(
-          carrera: carrera,
-          carreraRef: carreraRef,
-          distance: distance,
-          choferIcon: choferIcon,
-          iconPasajero: NetworkImage(iconPasajero),
-          location: LatLng(location.latitude!, location.longitude!),
-          polypoints: polypoints,
-          aPoint: aPoint,
-          bPoint: bPoint,
-        ),
-      ),
-    );
-  }
-
-  void _handleSnapshot(QuerySnapshot<Map<String, dynamic>> val) async {
-    final ignoreList = (await (context.read<UserBloc>().state as UserLogged)
-        .documentReference
-        .get())['carrerasIgnoradas'];
-    final List<QueryDocumentSnapshot<Map<String, dynamic>>> carreras = [];
-    for (var e in val.docs) {
-      if (!((ignoreList as List).contains(e.id))) {
-        carreras.add(e);
-      }
-    }
-    if (carreras.isNotEmpty && carreras.length != _carrerasCercanasCount) {
-      for (var e in carreras) {
-        {
-          final x = Carrera.fromJson(e);
-          final distance = calculateDistance(
-            x.inicio,
-            LatLng(
-                (context.read<PositionBloc>().state as PositionObtained)
-                    .location
-                    .latitude!,
-                (context.read<PositionBloc>().state as PositionObtained)
-                    .location
-                    .longitude!),
-          );
-          if (distance <= 5) {
-            print(DateTime.now().difference(x.fecha).inMinutes);
-            if (DateTime.now().difference(x.fecha).inMinutes >= 2) {
-              (context.read<UserBloc>().state as UserLogged)
-                  .documentReference
-                  .update({
-                "carrerasIgnoradas": FieldValue.arrayUnion([e.id])
-              });
-              continue;
-            }
-            if (x.aceptada) {
-              (context.read<UserBloc>().state as UserLogged)
-                  .documentReference
-                  .update({
-                "carrerasIgnoradas": FieldValue.arrayUnion([e.id])
-              });
-              continue;
-            }
-            _carrerasCercanasCount = carreras.length;
-            _showModal(x, e.reference);
-            continue;
-          }
-          (context.read<UserBloc>().state as UserLogged)
-              .documentReference
-              .update({
-            "carrerasIgnoradas": FieldValue.arrayUnion([e.id])
-          });
-          continue;
-        }
-      }
-    }
-  }
-
-  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
-      _carrerasCercanasSubscription;
-
-  StreamSubscription<QuerySnapshot<Map<String, dynamic>>> _listenCollection() {
-    final collection =
-        FirebaseFirestore.instance.collection('carreras').snapshots();
-    return collection.listen(_handleSnapshot, onError: (err) {
-      _carrerasCercanasSubscription = _listenCollection();
-    });
-  }
-
-  void _handleListen(
-      ListenCarrerasEvent event, Emitter<CarreraState> emit) async {
-    context = event.context;
-    _carrerasCercanasSubscription = _listenCollection();
   }
 }

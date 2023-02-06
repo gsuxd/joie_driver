@@ -140,7 +140,7 @@ class Activos extends StatelessWidget {
   }
 
   Container item(BuildContext context, double price, String fecha, String title,
-      String state, Color color, String url_img) {
+      String state, Color color, String urlImg) {
     return Container(
       width: MediaQuery.of(context).size.width - 20,
       height: 94,
@@ -167,7 +167,7 @@ class Activos extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: Image.network(
-                  url_img,
+                  urlImg,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -325,7 +325,7 @@ class NoResults extends StatelessWidget {
   }
 
   Container item(BuildContext context, double price, String fecha, String title,
-      String state, Color color, String url_img, String rate) {
+      String state, Color color, String urlImg, String rate) {
     return Container(
       width: MediaQuery.of(context).size.width - 20,
       height: 92,
@@ -354,7 +354,7 @@ class NoResults extends StatelessWidget {
                       shape: BoxShape.circle,
                     ),
                     child: Image.network(
-                      url_img,
+                      urlImg,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -411,14 +411,14 @@ class NoResults extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Pedido()));
+                        MaterialPageRoute(builder: (context) => const Pedido()));
                   },
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
+                    backgroundColor: blue,
                     padding: const EdgeInsets.only(
                         top: 0.0, bottom: 0.0, left: 30.0, right: 30.0),
                     shadowColor: Colors.grey,
-                    primary: blue,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25.0),
                     ),
@@ -438,10 +438,10 @@ class NoResults extends StatelessWidget {
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
+                    backgroundColor: Colors.black38,
                     padding: const EdgeInsets.only(
                         top: 0.0, bottom: 0.0, left: 20.0, right: 20.0),
                     shadowColor: Colors.grey,
-                    primary: Colors.black38,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25.0),
                     ),

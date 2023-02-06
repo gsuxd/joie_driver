@@ -17,11 +17,17 @@ class PositionError extends PositionState {
   const PositionError(this.message);
 }
 
+class PositionGetted {
+  final double latitude;
+  final double longitude;
+  const PositionGetted(this.latitude, this.longitude);
+}
+
 class PositionObtained extends PositionState {
-  final LocationData location;
+  final PositionGetted location;
 
   const PositionObtained(this.location);
 
   @override
-  List<Object> get props => [location.latitude!, location.latitude!];
+  List<Object> get props => [location.latitude, location.latitude];
 }

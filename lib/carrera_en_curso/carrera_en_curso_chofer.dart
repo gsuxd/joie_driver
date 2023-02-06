@@ -43,24 +43,24 @@ class _CarreraEnCursoPageState extends State<CarreraEnCursoPage> {
   void _handlePositionState(PositionState state) async {
     if (state is PositionObtained) {
       final distanceA = calculateDistance(widget.carrera.inicio,
-          LatLng(state.location.latitude!, state.location.longitude!));
+          LatLng(state.location.latitude, state.location.longitude));
       final distanceB = calculateDistance(widget.carrera.destino,
-          LatLng(state.location.latitude!, state.location.longitude!));
+          LatLng(state.location.latitude, state.location.longitude));
       if (distanceA <= 0.010 && distanceB > 0.010) {
         _markerAIcon = null;
 
         _polylinePoints = await getPolypoints(
-            LatLng(state.location.latitude!, state.location.longitude!),
+            LatLng(state.location.latitude, state.location.longitude),
             widget.carrera.destino);
       } else {
         _polylinePoints = await getPolypoints(
-            LatLng(state.location.latitude!, state.location.longitude!),
+            LatLng(state.location.latitude, state.location.longitude),
             widget.carrera.inicio);
       }
       if (distanceB <= 0.010 && distanceA > 0.010) {
         _markerBIcon = null;
         _polylinePoints = await getPolypoints(
-            LatLng(state.location.latitude!, state.location.longitude!),
+            LatLng(state.location.latitude, state.location.longitude),
             widget.carrera.inicio);
       }
       setState(() {});
@@ -110,7 +110,7 @@ class _CarreraEnCursoPageState extends State<CarreraEnCursoPage> {
                     Marker(
                       markerId: const MarkerId("chofer"),
                       position: LatLng(
-                          state.location.latitude!, state.location.longitude!),
+                          state.location.latitude, state.location.longitude),
                       icon: _markerIcon!,
                     ),
                   if (_markerAIcon != null)
@@ -132,8 +132,8 @@ class _CarreraEnCursoPageState extends State<CarreraEnCursoPage> {
                 },
                 initialCameraPosition: CameraPosition(
                   zoom: 13.5,
-                  target: LatLng((state as PositionObtained).location.latitude!,
-                      (state).location.longitude!),
+                  target: LatLng((state as PositionObtained).location.latitude,
+                      (state).location.longitude),
                 ),
               ),
             );

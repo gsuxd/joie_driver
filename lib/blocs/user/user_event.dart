@@ -14,8 +14,3 @@ class LoginUserEvent extends UserEvent {
 }
 
 class RegisterUserEvent extends UserEvent {}
-
-class LogOutUserEvent extends UserEvent {
-  final BuildContext context;
-  LogOutUserEvent(this.context);
-}

@@ -1,17 +1,14 @@
+import 'package:joiedriver/home/home.dart';
 import 'package:joiedriver/pedidos.dart';
 import 'package:joiedriver/profile.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
-import 'package:geolocator/geolocator.dart';
 import 'GraphiStats.dart';
 import 'colors.dart';
-import 'mapa_principal.dart';
 
 class Statics extends StatefulWidget {
-  static const String routeName = '/Register';
-
   const Statics({Key? key}) : super(key: key);
-
+  static const String routeName = '/estadistica';
   @override
   createState() => _StaticsState();
 }
@@ -25,7 +22,6 @@ class _StaticsState extends State<Statics> {
   final double _bottomNavBarHeight = 80;
   late final ScrollListener _model =
       ScrollListener.initialise(_controller, _bottomNavBarHeight);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,7 +73,7 @@ class _StaticsState extends State<Statics> {
           textAlign: TextAlign.center,
         ),
         // Graficos
-        GraphicPie(),
+        const GraphicPie(),
         //Fin de Graficos
 
         item("Viajes de Hoy", 5),
@@ -144,23 +140,15 @@ class _StaticsState extends State<Statics> {
         children: [
           ElevatedButton(
             onPressed: () async {
-              Future<Position> coord = _determinePosition();
-              double longitude = await coord.then((value) => value.longitude);
-              double latitude = await coord.then((value) => value.latitude);
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MapaMenu(
-                            longitude: longitude,
-                            latitude: latitude,
-                          )));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_inicio,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_inicio,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -174,15 +162,15 @@ class _StaticsState extends State<Statics> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Pedidos()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Pedidos()));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_historial,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_historial,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -198,10 +186,10 @@ class _StaticsState extends State<Statics> {
             onPressed: () {},
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_ingresos,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_ingresos,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -217,15 +205,15 @@ class _StaticsState extends State<Statics> {
             onPressed: () {
               setState(() {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Profile()));
+                    MaterialPageRoute(builder: (context) => const Profile()));
               });
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
+              backgroundColor: color_icon_perfil,
               padding: const EdgeInsets.only(
                   top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
-              primary: color_icon_perfil,
               shape: const CircleBorder(),
             ),
             child: SvgPicture.asset(
@@ -237,32 +225,6 @@ class _StaticsState extends State<Statics> {
         ],
       ),
     );
-  }
-
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-    return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.bestForNavigation);
   }
 
   Padding item(String title, int count) {
