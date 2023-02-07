@@ -16,3 +16,8 @@ class RegretPictureCameraEvent extends CameraEvent {}
 class AcceptPictureCameraEvent extends CameraEvent {}
 
 class ChangeCameraEvent extends CameraEvent {}
+
+class RecoveredPictureCameraEvent extends CameraEvent {
+  final String path;
+  const RecoveredPictureCameraEvent(this.path);
+}

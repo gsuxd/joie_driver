@@ -38,10 +38,9 @@ class RegistroBloc extends Bloc<RegistroEvent, RegistroState> {
       InitializeRegistroEvent event, Emitter<RegistroState> emit) async {
     final prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey("userRegistroData")) {
-      // final parsed = RegistroData.fromJson(
-      //     jsonDecode(prefs.getString("userRegistroData")!));
-      // emit(ResumeRegistroState(parsed));
-      prefs.clear();
+      final parsed = RegistroData.fromJson(
+          jsonDecode(prefs.getString("userRegistroData")!));
+      emit(ResumeRegistroState(parsed));
       return;
     }
     final user = RegistroData(
@@ -102,16 +101,20 @@ class RegistroBloc extends Bloc<RegistroEvent, RegistroState> {
     return;
   }
 
+  ///Guarda Progreso y navega a la siguiente pantalla
   void _nextScreen(
       NextScreenRegistroEvent event, Emitter<RegistroState> emit) async {
     final prefs = await SharedPreferences.getInstance();
-    event.data.lastStep = event.page.toString();
+    event.data.lastStep = event.ctx.widget.toString();
     await prefs.setString("userRegistroData", jsonEncode(event.data.toJson()));
     emit(UpdateRegistroState(event.data));
     if (event.page.toString() == "loading") {
       event.ctx
           .read<RegistroBloc>()
           .add(EnviarRegistroEvent(event.ctx, event.data));
+      Navigator.of(event.ctx)
+          .pushReplacement(MaterialPageRoute(builder: (_) => event.page));
+      return;
     }
     Navigator.of(event.ctx).push(MaterialPageRoute(builder: (_) => event.page));
     return;

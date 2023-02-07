@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:camera/camera.dart';
 import 'package:equatable/equatable.dart';
@@ -11,6 +13,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     on<TakePictureCameraEvent>(_handleTakePicture);
     on<RegretPictureCameraEvent>(_handleRegret);
     on<ChangeCameraEvent>(_handleChangeCamera);
+    on<RecoveredPictureCameraEvent>(_handleRecover);
   }
   CameraController? controller;
   @override
@@ -21,9 +24,15 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
 
   CameraLensDirection _direction = CameraLensDirection.back;
 
+  void _handleRecover(
+      RecoveredPictureCameraEvent event, Emitter<CameraState> emit) async {
+    final XFile picture = XFile(event.path);
+    emit(PictureTakedCameraState(picture));
+  }
+
   void _handleChangeCamera(
       ChangeCameraEvent event, Emitter<CameraState> emit) async {
-    emit(CameraInitial());
+    emit(LoadingCameraState());
     final _cameras = await availableCameras();
     switch (_direction) {
       case CameraLensDirection.back:
@@ -71,6 +80,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
 
   void _handleInitialize(
       InitializeCameraEvent event, Emitter<CameraState> emit) async {
+    emit(LoadingCameraState());
     final _cameras = await availableCameras();
     controller = CameraController(_cameras[0], ResolutionPreset.max);
     await controller?.initialize().then((val) {

@@ -46,21 +46,23 @@ class BodyE extends State<Body> {
             SizedBox(
               height: SizeConfig.screenHeight * 0.03,
             ),
-            CameraView(onSuccess: (picture) async {
-              try {
-                data?.photoPerfil = File(picture.path);
-                context.read<RegistroBloc>().add(
-                    NextScreenRegistroEvent(context, const Cedula(), data!));
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      e.toString(),
-                    ),
-                  ),
-                );
-              }
-            }),
+            CameraView(
+                condition: data?.photoPerfil,
+                onSuccess: (picture) async {
+                  try {
+                    data?.photoPerfil = File(picture.path);
+                    context.read<RegistroBloc>().add(NextScreenRegistroEvent(
+                        context, const Cedula(), data!));
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          e.toString(),
+                        ),
+                      ),
+                    );
+                  }
+                }),
             SizedBox(
               height: SizeConfig.screenHeight * 0.05,
             ),

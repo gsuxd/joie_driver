@@ -14,6 +14,8 @@ class InitializedCameraState extends CameraState {
   const InitializedCameraState(this.controller);
 }
 
+class LoadingCameraState extends CameraState {}
+
 class PictureTakedCameraState extends CameraState {
   final XFile picture;
   const PictureTakedCameraState(this.picture);
