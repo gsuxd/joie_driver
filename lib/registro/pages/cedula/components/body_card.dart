@@ -1,15 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joiedriver/camera/bloc/camera_bloc.dart';
 import 'package:joiedriver/camera/camera_preview.dart';
-import 'package:joiedriver/components/default_button_emprendedor.dart';
 import 'package:joiedriver/conts.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:joiedriver/registro/bloc/registro_bloc.dart';
 import 'package:joiedriver/registro/bloc/registro_data.dart';
 import 'package:joiedriver/size_config.dart';
 import '../../cedulaAlreves/cedula_alreves.dart';
-import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class Body extends StatefulWidget {
@@ -37,7 +34,7 @@ class _Body extends State<Body> {
         child: Column(
           children: [
             SizedBox(
-              height: SizeConfig.screenHeight * 0.03,
+              height: SizeConfig.screenHeight * 0.007,
             ),
             Text(
               'Fotografía Frontal  de tu Cédula',
@@ -45,23 +42,25 @@ class _Body extends State<Body> {
               textAlign: TextAlign.center,
             ),
             SizedBox(
-              height: SizeConfig.screenHeight * 0.05,
+              height: SizeConfig.screenHeight * 0.03,
             ),
-            CameraView(onSuccess: (picture) async {
-              try {
-                data?.cedula = File(picture.path);
-                context.read<RegistroBloc>().add(
-                    NextScreenRegistroEvent(context, const CedulaR(), data!));
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      e.toString(),
-                    ),
-                  ),
-                );
-              }
-            }),
+            CameraView(
+                condition: data?.cedula,
+                onSuccess: (picture) async {
+                  try {
+                    data?.cedula = File(picture.path);
+                    context.read<RegistroBloc>().add(NextScreenRegistroEvent(
+                        context, const CedulaR(), data!));
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          e.toString(),
+                        ),
+                      ),
+                    );
+                  }
+                }),
           ],
         ),
       ),

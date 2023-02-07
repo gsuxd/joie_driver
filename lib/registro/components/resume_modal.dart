@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joiedriver/conts.dart';
+import 'package:joiedriver/registro/bloc/registro_enums.dart';
 
 import '../bloc/registro_bloc.dart';
 
 class ResumeModal extends StatelessWidget {
-  const ResumeModal({Key? key}) : super(key: key);
+  const ResumeModal({Key? key, required this.userType}) : super(key: key);
+  final UserType userType;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +59,9 @@ class ResumeModal extends StatelessWidget {
                       ),
                       ElevatedButton.icon(
                         onPressed: () {
+                          context
+                              .read<RegistroBloc>()
+                              .add(InitializeRegistroEvent(userType, context));
                           Navigator.of(context).pop();
                         },
                         icon: const Icon(

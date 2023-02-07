@@ -41,6 +41,7 @@ class RegistroBloc extends Bloc<RegistroEvent, RegistroState> {
       final parsed = RegistroData.fromJson(
           jsonDecode(prefs.getString("userRegistroData")!));
       emit(ResumeRegistroState(parsed));
+      prefs.clear();
       return;
     }
     final user = RegistroData(

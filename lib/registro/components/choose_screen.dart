@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:joiedriver/colors.dart';
 import 'package:joiedriver/registro/bloc/registro_enums.dart';
 import 'package:joiedriver/registro/components/resume_modal.dart';
 
@@ -17,16 +16,8 @@ class ChooseScreen extends StatelessWidget {
       //Hacemos un ListView en caso de que la pantalla tenga poco alto (como por ejemplo cuando el cel esta en horizontal)
       body: ListView(
         children: [
-          BlocListener<RegistroBloc, RegistroState>(
-            listener: (context, state) {
-              if (state is ResumeRegistroState) {
-                showModalBottomSheet(
-                    backgroundColor: Colors.transparent,
-                    context: context,
-                    builder: (_) => const ResumeModal());
-              }
-            },
-            child: Column(
+          BlocBuilder<RegistroBloc, RegistroState>(
+            builder: (context, state) => Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -67,6 +58,15 @@ class ChooseScreen extends StatelessWidget {
                 ),
                 _SelectType(
                     action: () {
+                      if (state is ResumeRegistroState) {
+                        showModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            context: context,
+                            builder: (_) => const ResumeModal(
+                                  userType: UserType.chofer,
+                                ));
+                        return;
+                      }
                       context.read<RegistroBloc>().add(
                           InitializeRegistroEvent(UserType.chofer, context));
                     },
@@ -74,6 +74,15 @@ class ChooseScreen extends StatelessWidget {
                     text: "Conductor"),
                 _SelectType(
                     action: () {
+                      if (state is ResumeRegistroState) {
+                        showModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            context: context,
+                            builder: (_) => const ResumeModal(
+                                  userType: UserType.pasajero,
+                                ));
+                        return;
+                      }
                       context.read<RegistroBloc>().add(
                           InitializeRegistroEvent(UserType.pasajero, context));
                     },
@@ -82,6 +91,16 @@ class ChooseScreen extends StatelessWidget {
 
                 _SelectType(
                     action: () {
+                      if (state is ResumeRegistroState) {
+                        showModalBottomSheet(
+                            isDismissible: false,
+                            backgroundColor: Colors.transparent,
+                            context: context,
+                            builder: (_) => const ResumeModal(
+                                  userType: UserType.emprendedor,
+                                ));
+                        return;
+                      }
                       context.read<RegistroBloc>().add(InitializeRegistroEvent(
                           UserType.emprendedor, context));
                     },

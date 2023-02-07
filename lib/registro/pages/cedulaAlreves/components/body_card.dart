@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:joiedriver/camera/bloc/camera_bloc.dart';
 import 'package:joiedriver/camera/camera_preview.dart';
-import 'package:joiedriver/components/default_button_emprendedor.dart';
 import 'package:joiedriver/conts.dart';
 import 'package:joiedriver/registro/bloc/registro_data.dart';
 import 'package:joiedriver/registro/bloc/registro_enums.dart';
@@ -41,7 +38,7 @@ class _Body extends State<Body> {
         child: Column(
           children: [
             SizedBox(
-              height: SizeConfig.screenHeight * 0.02,
+              height: SizeConfig.screenHeight * 0.007,
             ),
             Text(
               'Fotografía Trasera de tu Cédula',
@@ -49,35 +46,34 @@ class _Body extends State<Body> {
               textAlign: TextAlign.center,
             ),
             SizedBox(
-              height: SizeConfig.screenHeight * 0.05,
+              height: SizeConfig.screenHeight * 0.03,
             ),
-            CameraView(onSuccess: (picture) async {
-              try {
-                data?.cedulaR = File(picture.path);
-                Widget page;
-                switch (data?.type) {
-                  case UserType.chofer:
-                    page = const Licencia();
-                    break;
-                  case UserType.emprendedor:
-                    page = const Licencia();
-                    break;
-                  default:
-                    page = const LoadingPage();
-                }
-                context
-                    .read<RegistroBloc>()
-                    .add(NextScreenRegistroEvent(context, page, data!));
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      e.toString(),
-                    ),
-                  ),
-                );
-              }
-            }),
+            CameraView(
+                condition: data?.cedulaR,
+                onSuccess: (picture) async {
+                  try {
+                    data?.cedulaR = File(picture.path);
+                    Widget page;
+                    switch (data?.type) {
+                      case UserType.chofer:
+                        page = const Licencia();
+                        break;
+                      default:
+                        page = const LoadingPage();
+                    }
+                    context
+                        .read<RegistroBloc>()
+                        .add(NextScreenRegistroEvent(context, page, data!));
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          e.toString(),
+                        ),
+                      ),
+                    );
+                  }
+                }),
           ],
         ),
       ),
