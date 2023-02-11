@@ -104,8 +104,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             userSnapshot = value.reference;
             emit(UserLogged(u, value.reference));
             prefs.setString("user", jsonEncode(u.toJson()));
-            Navigator.of(event.context).pushReplacement(
-                MaterialPageRoute(builder: (_) => const HomeScreen()));
+            Navigator.of(event.context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const HomeScreen()),
+                (route) => false);
             return;
           } else {
             await FirebaseFirestore.instance

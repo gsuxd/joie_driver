@@ -110,9 +110,6 @@ class RegistroBloc extends Bloc<RegistroEvent, RegistroState> {
     await prefs.setString("userRegistroData", jsonEncode(event.data.toJson()));
     emit(UpdateRegistroState(event.data));
     if (event.page.toString() == "loading") {
-      event.ctx
-          .read<RegistroBloc>()
-          .add(EnviarRegistroEvent(event.ctx, event.data));
       Navigator.of(event.ctx)
           .pushReplacement(MaterialPageRoute(builder: (_) => event.page));
       return;

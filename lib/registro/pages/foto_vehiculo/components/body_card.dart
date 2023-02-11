@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:joiedriver/camera/bloc/camera_bloc.dart';
 import 'package:joiedriver/camera/camera_preview.dart';
 import 'package:joiedriver/conts.dart';
 import 'package:flutter/material.dart';
@@ -26,29 +27,32 @@ class _Body extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: Column(
-        children: [
-          SizedBox(
-            height: SizeConfig.screenHeight * 0.007,
-          ),
-          Text(
-            'Toma una foto de tu Vehículo',
-            style: heading2,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(
-            height: SizeConfig.screenHeight * 0.03,
-          ),
-          CameraView(
-              condition: data?.registroDataVehiculo?.documentVehicle,
-              onSuccess: (file) async {
-                data?.registroDataVehiculo?.documentVehicle = File(file.path);
-                context.read<RegistroBloc>().add(NextScreenRegistroEvent(
-                    context, const Antecedentes(), data!));
-              }),
-        ],
+    return BlocProvider(
+      create: (context) => CameraBloc()..add(InitializeCameraEvent()),
+      child: SizedBox(
+        width: double.infinity,
+        child: Column(
+          children: [
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.007,
+            ),
+            Text(
+              'Toma una foto de tu Vehículo',
+              style: heading2,
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.03,
+            ),
+            CameraView(
+                condition: data?.registroDataVehiculo?.documentVehicle,
+                onSuccess: (file) async {
+                  data?.registroDataVehiculo?.documentVehicle = File(file.path);
+                  context.read<RegistroBloc>().add(NextScreenRegistroEvent(
+                      context, const Antecedentes(), data!));
+                }),
+          ],
+        ),
       ),
     );
   }

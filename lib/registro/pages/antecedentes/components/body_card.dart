@@ -1,5 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:joiedriver/camera/bloc/camera_bloc.dart';
 import 'package:joiedriver/camera/camera_preview.dart';
+import 'package:joiedriver/components/default_button.dart';
 import 'package:joiedriver/conts.dart';
 import 'package:flutter/material.dart';
 import 'package:joiedriver/registro/bloc/registro_bloc.dart';
@@ -30,29 +32,44 @@ class _Body extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: Column(
-        children: [
-          SizedBox(
-            height: SizeConfig.screenHeight * 0.03,
-          ),
-          Text(
-            'Adjunta tus antescedentes Penales (Opcional)',
-            style: heading2,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(
-            height: SizeConfig.screenHeight * 0.05,
-          ),
-          CameraView(
-              condition: data?.documentAntecedentes,
-              onSuccess: (file) async {
-                data?.documentAntecedentes = File(file.path);
-                context.read<RegistroBloc>().add(NextScreenRegistroEvent(
-                    context, const LoadingPage(), data!));
-              }),
-        ],
+    return BlocProvider(
+      create: (context) => CameraBloc()..add(InitializeCameraEvent()),
+      child: SizedBox(
+        width: double.infinity,
+        child: Column(
+          children: [
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.03,
+            ),
+            Text(
+              'Adjunta tus antescedentes Penales (Opcional)',
+              style: heading2,
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: SizeConfig.screenHeight * 0.05,
+            ),
+            CameraView(
+                condition: data?.documentAntecedentes,
+                onSuccess: (file) async {
+                  data?.documentAntecedentes = File(file.path);
+                  context.read<RegistroBloc>().add(NextScreenRegistroEvent(
+                      context, const LoadingPage(), data!));
+                }),
+            const SizedBox(
+              height: 100,
+            ),
+            SizedBox(
+              width: 200,
+              child: ButtonDef(
+                  text: 'Siguiente',
+                  press: () {
+                    context.read<RegistroBloc>().add(NextScreenRegistroEvent(
+                        context, const LoadingPage(), data!));
+                  }),
+            )
+          ],
+        ),
       ),
     );
   }
