@@ -1,15 +1,53 @@
 import 'dart:convert';
 import 'dart:isolate';
+import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geocoding/geocoding.dart' hide Location;
 import 'package:geolocator/geolocator.dart';
 import 'package:joiedriver/helpers/get_user_collection.dart';
 import 'package:joiedriver/singletons/user_data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class PositionService {
+  static Future<void> _sendData(
+      Position value, DocumentReference<Object?> userRef) async {
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(value.latitude, value.longitude);
+    var first = placemarks.first;
+    await userRef.update({
+      "location": {"latitude": value.latitude, "longitude": value.longitude},
+      "city": first.locality,
+    });
+  }
+
+  @pragma('vm:entry-point')
+  static void initializeBackground(ServiceInstance instance) async {
+    DartPluginRegistrant.ensureInitialized();
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    final SharedPreferences _prefs = await SharedPreferences.getInstance();
+    final user = UserData.fromJson(jsonDecode(_prefs.getString('user')!));
+    try {
+      CollectionReference collection = getUserCollection(user.type);
+
+      final userRef = collection.doc(user.email);
+      await for (final value in Geolocator.getPositionStream()) {
+        await _sendData(value, userRef);
+        instance.invoke('positionUpdate', {
+          'latitude': value.latitude,
+          'longitude': value.longitude,
+        });
+      }
+    } catch (e) {
+      instance.invoke('positionUpdate', {"error": e.toString()});
+      return;
+    }
+  }
+
   @pragma('vm:entry-point')
   static void initialize(args) async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -21,16 +59,7 @@ abstract class PositionService {
 
       final userRef = collection.doc(user.email);
       await for (final value in Geolocator.getPositionStream()) {
-        List<Placemark> placemarks =
-            await placemarkFromCoordinates(value.latitude, value.longitude);
-        var first = placemarks.first;
-        await userRef.update({
-          "location": {
-            "latitude": value.latitude,
-            "longitude": value.longitude
-          },
-          "city": first.locality,
-        });
+        await _sendData(value, userRef);
         port.send({
           'latitude': value.latitude,
           'longitude': value.longitude,

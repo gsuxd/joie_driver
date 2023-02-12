@@ -1,15 +1,16 @@
 import 'dart:async';
-import 'dart:isolate';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_isolate/flutter_isolate.dart';
+import 'package:get_it/get_it.dart';
 import 'package:joiedriver/blocs/carrera/carrera_listener.dart';
 import 'package:joiedriver/blocs/user/user_bloc.dart';
 import 'package:joiedriver/carrera_en_curso/bloc/carrera_en_curso_bloc.dart';
 import 'package:joiedriver/carrera_en_curso/carrera_en_curso_chofer.dart';
 import 'package:joiedriver/home/home.dart';
+import 'package:joiedriver/main.dart';
 import 'package:joiedriver/solicitar_carrera/pages/waiting_screen.dart';
 import 'carrera_model.dart';
 
@@ -28,24 +29,48 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
       ListenCarrerasEvent event, Emitter<CarreraState> emit) async {
     if (_isRunnin) return;
     context = event.context;
-    final ReceivePort port = ReceivePort("Listening trips");
-    final isolate = await FlutterIsolate.spawn(
-        CarreraListener.handleListen, [port.sendPort]);
+    final service = GetIt.I.get<FlutterBackgroundService>();
     _isRunnin = true;
-    await for (final message in port.asBroadcastStream()) {
-      if (message["error"] != null) {
-        _isRunnin = false;
-        isolate.kill(priority: Isolate.immediate);
-        return;
-      }
-      CarreraListener.showModal(
-          Carrera.fromJson(message["carrera"]), message["reference"], context);
-    }
+    _tripsListener = service.on('newTrip').listen((message) {
+      CarreraListener.showModal(Carrera.fromJson(message!["carrera"]),
+          FirebaseFirestore.instance.doc(message["reference"]), context);
+    });
+    _tripsListener = service.on('tripError').listen((message) {
+      message;
+      _isRunnin = false;
+      _handleListen(event, emit);
+    });
+    _ofertadosListener = service.on('tripAccepted').listen((message) {
+      MyApp.navigatorKey.currentState!.pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => CarreraEnCursoBloc(),
+            child: CarreraEnCursoPage(
+              carreraRef: FirebaseFirestore.instance.doc(message!['reference']),
+              carrera: Carrera.fromJson(message['carrera']),
+            ),
+          ),
+        ),
+      );
+    });
   }
 
+  StreamSubscription<Map<String, dynamic>?>? _tripsListener;
+  StreamSubscription<Map<String, dynamic>?>? _errorListener;
+  StreamSubscription<Map<String, dynamic>?>? _ofertadosListener;
   bool _isRunnin = false;
   late BuildContext context;
-  CarreraListener? _carreraListener;
+
+  @override
+  Future<void> close() async {
+    for (var element in _carrerasOfertada) {
+      element['subscription'].cancel();
+    }
+    _tripsListener?.cancel();
+    _errorListener?.cancel();
+    _ofertadosListener?.cancel();
+    return super.close();
+  }
 
   void _handleAceptarOferta(
       AceptarOfertaEvent event, Emitter<CarreraState> emit) async {
@@ -91,11 +116,6 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
         ),
         (route) => false,
       );
-      _carrerasOfertada.add({
-        "id": event.carreraRef.id,
-        "subscription":
-            event.carreraRef.snapshots().listen(_handleSnapshotOferta)
-      });
     } catch (e) {
       e;
     }
@@ -103,17 +123,6 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
   }
 
   final List<Map<String, dynamic>> _carrerasOfertada = [];
-
-  @override
-  Future<void> close() async {
-    for (var element in _carrerasOfertada) {
-      element['subscription'].cancel();
-    }
-    if (_carreraListener?.carrerasCercanasSubscription != null) {
-      _carreraListener?.carrerasCercanasSubscription!.cancel();
-    }
-    return super.close();
-  }
 
   void _handleSnapshotOferta(DocumentSnapshot<Map<String, dynamic>> e) {
     final carrera = Carrera.fromJson(e.data());

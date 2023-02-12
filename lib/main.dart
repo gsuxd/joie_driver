@@ -1,7 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get_it/get_it.dart';
 import 'package:joiedriver/blocs/markers/markers_bloc.dart';
 import 'package:joiedriver/blocs/position/position_bloc.dart';
 import 'package:joiedriver/blocs/user/user_bloc.dart';
@@ -15,14 +17,14 @@ import 'blocs/carrera/carrera_bloc.dart';
 import 'generated/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'notifications/notification_controller.dart';
 import 'sign_in/log_in.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   Firebase.initializeApp().then((value) async {
     final _prefs = await SharedPreferences.getInstance();
+    final service = FlutterBackgroundService();
+    GetIt.I.registerSingleton<FlutterBackgroundService>(service);
     runApp(ProviderScope(
       child: MultiBlocProvider(
         providers: [
@@ -47,24 +49,11 @@ Future<void> main() async {
   });
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    NotificationController.initializeLocalNotifications();
-    NotificationController.startListeningNotificationEvents();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

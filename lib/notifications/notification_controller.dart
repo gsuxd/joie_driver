@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:joiedriver/blocs/carrera/carrera_listener.dart';
+import 'package:joiedriver/blocs/carrera/carrera_model.dart';
 
 import '../main.dart';
 
@@ -37,29 +41,39 @@ class NotificationController {
   ///     NOTIFICATION EVENTS LISTENER
   ///  *********************************************
   ///  Notifications events are only delivered after call this method
-  static Future<void> startListeningNotificationEvents() async {
-    AwesomeNotifications()
-        .setListeners(onActionReceivedMethod: onActionReceivedMethod);
+  /// Use this method to detect when a new notification or a schedule is created
+  @pragma("vm:entry-point")
+  static Future<void> onNotificationCreatedMethod(
+      ReceivedNotification receivedNotification) async {
+    // Your code goes here
   }
 
-  ///  *********************************************
-  ///     NOTIFICATION EVENTS
-  ///  *********************************************
-  ///
-  @pragma('vm:entry-point')
+  /// Use this method to detect every time that a new notification is displayed
+  @pragma("vm:entry-point")
+  static Future<void> onNotificationDisplayedMethod(
+      ReceivedNotification receivedNotification) async {
+    // Your code goes here
+  }
+
+  /// Use this method to detect if the user dismissed a notification
+  @pragma("vm:entry-point")
+  static Future<void> onDismissActionReceivedMethod(
+      ReceivedAction receivedAction) async {
+    // Your code goes here
+  }
+
+  /// Use this method to detect when the user taps on a notification or action button
+  @pragma("vm:entry-point")
   static Future<void> onActionReceivedMethod(
       ReceivedAction receivedAction) async {
-    if (receivedAction.actionType == ActionType.SilentAction ||
-        receivedAction.actionType == ActionType.SilentBackgroundAction) {
-      // For background actions, you must hold the execution until the end
-      print(
-          'Message sent via notification input: "${receivedAction.buttonKeyInput}"');
-    } else {
-      MyApp.navigatorKey.currentState?.pushNamedAndRemoveUntil(
-          '/modal',
-          (route) =>
-              (route.settings.name != '/notification-page') || route.isFirst,
-          arguments: receivedAction);
+    switch (receivedAction.payload!['event']) {
+      case 'newTrip':
+        CarreraListener.showBackgroundModal(
+            Carrera.fromJson(jsonDecode(receivedAction.payload!['carrera']!)),
+            receivedAction.payload!['carreraRef']!,
+            MyApp.navigatorKey);
+        break;
+      default:
     }
   }
 
@@ -91,8 +105,7 @@ class NotificationController {
                   ],
                 ),
                 const SizedBox(height: 20),
-                const Text(
-                    'Allow Awesome Notifications to send you beautiful notifications!'),
+                const Text('Permite el acceso a las notificaciones'),
               ],
             ),
             actions: [
@@ -101,7 +114,7 @@ class NotificationController {
                     Navigator.of(ctx).pop();
                   },
                   child: Text(
-                    'Deny',
+                    'Denegar',
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge
@@ -113,7 +126,7 @@ class NotificationController {
                     Navigator.of(ctx).pop();
                   },
                   child: Text(
-                    'Allow',
+                    'Permitir',
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge
