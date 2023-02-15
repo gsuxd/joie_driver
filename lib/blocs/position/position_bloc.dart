@@ -1,12 +1,15 @@
 import 'dart:convert';
+import 'dart:isolate';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get_it/get_it.dart';
+import 'package:joiedriver/services/position_service.dart';
 import 'package:joiedriver/services/services_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,40 +35,51 @@ class PositionBloc extends Bloc<PositionEvent, PositionState> {
       if (!(await AwesomeNotifications().isNotificationAllowed())) {
         await AwesomeNotifications().requestPermissionToSendNotifications();
       }
+      ReceivePort port;
       if (!_backgroundShooted) {
-        await service.configure(
-            iosConfiguration: IosConfiguration(autoStart: true),
-            androidConfiguration: AndroidConfiguration(
-              autoStartOnBoot: true,
-              autoStart: true,
-              initialNotificationContent:
-                  'Joie Driver esta trabajando en segundo plano',
-              initialNotificationTitle: 'Joie Driver',
-              isForegroundMode: true,
-              onStart: ServicesManager.initialize,
-            ));
-        _backgroundShooted = true;
-      }
-      if (jsonDecode(_prefs.getString('user')!)['type'] == 'chofer') {
-        event.context
-            .read<CarreraBloc>()
-            .add(ListenCarrerasEvent(event.context));
-      }
-      await for (final message in service.on('positionUpdate')) {
-        if (message!["error"] != null) {
-          emit(
-            PositionError(
-              message["error"],
-            ),
-          );
-          return;
+        if (jsonDecode(_prefs.getString('user')!)['type'] == 'chofer') {
+          await service.configure(
+              iosConfiguration: IosConfiguration(autoStart: true),
+              androidConfiguration: AndroidConfiguration(
+                autoStartOnBoot: true,
+                autoStart: true,
+                initialNotificationContent:
+                    'Joie Driver esta trabajando en segundo plano',
+                initialNotificationTitle: 'Joie Driver',
+                isForegroundMode: true,
+                onStart: ServicesManager.initialize,
+              ));
+          event.context
+              .read<CarreraBloc>()
+              .add(ListenCarrerasEvent(event.context));
+          _backgroundShooted = true;
+          await _listenPorts(service.on('positionUpdate'), emit);
+        } else {
+          port = ReceivePort('positionUpdates');
+          await FlutterIsolate.spawn(
+              PositionService.initialize, [port.sendPort]);
+          _backgroundShooted = true;
+          await _listenPorts(port.asBroadcastStream(), emit);
         }
-        emit(PositionObtained(
-            PositionGetted(message["latitude"], message["longitude"])));
-        return;
       }
     } catch (e) {
       emit(PositionError(e.toString()));
+    }
+  }
+
+  Future<void> _listenPorts(Stream stream, Emitter<PositionState> emit) async {
+    await for (final message in stream) {
+      if (message!["error"] != null) {
+        emit(
+          PositionError(
+            message["error"],
+          ),
+        );
+        return;
+      }
+      emit(PositionObtained(
+          PositionGetted(message["latitude"], message["longitude"])));
+      return;
     }
   }
 }

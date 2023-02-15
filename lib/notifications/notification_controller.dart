@@ -14,6 +14,7 @@ class NotificationController {
   ///     INITIALIZATIONS
   ///  *********************************************
   ///
+  @pragma("vm:entry-point")
   static Future<void> initializeLocalNotifications() async {
     await AwesomeNotifications().initialize(
         null, //'resource://drawable/res_app_icon',//
@@ -139,7 +140,12 @@ class NotificationController {
         await AwesomeNotifications().requestPermissionToSendNotifications();
   }
 
-  static Future<void> createNewNotification(Map<String, dynamic>? data) async {
+  @pragma("vm:entry-point")
+  static Future<void> createNewNotification(
+      {required String title,
+      required String body,
+      required String channelKey,
+      required Map<String, String> payload}) async {
     bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
     if (!isAllowed) isAllowed = await displayNotificationRationale();
     if (!isAllowed) return;
@@ -147,29 +153,11 @@ class NotificationController {
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
           id: -1, // -1 is replaced by a random number
-          channelKey: 'newTrips',
-          title: 'Huston! The eagle has landed!',
-          body:
-              "A small step for a man, but a giant leap to Flutter's community!",
-          bigPicture: 'https://storage.googleapis.com/cms-storage-bucket/d406c736e7c4c57f5f61.png',
-          largeIcon: 'https://storage.googleapis.com/cms-storage-bucket/0dbfcc7a59cd1cf16282.png',
+          channelKey: channelKey,
+          title: title,
+          body: body,
           //'asset://assets/images/balloons-in-sky.jpg',
-          notificationLayout: NotificationLayout.BigPicture,
-          payload: {'notificationId': '1234567890'}),
-      actionButtons: [
-        NotificationActionButton(key: 'REDIRECT', label: 'Redirect'),
-        NotificationActionButton(
-            key: 'REPLY',
-            label: 'Reply Message',
-            requireInputText: true,
-            actionType: ActionType.SilentAction),
-        NotificationActionButton(
-          key: 'DISMISS',
-          label: 'Dismiss',
-          actionType: ActionType.DismissAction,
-          isDangerousOption: true,
-        ),
-      ],
+          payload: payload),
     );
   }
 

@@ -5,9 +5,12 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:joiedriver/blocs/carrera/carrera_model.dart';
 import 'package:joiedriver/blocs/position/position_bloc.dart';
+import 'package:joiedriver/blocs/user/user_bloc.dart';
 import 'package:joiedriver/carrera_cancelada/carrera_cancelada_chofer.dart';
 import 'package:joiedriver/helpers/calculate_distance.dart';
 import 'package:joiedriver/helpers/get_polyline_points.dart';
+import 'package:joiedriver/home/home.dart';
+import 'package:joiedriver/main.dart';
 
 import 'bloc/carrera_en_curso_bloc.dart';
 
@@ -98,48 +101,62 @@ class _CarreraEnCursoPageState extends State<CarreraEnCursoPage> {
                 if (state is PositionLoading) {
                   return const CircularProgressIndicator();
                 }
-                return GoogleMap(
-                  polylines: {
-                    Polyline(
-                      polylineId: const PolylineId("polyline"),
-                      points: _polylinePoints.points
-                          .map((e) => LatLng(e.latitude, e.longitude))
-                          .toList(),
-                      color: Colors.blue,
-                      width: 5,
-                    )
-                  },
-                  markers: {
-                    if (_markerIcon != null && state is PositionObtained)
-                      Marker(
-                        markerId: const MarkerId("chofer"),
-                        position: LatLng(
-                            state.location.latitude, state.location.longitude),
-                        icon: _markerIcon!,
+                return Stack(
+                  children: [
+                    GoogleMap(
+                      polylines: {
+                        Polyline(
+                          polylineId: const PolylineId("polyline"),
+                          points: _polylinePoints.points
+                              .map((e) => LatLng(e.latitude, e.longitude))
+                              .toList(),
+                          color: Colors.blue,
+                          width: 5,
+                        )
+                      },
+                      markers: {
+                        if (_markerIcon != null && state is PositionObtained)
+                          Marker(
+                            markerId: const MarkerId("chofer"),
+                            position: LatLng(state.location.latitude,
+                                state.location.longitude),
+                            icon: _markerIcon!,
+                          ),
+                        if (_markerAIcon != null)
+                          Marker(
+                              markerId: const MarkerId("A Point"),
+                              icon: _markerAIcon!,
+                              position: (context
+                                      .read<CarreraEnCursoBloc>()
+                                      .state as CarreraEnCursoChofer)
+                                  .carrera
+                                  .inicio),
+                        if (_markerBIcon != null)
+                          Marker(
+                              markerId: const MarkerId("B Point"),
+                              icon: _markerBIcon!,
+                              position: (context
+                                      .read<CarreraEnCursoBloc>()
+                                      .state as CarreraEnCursoChofer)
+                                  .carrera
+                                  .destino)
+                      },
+                      initialCameraPosition: CameraPosition(
+                        zoom: 15,
+                        target: LatLng(
+                            (state as PositionObtained).location.latitude,
+                            (state).location.longitude),
                       ),
-                    if (_markerAIcon != null)
-                      Marker(
-                          markerId: const MarkerId("A Point"),
-                          icon: _markerAIcon!,
-                          position: (context.read<CarreraEnCursoBloc>().state
-                                  as CarreraEnCursoChofer)
-                              .carrera
-                              .inicio),
-                    if (_markerBIcon != null)
-                      Marker(
-                          markerId: const MarkerId("B Point"),
-                          icon: _markerBIcon!,
-                          position: (context.read<CarreraEnCursoBloc>().state
-                                  as CarreraEnCursoChofer)
-                              .carrera
-                              .destino)
-                  },
-                  initialCameraPosition: CameraPosition(
-                    zoom: 13.5,
-                    target: LatLng(
-                        (state as PositionObtained).location.latitude,
-                        (state).location.longitude),
-                  ),
+                    ),
+                    Positioned(
+                        bottom: 20,
+                        child: ElevatedButton(
+                            onPressed: () async {
+                              await widget.carreraRef
+                                  .update({'finalizada': true});
+                            },
+                            child: const Text('Mark as finished')))
+                  ],
                 );
               },
             );
