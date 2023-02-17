@@ -13,6 +13,7 @@ import 'package:joiedriver/registro/bloc/registro_data.dart';
 import 'package:joiedriver/registro/pages/datos_bancos/datos_banco.dart';
 import 'package:joiedriver/registro/bloc/registro_bloc.dart';
 import 'package:joiedriver/registro/bloc/registro_enums.dart';
+import 'package:joiedriver/registro/pages/datos_vehiculo/datos_vehiculo.dart';
 import 'package:joiedriver/size_config.dart';
 
 import '../../profile_photo/profile_photo.dart';
@@ -152,6 +153,9 @@ class _RegistroFormState extends State<RegistroForm> {
                           switch (data.type) {
                             case UserType.pasajero:
                               nextPage = const ProfilePhoto();
+                              break;
+                            case UserType.chofer:
+                              nextPage = const DatosVehiculo();
                               break;
                             default:
                               nextPage = const DatosBanco();
