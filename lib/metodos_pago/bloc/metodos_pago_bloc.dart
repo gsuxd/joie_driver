@@ -46,7 +46,6 @@ class MetodoPagoBloc extends Bloc<MetodoPagoEvent, MetodoPagoState> {
     try {
       emit(MetodoPagoLoaded(MetodoPago.fromJson(metodoPago)));
     } catch (e) {
-      print(e);
       emit(MetodoPagoInitial());
     }
   }

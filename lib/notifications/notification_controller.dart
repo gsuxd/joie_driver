@@ -51,9 +51,6 @@ class NotificationController {
       ReceivedAction receivedAction) async {
     if (receivedAction.actionType == ActionType.SilentAction ||
         receivedAction.actionType == ActionType.SilentBackgroundAction) {
-      // For background actions, you must hold the execution until the end
-      print(
-          'Message sent via notification input: "${receivedAction.buttonKeyInput}"');
     } else {
       MyApp.navigatorKey.currentState?.pushNamedAndRemoveUntil(
           '/modal',

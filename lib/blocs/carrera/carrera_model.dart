@@ -1,4 +1,5 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:joiedriver/singletons/carro_data.dart';
 
 class Oferta {
   final String chofer;
@@ -38,6 +39,7 @@ class Carrera {
   final String pasajeroId;
   final int numeroPasajeros;
   final String metodoPago;
+  final VehicleType? tipoVehiculo;
   final double precioOfertado;
   final bool aceptada;
   final String? choferId;
@@ -65,11 +67,14 @@ class Carrera {
       required this.inicio,
       required this.destino,
       required this.fecha,
+      this.tipoVehiculo,
       required this.ofertas,
       this.cancelada = false});
 
   factory Carrera.fromJson(data) => Carrera(
         aceptada: data['aceptada'],
+        tipoVehiculo: VehicleType.values.firstWhere((element) =>
+            element.name == (data['tipoVehiculo'] ?? 'particular')),
         choferId: data['choferId'],
         numeroPasajeros: int.parse(data['numeroPasajeros']),
         pasajeroId: data['pasajeroId'],
@@ -104,6 +109,7 @@ class Carrera {
         'precioOfertado': precioOfertado.toString(),
         'condicionEspecial': condicionEspecial,
         'metodoPago': metodoPago,
+        'tipoVehiculo': tipoVehiculo?.name,
         'finalizada': finalizada,
         'cancelada': cancelada,
         'refInicio': refInicio,

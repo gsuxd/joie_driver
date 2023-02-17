@@ -21,6 +21,7 @@ import 'package:joiedriver/registro/pages/profile_photo/profile_photo.dart';
 import 'package:joiedriver/registro/pages/registro/registro.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../pages/datos_vehiculo/datos_vehiculo.dart';
 import '../pages/terminos_condiciones/terminos_condiciones.dart';
 
 part 'registro_event.dart';
@@ -42,6 +43,7 @@ class RegistroBloc extends Bloc<RegistroEvent, RegistroState> {
           jsonDecode(prefs.getString("userRegistroData")!));
       emit(ResumeRegistroState(parsed));
       prefs.clear();
+      _isReanuded = false;
       return;
     }
     final user = RegistroData(
@@ -50,7 +52,7 @@ class RegistroBloc extends Bloc<RegistroEvent, RegistroState> {
       code: "",
       date: "",
       email: "",
-      lastStep: "basicData",
+      lastStep: "registroData",
       genero: "",
       lastName: "",
       referenceCode: "",
@@ -74,6 +76,8 @@ class RegistroBloc extends Bloc<RegistroEvent, RegistroState> {
         return const RegistroPage();
       case "licencia":
         return const Licencia();
+      case "datosVehiculo":
+        return const DatosVehiculo();
       case "datosBanco":
         return const DatosBanco();
       case "cedula":
@@ -91,12 +95,15 @@ class RegistroBloc extends Bloc<RegistroEvent, RegistroState> {
     }
   }
 
+  bool _isReanuded = false;
+
   void _handleResume(
       ResumeRegistroEvent event, Emitter<RegistroState> emit) async {
     final prefs = await SharedPreferences.getInstance();
     final data = await compute(RegistroData.fromJson,
         jsonDecode(prefs.getString("userRegistroData")!));
     final Widget page = getPage(data.lastStep);
+    _isReanuded = true;
     emit(UpdateRegistroState(data));
     Navigator.of(event.ctx).push(MaterialPageRoute(builder: (_) => page));
     return;
@@ -123,7 +130,7 @@ class RegistroBloc extends Bloc<RegistroEvent, RegistroState> {
     emit(const LoadingRegistroState("Registrando Usuario..."));
     try {
       ///Registrando usuario en Firebase Auth
-      if (!(event.isReanuded)) {
+      if (!_isReanuded) {
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: event.data.email, password: event.data.password);
       }
@@ -222,6 +229,7 @@ class RegistroBloc extends Bloc<RegistroEvent, RegistroState> {
 
       ///Limpieza e inicio de sesión
       final prefs = await SharedPreferences.getInstance();
+      _isReanuded = false;
       await prefs.clear();
       event.ctx.read<UserBloc>().add(
           LoginUserEvent(event.data.email, event.data.password, event.ctx));

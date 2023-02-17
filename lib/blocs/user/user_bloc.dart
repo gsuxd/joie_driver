@@ -89,6 +89,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                   .getDownloadURL(),
               carroData: CarroData(
                 brand: value["vehicle"]["default"]['brand'],
+                type: value["vehicle"]["default"]['type'] ??
+                    VehicleType.particular,
                 year: value["vehicle"]["default"]['year'].toString(),
                 plate: value["vehicle"]["default"]['plate'],
                 color: value["vehicle"]["default"]['color'],
