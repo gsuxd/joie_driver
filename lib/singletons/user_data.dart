@@ -9,11 +9,13 @@ class UserData {
   final String email;
   final String genero;
   final String type;
+  final bool verified;
   final CarroData? carroData;
   UserData(
       {required this.type,
       required this.email,
       required this.genero,
+      required this.verified,
       required this.profilePicture,
       required this.name,
       required this.birthDate,
@@ -26,6 +28,7 @@ class UserData {
         name: json["name"],
         lastName: json["lastName"],
         referralsCode: json["code"],
+        verified: json['verified'],
         birthDate: json["datebirth"],
         email: json["email"],
         genero: json["gender"],
@@ -41,6 +44,7 @@ class UserData {
         "datebirth": birthDate,
         "email": email,
         "gender": genero,
+        "verified": verified,
         "type": type,
         "carroData": carroData ??
             CarroData(

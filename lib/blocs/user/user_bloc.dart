@@ -11,6 +11,8 @@ import 'package:joiedriver/home_user/home.dart';
 import 'package:joiedriver/singletons/carro_data.dart';
 import 'package:joiedriver/singletons/user_data.dart';
 import 'package:flutter/material.dart';
+import 'package:joiedriver/verificacion/main.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'user_event.dart';
@@ -20,6 +22,19 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc() : super(UserLoading()) {
     on<LoadUserEvent>(_handleLoadUser);
     on<LoginUserEvent>(_handleLogin);
+    on<VerifyUserEvent>(_handleVerify);
+  }
+
+  void _handleVerify(VerifyUserEvent event, Emitter<UserState> emit) async {
+    switch (event.type) {
+      case VerifyType.shareLink:
+        final code = await (await userSnapshot.get()).get('code');
+        Share.share(
+          "Descarga ahora Joie Driver y registrate con mi codigo $code para empezar a viajar donde quieras! https://google.com/",
+        );
+        break;
+      default:
+    }
   }
 
   late DocumentReference<Map<String, dynamic>> userSnapshot;
@@ -77,6 +92,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             final u = UserData(
               lastName: value['lastname'],
               name: value['name'],
+              verified: value['verified'],
               birthDate: value['datebirth'],
               referralsCode: value['code'],
               email: FirebaseAuth.instance.currentUser!.email!,
@@ -89,8 +105,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                   .getDownloadURL(),
               carroData: CarroData(
                 brand: value["vehicle"]["default"]['brand'],
-                type: value["vehicle"]["default"]['type'] ??
-                    VehicleType.particular,
+                type: VehicleType.values.firstWhere((element) =>
+                    element.name == value["vehicle"]["default"]['type']),
                 year: value["vehicle"]["default"]['year'].toString(),
                 plate: value["vehicle"]["default"]['plate'],
                 color: value["vehicle"]["default"]['color'],
@@ -104,10 +120,19 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             );
             value.reference.update({"active": true});
             userSnapshot = value.reference;
-            emit(UserLogged(u, value.reference));
+            switch (u.verified) {
+              case false:
+                emit(UserNotVerified(value.reference, u));
+                break;
+              default:
+                emit(UserLogged(u, value.reference));
+            }
             prefs.setString("user", jsonEncode(u.toJson()));
             Navigator.of(event.context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => const HomeScreen()),
+                MaterialPageRoute(
+                    builder: (_) => u.verified
+                        ? const HomeScreen()
+                        : const VerificacionPage()),
                 (route) => false);
             return;
           } else {
@@ -121,6 +146,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                     lastName: value['lastname'],
                     name: value['name'],
                     birthDate: value['datebirth'],
+                    verified: true,
                     referralsCode: value['code'],
                     email: FirebaseAuth.instance.currentUser!.email!,
                     genero: value['gender'],
@@ -154,6 +180,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                         final u = UserData(
                           lastName: value['lastname'],
                           name: value['name'],
+                          verified: value['verified'],
                           birthDate: value['datebirth'],
                           referralsCode: value['code'],
                           email: FirebaseAuth.instance.currentUser!.email!,
@@ -177,7 +204,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                         userSnapshot = value.reference;
                         Navigator.of(event.context).pushReplacement(
                             MaterialPageRoute(
-                                builder: (_) => const HomeScreenUser()));
+                                builder: (_) => u.verified
+                                    ? const HomeScreenUser()
+                                    : const VerificacionPage()));
                       }
                     },
                   );

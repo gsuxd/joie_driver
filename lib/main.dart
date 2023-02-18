@@ -1,7 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +12,7 @@ import 'package:joiedriver/home_user/home.dart';
 import 'package:joiedriver/loadingScreen.dart';
 import 'package:joiedriver/registro/bloc/registro_bloc.dart';
 import 'package:joiedriver/theme.dart';
+import 'package:joiedriver/verificacion/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'blocs/carrera/carrera_bloc.dart';
 import 'generated/l10n.dart';
@@ -107,6 +105,9 @@ class MyHomePage extends StatelessWidget {
       builder: (context, state) {
         if (state is UserNotLogged) {
           return const LognInScreenUser();
+        }
+        if (state is UserNotVerified) {
+          return const VerificacionPage();
         }
         if (state is UserLogged) {
           switch (state.user.type) {

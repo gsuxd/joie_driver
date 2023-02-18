@@ -72,15 +72,6 @@ class BodyE extends State<Body> {
               height: SizeConfig.screenHeight * 0.05,
             ),
             const Spacer(),
-            if (data?.photoPerfil != null)
-              SizedBox(
-                  width: SizeConfig.screenWidth * 0.6,
-                  child: ButtonDefChofer(
-                      text: 'Siguiente',
-                      press: () {
-                        //Navigator.pushNamed(context, PropiedadScreen.routeName);
-                      })),
-            const Spacer(),
           ],
         ),
       ),

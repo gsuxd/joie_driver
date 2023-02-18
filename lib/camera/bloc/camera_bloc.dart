@@ -24,6 +24,9 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
 
   void _handleRecover(
       RecoveredPictureCameraEvent event, Emitter<CameraState> emit) async {
+    if (event.path.isEmpty) {
+      return;
+    }
     final XFile picture = XFile(event.path);
     emit(PictureTakedCameraState(picture));
   }

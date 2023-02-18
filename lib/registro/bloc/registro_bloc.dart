@@ -129,7 +129,7 @@ class RegistroBloc extends Bloc<RegistroEvent, RegistroState> {
     emit(const LoadingRegistroState("Registrando Usuario..."));
     try {
       ///Registrando usuario en Firebase Auth
-      if (!_isReanuded) {
+      if (FirebaseAuth.instance.currentUser == null) {
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: event.data.email, password: event.data.password);
       }
@@ -142,6 +142,7 @@ class RegistroBloc extends Bloc<RegistroEvent, RegistroState> {
         'name': event.data.name.toUpperCase(),
         'lastname': event.data.lastName.toUpperCase(),
         'datebirth': event.data.date,
+        'verified': event.data.type == UserType.pasajero,
         'gender': event.data.genero.toUpperCase(),
         'phone': event.data.phone,
         'address': event.data.address,
@@ -168,7 +169,7 @@ class RegistroBloc extends Bloc<RegistroEvent, RegistroState> {
               'year': event.data.registroDataVehiculo!.year,
               'capacity': event.data.registroDataVehiculo!.capacidad,
               'color': event.data.registroDataVehiculo!.color,
-              'type': event.data.registroDataVehiculo!.type,
+              'type': event.data.registroDataVehiculo!.type.name,
               'brand': event.data.registroDataVehiculo!.marca,
               'plate': event.data.registroDataVehiculo!.placa.toUpperCase(),
             }
@@ -218,7 +219,7 @@ class RegistroBloc extends Bloc<RegistroEvent, RegistroState> {
             .child('/Licencia.jpg')
             .putFile(event.data.registroDataVehiculo!.licencia!);
       }
-      if (event.data.documentAntecedentes != null) {
+      if (event.data.documentAntecedentes?.path.isNotEmpty ?? false) {
         emit(const LoadingRegistroState("Subiendo antecedentes..."));
         await FirebaseStorage.instance
             .ref()

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joiedriver/conts.dart';
@@ -62,6 +63,17 @@ class _RegistroFormState extends State<RegistroForm> {
   void initState() {
     super.initState();
     data = (context.read<RegistroBloc>().state as UpdateRegistroState).userData;
+    _controllerTextAddress.text = data?.address ?? '';
+    _controllerTextName.text = data?.name ?? '';
+    _controllerTextLastName.text = data?.lastName ?? '';
+    _controllerTextPassword.text = data?.password ?? '';
+    _controllerTextReferenceCode.text = data?.referenceCode ?? '';
+    _controllerTextPhone.text = data?.phone ?? '';
+    _controllerTextDate = data?.date.toString();
+    sexo = data?.genero;
+    vista = data?.genero ?? 'Selecciona tu genero';
+    _email.text = data?.email ?? '';
+    setState(() {});
   }
 
   RegistroData? data;
@@ -102,9 +114,8 @@ class _RegistroFormState extends State<RegistroForm> {
               _controllerTextPassword.text =
                   _controllerTextPassword.text.trim();
               _email.text = _email.text.trim();
+              await _verifyCode();
               if (_formKey.currentState!.validate() && errors.isEmpty) {
-                //escribir datos a sincronizar
-
                 if (sexo != null && _controllerTextDate != null) {
                   if (_controllerTextReferenceCode.text.isEmpty) {
                     _controllerTextReferenceCode.text = "JoieDriver";
@@ -135,7 +146,7 @@ class _RegistroFormState extends State<RegistroForm> {
                               _controllerTextPassword.text.replaceAll(" ", "");
                           data.genero = sexo!;
                           data.code = await compute(
-                              generateCode, _email.text.replaceAll(" ", ""),
+                              generateCode, _email.text.trim(),
                               debugLabel: "generateCode");
                           Widget nextPage;
                           switch (data.type) {
@@ -469,7 +480,6 @@ class _RegistroFormState extends State<RegistroForm> {
       textInputAction: TextInputAction.next,
       controller: _controllerTextReferenceCode,
       onSaved: (newValue) => codeRef = newValue,
-      autocorrect: true,
       onChanged: (value) {
         if (value.isNotEmpty && errors.contains(codeError)) {
           removeError(error: codeError);
@@ -482,7 +492,6 @@ class _RegistroFormState extends State<RegistroForm> {
           addError(error: codeError);
           return;
         }
-
         return null;
       },
       decoration: InputDecoration(
@@ -501,6 +510,31 @@ class _RegistroFormState extends State<RegistroForm> {
             ),
           )),
     );
+  }
+
+  Future<bool> _verifyCode() async {
+    if (_controllerTextReferenceCode.text.trim() == "JoieDriver") {
+      return true;
+    }
+    final parentChofer = await FirebaseFirestore.instance
+        .collection(
+          'users',
+        )
+        .where('code', isEqualTo: _controllerTextReferenceCode.text.trim())
+        .get();
+    if (parentChofer.size == 0) {
+      final parentEmprendedor = await FirebaseFirestore.instance
+          .collection(
+            'usersEmprendedor',
+          )
+          .where('code', isEqualTo: _controllerTextReferenceCode.text.trim())
+          .get();
+
+      if (parentEmprendedor.size == 0) {
+        return false;
+      }
+    }
+    return true;
   }
 
   Container generFormField() {
