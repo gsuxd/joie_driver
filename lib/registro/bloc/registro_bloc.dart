@@ -42,7 +42,6 @@ class RegistroBloc extends Bloc<RegistroEvent, RegistroState> {
       final parsed = RegistroData.fromJson(
           jsonDecode(prefs.getString("userRegistroData")!));
       emit(ResumeRegistroState(parsed));
-      prefs.clear();
       _isReanuded = false;
       return;
     }
@@ -166,9 +165,10 @@ class RegistroBloc extends Bloc<RegistroEvent, RegistroState> {
           'carrerasIgnoradas': [],
           'vehicle': {
             'default': {
-              'year': 0,
-              'capacity': 0,
-              'color': '',
+              'year': event.data.registroDataVehiculo!.year,
+              'capacity': event.data.registroDataVehiculo!.capacidad,
+              'color': event.data.registroDataVehiculo!.color,
+              'type': event.data.registroDataVehiculo!.type,
               'brand': event.data.registroDataVehiculo!.marca,
               'plate': event.data.registroDataVehiculo!.placa.toUpperCase(),
             }

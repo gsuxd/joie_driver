@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joiedriver/conts.dart';
 import 'package:joiedriver/registro/bloc/registro_enums.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../bloc/registro_bloc.dart';
 
@@ -58,7 +59,9 @@ class ResumeModal extends StatelessWidget {
                         label: const Text('Continuar'),
                       ),
                       ElevatedButton.icon(
-                        onPressed: () {
+                        onPressed: () async {
+                          final prefs = await SharedPreferences.getInstance();
+                          await prefs.clear();
                           context
                               .read<RegistroBloc>()
                               .add(InitializeRegistroEvent(userType, context));

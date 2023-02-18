@@ -14,6 +14,11 @@ import '../../../bloc/registro_bloc.dart';
 class Body extends StatefulWidget {
   const Body({Key? key}) : super(key: key);
   @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return "licencia";
+  }
+
+  @override
   createState() => _Body();
 }
 

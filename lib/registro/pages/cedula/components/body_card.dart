@@ -15,6 +15,11 @@ class Body extends StatefulWidget {
   createState() => _Body();
 }
 
+@override
+String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  return "cedula";
+}
+
 class _Body extends State<Body> {
   @override
   void initState() {

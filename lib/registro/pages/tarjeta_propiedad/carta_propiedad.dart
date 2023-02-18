@@ -5,10 +5,6 @@ import './components/body_card.dart';
 
 class CartaPropiedad extends StatelessWidget {
   const CartaPropiedad({Key? key}) : super(key: key);
-  @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return "cartaPropiedad";
-  }
 
   @override
   Widget build(BuildContext context) {

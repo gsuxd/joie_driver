@@ -14,6 +14,11 @@ import '../../loading/loading_page.dart';
 class Body extends StatefulWidget {
   const Body({Key? key}) : super(key: key);
   @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return "antecedentes";
+  }
+
+  @override
   createState() => _Body();
 }
 

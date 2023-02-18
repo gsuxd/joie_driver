@@ -124,34 +124,6 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
 
   final List<Map<String, dynamic>> _carrerasOfertada = [];
 
-  void _handleSnapshotOferta(DocumentSnapshot<Map<String, dynamic>> e) {
-    final carrera = Carrera.fromJson(e.data());
-    final condicion = carrera.ofertas
-        .where((element) =>
-            element.choferId ==
-            (context.read<UserBloc>().state as UserLogged).user.email)
-        .isEmpty;
-    if (condicion) {
-      _carrerasOfertada.removeWhere((element) => element['id'] == e.id);
-      return;
-    }
-    if (carrera.aceptada &&
-        carrera.choferId ==
-            (context.read<UserBloc>().state as UserLogged).user.email) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => BlocProvider(
-            create: (_) => CarreraEnCursoBloc(),
-            child: CarreraEnCursoPage(
-              carreraRef: e.reference,
-              carrera: carrera,
-            ),
-          ),
-        ),
-      );
-    }
-  }
-
   void _handleNuevaCarrera(
       NuevaCarreraEvent event, Emitter<CarreraState> emit) async {
     emit(CarreraLoading());

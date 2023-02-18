@@ -3,10 +3,6 @@ import 'components/body_vehiculo.dart';
 
 class DatosVehiculo extends StatelessWidget {
   const DatosVehiculo({Key? key}) : super(key: key);
-  @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return "datosVehiculo";
-  }
 
   @override
   Widget build(BuildContext context) {

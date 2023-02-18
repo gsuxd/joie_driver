@@ -14,6 +14,11 @@ import '../../cedula/cedula.dart';
 class Body extends StatefulWidget {
   const Body({Key? key}) : super(key: key);
   @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return "profilePhoto";
+  }
+
+  @override
   createState() => BodyE();
 }
 

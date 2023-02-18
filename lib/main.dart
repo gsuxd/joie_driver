@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,6 +25,10 @@ import 'sign_in/log_in.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp().then((value) async {
+    // FirebaseAuth.instance.useAuthEmulator("192.168.0.101", 9099);
+    // FirebaseFirestore.instance.useFirestoreEmulator("192.168.0.101", 8080);
+    // FirebaseStorage.instance.useStorageEmulator("192.168.0.101", 9199);
+
     final _prefs = await SharedPreferences.getInstance();
     final service = FlutterBackgroundService();
     GetIt.I.registerSingleton<FlutterBackgroundService>(service);
@@ -83,8 +90,8 @@ class MyApp extends StatelessWidget {
             )),
         inputDecorationTheme: inputDecorationTheme(),
         textTheme: const TextTheme(
-          bodyText1: TextStyle(color: Color.fromARGB(255, 6, 38, 63)),
-          bodyText2: TextStyle(color: Color.fromARGB(255, 6, 38, 63)),
+          bodyLarge: TextStyle(color: Color.fromARGB(255, 6, 38, 63)),
+          bodyMedium: TextStyle(color: Color.fromARGB(255, 6, 38, 63)),
         ),
       ),
       home: const MyHomePage(),

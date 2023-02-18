@@ -20,6 +20,10 @@ import '../../profile_photo/profile_photo.dart';
 
 class RegistroForm extends StatefulWidget {
   const RegistroForm({Key? key}) : super(key: key);
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return "registroPage";
+  }
 
   @override
   State<RegistroForm> createState() => _RegistroFormState();
@@ -33,8 +37,6 @@ class _RegistroFormState extends State<RegistroForm> {
       TextEditingController();
   final TextEditingController _controllerTextPhone = TextEditingController();
   final TextEditingController _controllerTextAddress = TextEditingController();
-  final TextEditingController _controllerTextPlaca = TextEditingController();
-  final TextEditingController _controllerTextMarca = TextEditingController();
   String? _controllerTextDate;
   String? sexo;
   final _formKey = GlobalKey<FormState>();
@@ -84,14 +86,6 @@ class _RegistroFormState extends State<RegistroForm> {
         const SpaceMedium(),
         addressFormField(),
         const SpaceMedium(),
-        if (data?.type == UserType.chofer) ...[
-          placaFormField(),
-          const SpaceMedium(),
-        ],
-        if (data?.type == UserType.chofer) ...[
-          markCarField(),
-          const SpaceMedium(),
-        ],
         emailFormField(),
         const SpaceMedium(),
         passwordField(),
@@ -106,8 +100,8 @@ class _RegistroFormState extends State<RegistroForm> {
             text: 'Continuar',
             press: () async {
               _controllerTextPassword.text =
-                  _controllerTextPassword.text.replaceAll(" ", "");
-              _email.text = _email.text.replaceAll(" ", "");
+                  _controllerTextPassword.text.trim();
+              _email.text = _email.text.trim();
               if (_formKey.currentState!.validate() && errors.isEmpty) {
                 //escribir datos a sincronizar
 
@@ -143,12 +137,6 @@ class _RegistroFormState extends State<RegistroForm> {
                           data.code = await compute(
                               generateCode, _email.text.replaceAll(" ", ""),
                               debugLabel: "generateCode");
-                          if (data.type == UserType.chofer) {
-                            data.registroDataVehiculo!.placa =
-                                _controllerTextPlaca.text;
-                            data.registroDataVehiculo!.marca =
-                                _controllerTextMarca.text;
-                          }
                           Widget nextPage;
                           switch (data.type) {
                             case UserType.pasajero:
@@ -629,86 +617,6 @@ class _RegistroFormState extends State<RegistroForm> {
             ),
             child: Icon(
               Icons.phone,
-              size: getPropertieScreenWidth(18),
-            ),
-          )),
-    );
-  }
-
-  TextFormField placaFormField() {
-    return TextFormField(
-      textInputAction: TextInputAction.next,
-      controller: _controllerTextPlaca,
-      onSaved: (newValue) => carPlaca = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty && errors.contains(carPlacaError)) {
-          removeError(error: carPlacaError);
-          setState(() {});
-          return;
-        }
-        return;
-      },
-      validator: (value) {
-        if (value!.isEmpty && !errors.contains(carPlacaError)) {
-          addError(error: carPlacaError);
-          return;
-        }
-
-        return null;
-      },
-      autocorrect: true,
-      decoration: InputDecoration(
-          hintText: "Ingresa la placa del vehículo",
-          labelText: "Placa del vehículo",
-          suffixIcon: Padding(
-            padding: EdgeInsets.fromLTRB(
-              0,
-              getPropertieScreenWidth(18),
-              getPropertieScreenWidth(18),
-              getPropertieScreenWidth(18),
-            ),
-            child: Icon(
-              Icons.card_membership,
-              size: getPropertieScreenWidth(18),
-            ),
-          )),
-    );
-  }
-
-  TextFormField markCarField() {
-    return TextFormField(
-      textInputAction: TextInputAction.next,
-      controller: _controllerTextMarca,
-      onSaved: (newValue) => carMark = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty && errors.contains(carMarkError)) {
-          removeError(error: carMarkError);
-          setState(() {});
-          return;
-        }
-        return;
-      },
-      validator: (value) {
-        if (value!.isEmpty && !errors.contains(carMarkError)) {
-          addError(error: carMarkError);
-          return "";
-        }
-
-        return null;
-      },
-      autocorrect: true,
-      decoration: InputDecoration(
-          hintText: "Ingresa la Marca de tu Vehículo",
-          labelText: "Marca del Vehículo",
-          suffixIcon: Padding(
-            padding: EdgeInsets.fromLTRB(
-              0,
-              getPropertieScreenWidth(18),
-              getPropertieScreenWidth(18),
-              getPropertieScreenWidth(18),
-            ),
-            child: Icon(
-              Icons.car_repair,
               size: getPropertieScreenWidth(18),
             ),
           )),

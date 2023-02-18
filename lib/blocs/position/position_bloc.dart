@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:isolate';
 
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -9,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get_it/get_it.dart';
+import 'package:joiedriver/notifications/notification_controller.dart';
 import 'package:joiedriver/services/position_service.dart';
 import 'package:joiedriver/services/services_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,19 +30,17 @@ class PositionBloc extends Bloc<PositionEvent, PositionState> {
     emit(PositionLoading());
     await Geolocator.requestPermission();
     try {
+      await NotificationController.initializeLocalNotifications();
       final SharedPreferences _prefs = await SharedPreferences.getInstance();
       final service = GetIt.I.get<FlutterBackgroundService>();
-      if (!(await AwesomeNotifications().isNotificationAllowed())) {
-        await AwesomeNotifications().requestPermissionToSendNotifications();
-      }
       ReceivePort port;
       if (!_backgroundShooted) {
         if (jsonDecode(_prefs.getString('user')!)['type'] == 'chofer') {
           await service.configure(
               iosConfiguration: IosConfiguration(autoStart: true),
               androidConfiguration: AndroidConfiguration(
-                autoStartOnBoot: true,
                 autoStart: true,
+                autoStartOnBoot: true,
                 initialNotificationContent:
                     'Joie Driver esta trabajando en segundo plano',
                 initialNotificationTitle: 'Joie Driver',

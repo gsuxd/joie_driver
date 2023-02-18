@@ -12,7 +12,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:joiedriver/helpers/get_polyline_points.dart';
 import 'package:joiedriver/helpers/get_user_collection.dart';
-import 'package:joiedriver/notifications/notification_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../position/position_bloc.dart';
 import 'package:joiedriver/helpers/calculate_distance.dart';
@@ -66,14 +65,12 @@ class CarreraListener {
             .isNotEmpty) {
           return;
         }
-        _instance?.invoke('newTrip', {
-          'reference': carreras.last!.reference.path,
-          'carrera': carreras.last!.data()
-        });
-        _sendNoti({
-          'reference': carreras.last!.reference.path,
-          'carrera': carreras.last!.data()
-        });
+        if ((x.fecha.difference(DateTime.now())).inMinutes <= 2) {
+          _instance?.invoke('newTrip', {
+            'reference': carreras.last!.reference.path,
+            'carrera': carreras.last!.data()
+          });
+        }
         return;
       }
       await getUserCollection(u["type"]).doc(u["email"]).update({
@@ -87,11 +84,6 @@ class CarreraListener {
   ///Subscription to carreras updates
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
       carrerasCercanasSubscription;
-  @pragma('vm:entry-point')
-  static void _sendNoti(data) async {
-    final port = IsolateNameServer.lookupPortByName('tripsEvents')!;
-    port.send({'event': 'newTrip', 'data': data});
-  }
 
   ///_handlelisten
   ///Updates the context and the carrerasCercanasSubscription

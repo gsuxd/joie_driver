@@ -12,6 +12,11 @@ import 'dart:io';
 class Body extends StatefulWidget {
   const Body({Key? key}) : super(key: key);
   @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return "fotoVehiculo";
+  }
+
+  @override
   createState() => _Body();
 }
 

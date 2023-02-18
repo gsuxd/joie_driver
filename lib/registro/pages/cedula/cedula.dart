@@ -5,10 +5,6 @@ import './components/body_card.dart';
 
 class Cedula extends StatelessWidget {
   const Cedula({Key? key}) : super(key: key);
-  @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return "cedula";
-  }
 
   @override
   Widget build(BuildContext context) {

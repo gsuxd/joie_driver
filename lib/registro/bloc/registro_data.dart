@@ -168,7 +168,7 @@ class RegistroDataVehiculo {
       licenciaR: File(
         data["licenciaR"] ?? "",
       ),
-      capacidad: int.tryParse(data["capacidad"]) ?? 1,
+      capacidad: data["capacidad"] ?? 1,
       color: data["color"],
       type: VehicleType.values
           .firstWhere((element) => element.name == data["type"]),

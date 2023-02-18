@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geocoding/geocoding.dart' hide Location;
 import 'package:joiedriver/blocs/position/position_bloc.dart';
 import 'package:joiedriver/blocs/user/user_bloc.dart';
 import 'package:joiedriver/colors.dart';
+import 'package:joiedriver/helpers/get_city.dart';
 
 class Appbar extends StatefulWidget implements PreferredSizeWidget {
   const Appbar({Key? key}) : super(key: key);
@@ -17,15 +17,6 @@ class Appbar extends StatefulWidget implements PreferredSizeWidget {
 
 class _AppbarState extends State<Appbar> {
   String cityName = "";
-
-  void getCity(locationData) async {
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-        locationData.latitude!, locationData.longitude!);
-    var first = placemarks.first;
-    setState(() {
-      cityName = first.locality!;
-    });
-  }
 
   final TextStyle _baseStyle = const TextStyle(
       color: Colors.white,
@@ -41,7 +32,9 @@ class _AppbarState extends State<Appbar> {
       title: BlocListener<PositionBloc, PositionState>(
         listener: (context, state) {
           if (state is PositionObtained) {
-            getCity(state.location);
+            getCity(state.location).then((value) => setState(() {
+                  cityName = value;
+                }));
           }
         },
         child: Row(

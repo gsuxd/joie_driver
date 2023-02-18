@@ -1,4 +1,3 @@
-import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,10 +10,12 @@ import 'package:joiedriver/sign_in/components/error_form.dart';
 import 'package:joiedriver/singletons/carro_data.dart';
 import 'package:joiedriver/size_config.dart';
 
-import '../../profile_photo/profile_photo.dart';
-
 class VehicleForm extends StatefulWidget {
   const VehicleForm({Key? key}) : super(key: key);
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return "datosVehiculo";
+  }
 
   @override
   State<VehicleForm> createState() => VehicleFormState();
@@ -156,7 +157,7 @@ class VehicleFormState extends State<VehicleForm> {
         return null;
       },
       autocorrect: true,
-      keyboardType: TextInputType.number,
+      keyboardType: TextInputType.text,
       maxLength: 10,
       decoration: InputDecoration(
           hintText: "Ingresa la marca",
@@ -187,7 +188,7 @@ class VehicleFormState extends State<VehicleForm> {
         return null;
       },
       autocorrect: true,
-      keyboardType: TextInputType.number,
+      keyboardType: TextInputType.text,
       maxLength: 10,
       decoration: InputDecoration(
           hintText: "Ingresa el color",
@@ -240,12 +241,11 @@ class VehicleFormState extends State<VehicleForm> {
   TextFormField yearFormField() {
     return TextFormField(
       textInputAction: TextInputAction.next,
-      controller: controllerTextNumber,
       onSaved: (newValue) => numberAccount = newValue,
       onChanged: (value) {
         if (value.isNotEmpty &&
-            errors.contains('Porfavor escribe el ano de tu vehiculo')) {
-          removeError(error: 'Porfavor escribe el ano de tu vehiculo');
+            errors.contains('Porfavor escribe el año de tu vehiculo')) {
+          removeError(error: 'Porfavor escribe el año de tu vehiculo');
           setState(() {});
           return;
         }
@@ -253,14 +253,14 @@ class VehicleFormState extends State<VehicleForm> {
       },
       validator: (value) {
         if (value!.isEmpty &&
-            !errors.contains('Porfavor escribe el ano de tu vehiculo')) {
-          addError(error: 'Porfavor escribe el ano de tu vehiculo');
+            !errors.contains('Porfavor escribe el año de tu vehiculo')) {
+          addError(error: 'Porfavor escribe el año de tu vehiculo');
           return;
         }
 
         if (value.length < 4 &&
-            !errors.contains('Formato de ano no soportado')) {
-          addError(error: 'Formato de ano no soportado');
+            !errors.contains('Formato de año no soportado')) {
+          addError(error: 'Formato de año no soportado');
           return;
         }
 
@@ -269,8 +269,8 @@ class VehicleFormState extends State<VehicleForm> {
       keyboardType: TextInputType.number,
       maxLength: 4,
       decoration: InputDecoration(
-          hintText: "Ingresa el ano de tu vehiculo",
-          labelText: "Ano",
+          hintText: "Ingresa el año de tu vehiculo",
+          labelText: "Año",
           suffixIcon: Padding(
             padding: EdgeInsets.fromLTRB(
               0,

@@ -12,6 +12,10 @@ import '../../../bloc/registro_bloc.dart';
 
 class BancoForm extends StatefulWidget {
   const BancoForm({Key? key}) : super(key: key);
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return "datosBanco";
+  }
 
   @override
   State<BancoForm> createState() => _BancoFormState();

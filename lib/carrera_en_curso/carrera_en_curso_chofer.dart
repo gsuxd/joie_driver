@@ -5,13 +5,9 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:joiedriver/blocs/carrera/carrera_model.dart';
 import 'package:joiedriver/blocs/position/position_bloc.dart';
-import 'package:joiedriver/blocs/user/user_bloc.dart';
 import 'package:joiedriver/carrera_cancelada/carrera_cancelada_chofer.dart';
 import 'package:joiedriver/helpers/calculate_distance.dart';
 import 'package:joiedriver/helpers/get_polyline_points.dart';
-import 'package:joiedriver/home/home.dart';
-import 'package:joiedriver/main.dart';
-
 import 'bloc/carrera_en_curso_bloc.dart';
 
 class CarreraEnCursoPage extends StatefulWidget {
