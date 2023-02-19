@@ -74,7 +74,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             .collection("usersPasajeros")
             .doc(user.email);
     }
-    emit(UserLogged(user, userSnapshot));
+    if (user.verified) {
+      emit(UserLogged(user, userSnapshot));
+    } else {
+      emit(UserNotVerified(userSnapshot, user));
+    }
   }
 
   void _handleLogin(LoginUserEvent event, Emitter<UserState> emit) async {
@@ -120,20 +124,18 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             );
             value.reference.update({"active": true});
             userSnapshot = value.reference;
-            switch (u.verified) {
-              case false:
-                emit(UserNotVerified(value.reference, u));
-                break;
-              default:
-                emit(UserLogged(u, value.reference));
-            }
             prefs.setString("user", jsonEncode(u.toJson()));
-            Navigator.of(event.context).pushAndRemoveUntil(
-                MaterialPageRoute(
-                    builder: (_) => u.verified
-                        ? const HomeScreen()
-                        : const VerificacionPage()),
-                (route) => false);
+            if (u.verified) {
+              emit(UserLogged(u, value.reference));
+              Navigator.of(event.context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const HomeScreen()),
+                  (route) => false);
+            } else {
+              emit(UserNotVerified(value.reference, u));
+              Navigator.of(event.context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const VerificacionPage()),
+                  (route) => false);
+            }
             return;
           } else {
             await FirebaseFirestore.instance

@@ -37,28 +37,24 @@ class PositionBloc extends Bloc<PositionEvent, PositionState> {
       if (!_backgroundShooted) {
         if (jsonDecode(_prefs.getString('user')!)['type'] == 'chofer') {
           await service.configure(
-              iosConfiguration: IosConfiguration(autoStart: true),
+              iosConfiguration: IosConfiguration(autoStart: false),
               androidConfiguration: AndroidConfiguration(
-                autoStart: true,
+                autoStart: false,
                 autoStartOnBoot: true,
                 initialNotificationContent:
                     'Joie Driver esta trabajando en segundo plano',
                 initialNotificationTitle: 'Joie Driver',
-                isForegroundMode: true,
+                isForegroundMode: false,
                 onStart: ServicesManager.initialize,
               ));
           event.context
               .read<CarreraBloc>()
               .add(ListenCarrerasEvent(event.context));
-          _backgroundShooted = true;
-          await _listenPorts(service.on('positionUpdate'), emit);
-        } else {
-          port = ReceivePort('positionUpdates');
-          await FlutterIsolate.spawn(
-              PositionService.initialize, [port.sendPort]);
-          _backgroundShooted = true;
-          await _listenPorts(port.asBroadcastStream(), emit);
         }
+        port = ReceivePort('positionUpdates');
+        await FlutterIsolate.spawn(PositionService.initialize, [port.sendPort]);
+        _backgroundShooted = true;
+        await _listenPorts(port.asBroadcastStream(), emit);
       }
     } catch (e) {
       emit(PositionError(e.toString()));
