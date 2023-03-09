@@ -29,7 +29,7 @@ class NotificationController {
     );
     FirebaseMessaging.onMessageOpenedApp.listen(onActionReceivedMethod);
     final prefs = await SharedPreferences.getInstance();
-    final user = jsonDecode(prefs.getString("userData")!);
+    final user = jsonDecode(prefs.getString("user")!);
     if (user['type'] == "chofer") {
       final city = await getCity(await Geolocator.getCurrentPosition());
       await FirebaseMessaging.instance
