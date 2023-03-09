@@ -171,6 +171,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             return;
           }
         }
+        emit(UserLogged(u, gettedUser.reference));
         MyApp.navigatorKey.currentState!.pushAndRemoveUntil(
             MaterialPageRoute(builder: (_) => const HomeScreenUser()),
             (route) => false);

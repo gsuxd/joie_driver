@@ -39,11 +39,16 @@ class _AppbarState extends State<Appbar> {
         },
         child: Row(
           children: [
-            CircleAvatar(
-              foregroundImage: NetworkImage(
-                  (context.read<UserBloc>().state as UserLogged)
-                      .user
-                      .profilePicture),
+            BlocBuilder<UserBloc, UserState>(
+              builder: (context, state) {
+                if (state is UserLogged) {
+                  return CircleAvatar(
+                      foregroundImage: NetworkImage(
+                    state.user.profilePicture,
+                  ));
+                }
+                return const CircularProgressIndicator();
+              },
             ),
             Container(
               width: 240,
