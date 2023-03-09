@@ -19,15 +19,12 @@ import 'blocs/carrera/carrera_bloc.dart';
 import 'generated/l10n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'notifications/notification_controller.dart';
 import 'sign_in/log_in.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp().then((value) async {
-    // FirebaseAuth.instance.useAuthEmulator("192.168.0.101", 9099);
-    // FirebaseFirestore.instance.useFirestoreEmulator("192.168.0.101", 8080);
-    // FirebaseStorage.instance.useStorageEmulator("192.168.0.101", 9199);
-
     final _prefs = await SharedPreferences.getInstance();
     final service = FlutterBackgroundService();
     GetIt.I.registerSingleton<FlutterBackgroundService>(service);
@@ -98,8 +95,20 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  @override
+  void initState() {
+    super.initState();
+    NotificationController.onBackgroundMessage();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<UserBloc, UserState>(

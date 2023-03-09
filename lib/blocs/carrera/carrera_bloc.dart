@@ -1,17 +1,12 @@
-import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-import 'package:joiedriver/blocs/carrera/carrera_listener.dart';
 import 'package:joiedriver/blocs/user/user_bloc.dart';
-import 'package:joiedriver/carrera_en_curso/bloc/carrera_en_curso_bloc.dart';
-import 'package:joiedriver/carrera_en_curso/carrera_en_curso_chofer.dart';
 import 'package:joiedriver/home/home.dart';
-import 'package:joiedriver/main.dart';
 import 'package:joiedriver/solicitar_carrera/pages/waiting_screen.dart';
+import 'carrera_listener.dart';
 import 'carrera_model.dart';
 
 part 'carrera_event.dart';
@@ -27,50 +22,14 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
 
   void _handleListen(
       ListenCarrerasEvent event, Emitter<CarreraState> emit) async {
-    if (_isRunnin) return;
     context = event.context;
-    final service = GetIt.I.get<FlutterBackgroundService>();
-    _isRunnin = true;
-    _tripsListener = service.on('newTrip').listen((message) {
-      CarreraListener.showModal(Carrera.fromJson(message!["carrera"]),
-          FirebaseFirestore.instance.doc(message["reference"]), context);
-    });
-    _tripsListener = service.on('tripError').listen((message) {
-      message;
-      _isRunnin = false;
-      _handleListen(event, emit);
-    });
-    _ofertadosListener = service.on('tripAccepted').listen((message) {
-      MyApp.navigatorKey.currentState!.pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => BlocProvider(
-            create: (_) => CarreraEnCursoBloc(),
-            child: CarreraEnCursoPage(
-              carreraRef: FirebaseFirestore.instance.doc(message!['reference']),
-              carrera: Carrera.fromJson(message['carrera']),
-            ),
-          ),
-        ),
-      );
+    FirebaseMessaging.onMessage.listen((event) {
+      CarreraListener.showModal(Carrera.fromJson(event.data["carrera"]),
+          FirebaseFirestore.instance.doc(event.data["ref"]), context);
     });
   }
 
-  StreamSubscription<Map<String, dynamic>?>? _tripsListener;
-  StreamSubscription<Map<String, dynamic>?>? _errorListener;
-  StreamSubscription<Map<String, dynamic>?>? _ofertadosListener;
-  bool _isRunnin = false;
   late BuildContext context;
-
-  @override
-  Future<void> close() async {
-    for (var element in _carrerasOfertada) {
-      element['subscription'].cancel();
-    }
-    _tripsListener?.cancel();
-    _errorListener?.cancel();
-    _ofertadosListener?.cancel();
-    return super.close();
-  }
 
   void _handleAceptarOferta(
       AceptarOfertaEvent event, Emitter<CarreraState> emit) async {
@@ -121,8 +80,6 @@ class CarreraBloc extends Bloc<CarreraEvent, CarreraState> {
     }
     emit(CarreraInitial());
   }
-
-  final List<Map<String, dynamic>> _carrerasOfertada = [];
 
   void _handleNuevaCarrera(
       NuevaCarreraEvent event, Emitter<CarreraState> emit) async {

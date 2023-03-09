@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:joiedriver/blocs/carrera/carrera_listener.dart';
 import 'package:joiedriver/blocs/carrera/carrera_model.dart';
 import 'package:joiedriver/helpers/get_city.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
 
@@ -26,10 +27,14 @@ class NotificationController {
       provisional: false,
       sound: true,
     );
-    final city = await getCity(await Geolocator.getCurrentPosition());
     FirebaseMessaging.onMessageOpenedApp.listen(onActionReceivedMethod);
-    await FirebaseMessaging.instance
-        .subscribeToTopic('newTrips-${city.replaceAll(" ", "-")}');
+    final prefs = await SharedPreferences.getInstance();
+    final user = jsonDecode(prefs.getString("userData")!);
+    if (user['type'] == "chofer") {
+      final city = await getCity(await Geolocator.getCurrentPosition());
+      await FirebaseMessaging.instance
+          .subscribeToTopic('newTrips-${city.replaceAll(" ", "-")}');
+    }
   }
 
   @pragma("vm:entry-point")
@@ -50,7 +55,7 @@ class NotificationController {
   static Future<void> onActionReceivedMethod(RemoteMessage message) async {
     CarreraListener.showBackgroundModal(
         Carrera.fromJson(jsonDecode(message.data['carrera']!)),
-        message.data['carreraRef']!,
+        message.data['ref']!,
         MyApp.navigatorKey);
   }
 
