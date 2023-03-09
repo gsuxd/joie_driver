@@ -11,7 +11,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:joiedriver/helpers/get_polyline_points.dart';
-import 'package:joiedriver/helpers/get_user_collection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../position/position_bloc.dart';
 import 'package:joiedriver/helpers/calculate_distance.dart';
@@ -29,8 +28,11 @@ class CarreraListener {
   static void handleSnapshot(QuerySnapshot<Map<String, dynamic>> val) async {
     final prefs = await SharedPreferences.getInstance();
     final u = await jsonDecode(prefs.getString('user')!);
-    final ignoreList =
-        (await getUserCollection(u["type"]).doc(u["email"]).get()).data();
+    final ignoreList = (await FirebaseFirestore.instance
+            .collection("users")
+            .doc(u["email"])
+            .get())
+        .data();
     final List<QueryDocumentSnapshot<Map<String, dynamic>>?> carreras = [];
     for (var e in val.docs) {
       if (!((ignoreList!['carrerasIgnoradas'] as List).contains(e.id))) {
@@ -55,7 +57,10 @@ class CarreraListener {
               return;
             }
           }
-          await getUserCollection(u["type"]).doc(u["email"]).update({
+          await FirebaseFirestore.instance
+              .collection("users")
+              .doc(u["email"])
+              .update({
             'carrerasIgnoradas': FieldValue.arrayUnion([carreras.last!.id])
           });
           return;
@@ -73,7 +78,10 @@ class CarreraListener {
         }
         return;
       }
-      await getUserCollection(u["type"]).doc(u["email"]).update({
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(u["email"])
+          .update({
         'carrerasIgnoradas': FieldValue.arrayUnion([carreras.last!.id])
       });
       return;

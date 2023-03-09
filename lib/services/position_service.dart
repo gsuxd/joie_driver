@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geocoding/geocoding.dart' hide Location;
 import 'package:geolocator/geolocator.dart';
-import 'package:joiedriver/helpers/get_user_collection.dart';
+import 'package:joiedriver/blocs/user/user_enums.dart';
 import 'package:joiedriver/singletons/user_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,9 +32,8 @@ abstract class PositionService {
     final SharedPreferences _prefs = await SharedPreferences.getInstance();
     final user = UserData.fromJson(jsonDecode(_prefs.getString('user')!));
     try {
-      CollectionReference collection = getUserCollection(user.type);
-
-      final userRef = collection.doc(user.email);
+      final userRef =
+          FirebaseFirestore.instance.collection("users").doc(user.email);
       await for (final value in Geolocator.getPositionStream()) {
         await _sendData(value, userRef);
         instance.invoke('positionUpdate', {
@@ -53,13 +52,14 @@ abstract class PositionService {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
     SendPort port = args[0];
-    final user = UserData.fromJson(jsonDecode(args[1]));
+    final user = UserData.fromJson(args[1]);
     try {
-      CollectionReference collection = getUserCollection(user.type);
-
-      final userRef = collection.doc(user.email);
+      final userRef =
+          FirebaseFirestore.instance.collection("users").doc(user.email);
       await for (final value in Geolocator.getPositionStream()) {
-        await _sendData(value, userRef);
+        if (user.type == UserType.chofer) {
+          await _sendData(value, userRef);
+        }
         port.send({
           'latitude': value.latitude,
           'longitude': value.longitude,

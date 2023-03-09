@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joiedriver/registro/bloc/registro_data.dart';
-import 'package:joiedriver/registro/bloc/registro_enums.dart';
+import 'package:joiedriver/blocs/user/user_enums.dart';
 import 'package:joiedriver/registro/pages/registro/registro.dart';
 import '../../bloc/registro_bloc.dart';
 import 'textos/pasajero.dart';

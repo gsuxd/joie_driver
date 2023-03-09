@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:get_it/get_it.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:joiedriver/blocs/user/user_bloc.dart';
+import 'package:joiedriver/blocs/user/user_enums.dart';
 import 'package:joiedriver/metodos_pago/components/nuevo_metodo.dart';
 import 'package:joiedriver/pedidos.dart';
 import "package:flutter/material.dart";
@@ -46,13 +48,13 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
       try {
         final newImage = await FirebaseStorage.instance
             .ref()
-            .child(GetIt.I.get<UserData>().email)
+            .child(user.email)
             .child("ProfilePhoto.jpg")
             .putFile(image);
         _newImage = await newImage.ref.getDownloadURL();
         setState(() {});
         if (_newImage != null) {
-          GetIt.I.get<UserData>().profilePicture = _newImage!;
+          user.profilePicture = _newImage!;
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -66,6 +68,14 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
   }
 
   bool _isLoading = false;
+
+  late UserData user;
+
+  @override
+  void initState() {
+    user = (context.watch<UserBloc>().state as UserLogged).user;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,8 +137,7 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                       child: Stack(children: [
                         CircleAvatar(
                           backgroundImage: !_isLoading
-                              ? NetworkImage(
-                                  GetIt.I.get<UserData>().profilePicture)
+                              ? NetworkImage(user.profilePicture)
                               : null,
                           radius: 50,
                           child: _isLoading
@@ -170,18 +179,15 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                 Container(
                   height: 20.0,
                 ),
-                item(GetIt.I.get<UserData>().name,
-                    "assets/images/nombre_y_apellido.svg"),
+                item(user.name, "assets/images/nombre_y_apellido.svg"),
                 Container(
                   height: 20.0,
                 ),
-                item(GetIt.I.get<UserData>().lastName,
-                    "assets/images/nombre_y_apellido.svg"),
+                item(user.lastName, "assets/images/nombre_y_apellido.svg"),
                 Container(
                   height: 20.0,
                 ),
-                item(GetIt.I.get<UserData>().birthDate.substring(0, 10),
-                    "assets/images/edad.svg"),
+                item(user.birthDate.substring(0, 10), "assets/images/edad.svg"),
                 Container(
                   height: 20.0,
                 ),
@@ -189,17 +195,15 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                 Container(
                   height: 20.0,
                 ),
-                item(
-                    GetIt.I.get<UserData>().genero, "assets/images/genero.svg"),
+                item(user.genero, "assets/images/genero.svg"),
                 Container(
                   height: 20.0,
                 ),
-                itemCorreo(
-                    GetIt.I.get<UserData>().email, "assets/images/correo.svg"),
+                itemCorreo(user.email, "assets/images/correo.svg"),
                 Container(
                   height: 20.0,
                 ),
-                if (GetIt.I.get<UserData>().type != "usersPasajeros")
+                if (user.type != UserType.pasajero)
                   Row(
                     children: [
                       Container(
@@ -395,13 +399,14 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
         children: [
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => const MyApp()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const MyApp()));
             },
             style: ElevatedButton.styleFrom(
-              elevation: 0, backgroundColor: color_icon_inicio,
-              padding:
-                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              elevation: 0,
+              backgroundColor: color_icon_inicio,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               shape: const CircleBorder(),
             ),
@@ -416,13 +421,14 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => const Pedidos()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Pedidos()));
             },
             style: ElevatedButton.styleFrom(
-              elevation: 0, backgroundColor: color_icon_historial,
-              padding:
-                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              elevation: 0,
+              backgroundColor: color_icon_historial,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               shape: const CircleBorder(),
             ),
@@ -443,9 +449,10 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
                       builder: (context) => const AsistenciaTecnicaUsuario()));
             },
             style: ElevatedButton.styleFrom(
-              elevation: 0, backgroundColor: color_icon_ingresos,
-              padding:
-                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              elevation: 0,
+              backgroundColor: color_icon_ingresos,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               shape: const CircleBorder(),
             ),
@@ -461,14 +468,17 @@ class _PerfilUsuarioState extends State<PerfilUsuario> {
           ElevatedButton(
             onPressed: () {
               setState(() {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const PerfilUsuario()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PerfilUsuario()));
               });
             },
             style: ElevatedButton.styleFrom(
-              elevation: 0, backgroundColor: color_icon_perfil,
-              padding:
-                  const EdgeInsets.only(top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
+              elevation: 0,
+              backgroundColor: color_icon_perfil,
+              padding: const EdgeInsets.only(
+                  top: 2.0, bottom: 2.0, left: 2.0, right: 2.0),
               shadowColor: Colors.grey,
               shape: const CircleBorder(),
             ),

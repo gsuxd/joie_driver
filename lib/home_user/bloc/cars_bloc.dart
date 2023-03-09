@@ -15,14 +15,14 @@ class CarsBloc extends Bloc<CarsEvent, CarsState> {
   }
 
   void _handleLoad(LoadNearCars event, Emitter<CarsState> emit) async {
-    final docs = FirebaseFirestore.instance.collection("users").snapshots();
+    final docs = FirebaseFirestore.instance
+        .collection("users")
+        .where("active", isEqualTo: true)
+        .snapshots();
     final List<Marker> cars = [];
     await for (var element in docs) {
       for (final x in element.docs) {
         final data = x.data();
-        if (data['active'] == null) {
-          continue;
-        }
         final distance = calculateDistance(
             LatLng(
               event.location.latitude,
@@ -42,21 +42,19 @@ class CarsBloc extends Bloc<CarsEvent, CarsState> {
                 .markerId
                 .value ==
             "null") {
-          if (data["active"]) {
-            cars.add(
-              Marker(
-                markerId: MarkerId(x.id),
-                icon: await BitmapDescriptor.fromAssetImage(
-                    const ImageConfiguration(size: Size(12, 12)),
-                    "assets/images/coches-en-el-mapa.png"),
-                position: LatLng(
-                  data["location"]["latitude"],
-                  data["location"]["longitude"],
-                ),
+          cars.add(
+            Marker(
+              markerId: MarkerId(x.id),
+              icon: await BitmapDescriptor.fromAssetImage(
+                  const ImageConfiguration(size: Size(12, 12)),
+                  "assets/images/coches-en-el-mapa.png"),
+              position: LatLng(
+                data["location"]["latitude"],
+                data["location"]["longitude"],
               ),
-            );
-          }
-        } else if (data['active']) {
+            ),
+          );
+        } else if (!data['active']) {
           cars.removeWhere((element) => element.markerId.value == x.id);
         }
         emit(CarsLoaded(cars));

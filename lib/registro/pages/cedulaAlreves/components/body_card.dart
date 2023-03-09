@@ -4,7 +4,7 @@ import 'package:joiedriver/camera/bloc/camera_bloc.dart';
 import 'package:joiedriver/camera/camera_preview.dart';
 import 'package:joiedriver/conts.dart';
 import 'package:joiedriver/registro/bloc/registro_data.dart';
-import 'package:joiedriver/registro/bloc/registro_enums.dart';
+import 'package:joiedriver/blocs/user/user_enums.dart';
 import 'dart:io';
 
 import 'package:joiedriver/size_config.dart';

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:joiedriver/registro/bloc/registro_enums.dart';
+import 'package:joiedriver/blocs/user/user_enums.dart';
 import 'package:joiedriver/singletons/carro_data.dart';
 
 class RegistroData {

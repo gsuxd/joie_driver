@@ -1,9 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joiedriver/conts.dart';
-import 'package:joiedriver/helpers/generate_code.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -13,7 +11,7 @@ import 'package:date_field/date_field.dart';
 import 'package:joiedriver/registro/bloc/registro_data.dart';
 import 'package:joiedriver/registro/pages/datos_bancos/datos_banco.dart';
 import 'package:joiedriver/registro/bloc/registro_bloc.dart';
-import 'package:joiedriver/registro/bloc/registro_enums.dart';
+import 'package:joiedriver/blocs/user/user_enums.dart';
 import 'package:joiedriver/registro/pages/datos_vehiculo/datos_vehiculo.dart';
 import 'package:joiedriver/size_config.dart';
 
@@ -145,9 +143,6 @@ class _RegistroFormState extends State<RegistroForm> {
                           data.password =
                               _controllerTextPassword.text.replaceAll(" ", "");
                           data.genero = sexo!;
-                          data.code = await compute(
-                              generateCode, _email.text.trim(),
-                              debugLabel: "generateCode");
                           Widget nextPage;
                           switch (data.type) {
                             case UserType.pasajero:

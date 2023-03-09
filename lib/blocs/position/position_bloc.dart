@@ -22,20 +22,35 @@ class PositionBloc extends Bloc<PositionEvent, PositionState> {
   PositionBloc() : super(PositionInitial()) {
     on<GetPositionEvent>(_handleGetPosition);
   }
+  @override
+  Future<void> close() async {
+    FlutterIsolate.killAll();
+    super.close();
+  }
 
   bool _backgroundShooted = false;
 
   void _handleGetPosition(
       GetPositionEvent event, Emitter<PositionState> emit) async {
     emit(PositionLoading());
-    await Geolocator.requestPermission();
+    final SharedPreferences _prefs = await SharedPreferences.getInstance();
+    final user = jsonDecode(_prefs.getString('user')!);
+    final hasPermission = await Geolocator.checkPermission();
+    if (user['type'] == "chofer" &&
+        hasPermission != LocationPermission.always) {
+      await Geolocator.requestPermission();
+    } else if (hasPermission != LocationPermission.whileInUse) {
+      await Geolocator.requestPermission();
+      if (user['type'] == "chofer") {
+        await Geolocator.requestPermission();
+      }
+    }
     try {
       await NotificationController.initializeLocalNotifications();
-      final SharedPreferences _prefs = await SharedPreferences.getInstance();
       final service = GetIt.I.get<FlutterBackgroundService>();
       ReceivePort port;
       if (!_backgroundShooted) {
-        if (jsonDecode(_prefs.getString('user')!)['type'] == 'chofer') {
+        if (user['type'] == 'chofer') {
           await service.configure(
               iosConfiguration: IosConfiguration(autoStart: false),
               androidConfiguration: AndroidConfiguration(
@@ -51,8 +66,12 @@ class PositionBloc extends Bloc<PositionEvent, PositionState> {
               .read<CarreraBloc>()
               .add(ListenCarrerasEvent(event.context));
         }
+        if ((await FlutterIsolate.runningIsolates).isNotEmpty) {
+          FlutterIsolate.killAll();
+        }
         port = ReceivePort('positionUpdates');
-        await FlutterIsolate.spawn(PositionService.initialize, [port.sendPort]);
+        await FlutterIsolate.spawn(
+            PositionService.initialize, [port.sendPort, user]);
         _backgroundShooted = true;
         await _listenPorts(port.asBroadcastStream(), emit);
       }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joiedriver/conts.dart';
-import 'package:joiedriver/registro/bloc/registro_enums.dart';
+import 'package:joiedriver/blocs/user/user_enums.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../bloc/registro_bloc.dart';

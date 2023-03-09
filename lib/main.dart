@@ -7,6 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:joiedriver/blocs/markers/markers_bloc.dart';
 import 'package:joiedriver/blocs/position/position_bloc.dart';
 import 'package:joiedriver/blocs/user/user_bloc.dart';
+import 'package:joiedriver/blocs/user/user_enums.dart';
 import 'package:joiedriver/home/home.dart';
 import 'package:joiedriver/home_user/home.dart';
 import 'package:joiedriver/loadingScreen.dart';
@@ -111,7 +112,7 @@ class MyHomePage extends StatelessWidget {
         }
         if (state is UserLogged) {
           switch (state.user.type) {
-            case "chofer":
+            case UserType.chofer:
               return const HomeScreen();
             default:
               return const HomeScreenUser();

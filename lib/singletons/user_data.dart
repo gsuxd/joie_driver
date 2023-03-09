@@ -1,3 +1,4 @@
+import 'package:joiedriver/blocs/user/user_enums.dart';
 import 'package:joiedriver/singletons/carro_data.dart';
 
 class UserData {
@@ -8,7 +9,7 @@ class UserData {
   final String birthDate;
   final String email;
   final String genero;
-  final String type;
+  final UserType type;
   final bool verified;
   final CarroData? carroData;
   UserData(
@@ -32,7 +33,8 @@ class UserData {
         birthDate: json["datebirth"],
         email: json["email"],
         genero: json["gender"],
-        type: json["type"],
+        type: UserType.values
+            .firstWhere((element) => element.name == json["type"]),
         carroData: CarroData.fromJson(json["carroData"]),
       );
 
@@ -45,7 +47,7 @@ class UserData {
         "email": email,
         "gender": genero,
         "verified": verified,
-        "type": type,
+        "type": type.name,
         "carroData": carroData ??
             CarroData(
                     brand: "none",

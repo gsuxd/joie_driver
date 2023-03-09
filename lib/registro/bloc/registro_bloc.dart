@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -6,10 +7,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joiedriver/blocs/user/user_bloc.dart';
-import 'package:joiedriver/helpers/generate_random_string.dart';
-import 'package:joiedriver/helpers/get_user_collection.dart';
+import 'package:joiedriver/helpers/generate_code.dart';
 import 'package:joiedriver/registro/bloc/registro_data.dart';
-import 'package:joiedriver/registro/bloc/registro_enums.dart';
+import 'package:joiedriver/blocs/user/user_enums.dart';
 import 'package:joiedriver/registro/pages/antecedentes/antecedentes.dart';
 import 'package:joiedriver/registro/pages/foto_vehiculo/foto_vehiculo.dart';
 import 'package:joiedriver/registro/pages/tarjeta_propiedad/carta_propiedad.dart';
@@ -42,7 +42,6 @@ class RegistroBloc extends Bloc<RegistroEvent, RegistroState> {
       final parsed = RegistroData.fromJson(
           jsonDecode(prefs.getString("userRegistroData")!));
       emit(ResumeRegistroState(parsed));
-      _isReanuded = false;
       return;
     }
     final user = RegistroData(
@@ -51,7 +50,7 @@ class RegistroBloc extends Bloc<RegistroEvent, RegistroState> {
       code: "",
       date: "",
       email: "",
-      lastStep: "registroData",
+      lastStep: "registroPage",
       genero: "",
       lastName: "",
       referenceCode: "",
@@ -94,15 +93,12 @@ class RegistroBloc extends Bloc<RegistroEvent, RegistroState> {
     }
   }
 
-  bool _isReanuded = false;
-
   void _handleResume(
       ResumeRegistroEvent event, Emitter<RegistroState> emit) async {
     final prefs = await SharedPreferences.getInstance();
     final data = await compute(RegistroData.fromJson,
         jsonDecode(prefs.getString("userRegistroData")!));
     final Widget page = getPage(data.lastStep);
-    _isReanuded = true;
     emit(UpdateRegistroState(data));
     Navigator.of(event.ctx).push(MaterialPageRoute(builder: (_) => page));
     return;
@@ -137,17 +133,19 @@ class RegistroBloc extends Bloc<RegistroEvent, RegistroState> {
       emit(const LoadingRegistroState("Guardando datos..."));
 
       ///Guardando datos en Firestore
-      final collection = getUserCollection(event.data.type.name);
+
       final Map<String, dynamic> json = {
         'name': event.data.name.toUpperCase(),
         'lastname': event.data.lastName.toUpperCase(),
         'datebirth': event.data.date,
         'verified': event.data.type == UserType.pasajero,
         'gender': event.data.genero.toUpperCase(),
+        'userType': event.data.type.name,
         'phone': event.data.phone,
         'address': event.data.address,
         'parent': event.data.referenceCode,
-        'code': generateRandomString(10)
+        'code': await compute(generateCode, event.data.email.trim(),
+            debugLabel: "generateCode")
       };
       if (event.data.type != UserType.pasajero) {
         json.addAll({
@@ -176,7 +174,10 @@ class RegistroBloc extends Bloc<RegistroEvent, RegistroState> {
           }
         });
       }
-      await collection.doc(event.data.email).set(json);
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(event.data.email)
+          .set(json);
 
       ///Subida de imagenes
       final int count = event.data.type == UserType.chofer ? 6 : 3;
@@ -230,7 +231,6 @@ class RegistroBloc extends Bloc<RegistroEvent, RegistroState> {
 
       ///Limpieza e inicio de sesión
       final prefs = await SharedPreferences.getInstance();
-      _isReanuded = false;
       await prefs.clear();
       event.ctx.read<UserBloc>().add(
           LoginUserEvent(event.data.email, event.data.password, event.ctx));

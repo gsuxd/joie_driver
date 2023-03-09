@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:joiedriver/camera/bloc/camera_bloc.dart';
 import 'package:joiedriver/camera/camera_preview.dart';
 import 'package:joiedriver/registro/bloc/registro_data.dart';
-import '../../../../components/default_button_chofer.dart';
 import '../../../../conts.dart';
 import '../../../../size_config.dart';
 import 'dart:io';
