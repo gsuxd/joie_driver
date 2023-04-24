@@ -5,10 +5,6 @@ import './components/body_card.dart';
 
 class Antecedentes extends StatelessWidget {
   const Antecedentes({Key? key}) : super(key: key);
-  @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return "antecedentes";
-  }
 
   @override
   Widget build(BuildContext context) {

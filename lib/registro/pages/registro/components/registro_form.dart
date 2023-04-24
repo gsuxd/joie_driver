@@ -1,8 +1,7 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joiedriver/conts.dart';
-import 'package:joiedriver/helpers/generate_code.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -12,13 +11,18 @@ import 'package:date_field/date_field.dart';
 import 'package:joiedriver/registro/bloc/registro_data.dart';
 import 'package:joiedriver/registro/pages/datos_bancos/datos_banco.dart';
 import 'package:joiedriver/registro/bloc/registro_bloc.dart';
-import 'package:joiedriver/registro/bloc/registro_enums.dart';
+import 'package:joiedriver/blocs/user/user_enums.dart';
+import 'package:joiedriver/registro/pages/datos_vehiculo/datos_vehiculo.dart';
 import 'package:joiedriver/size_config.dart';
 
 import '../../profile_photo/profile_photo.dart';
 
 class RegistroForm extends StatefulWidget {
   const RegistroForm({Key? key}) : super(key: key);
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return "registroPage";
+  }
 
   @override
   State<RegistroForm> createState() => _RegistroFormState();
@@ -32,8 +36,6 @@ class _RegistroFormState extends State<RegistroForm> {
       TextEditingController();
   final TextEditingController _controllerTextPhone = TextEditingController();
   final TextEditingController _controllerTextAddress = TextEditingController();
-  final TextEditingController _controllerTextPlaca = TextEditingController();
-  final TextEditingController _controllerTextMarca = TextEditingController();
   String? _controllerTextDate;
   String? sexo;
   final _formKey = GlobalKey<FormState>();
@@ -59,6 +61,17 @@ class _RegistroFormState extends State<RegistroForm> {
   void initState() {
     super.initState();
     data = (context.read<RegistroBloc>().state as UpdateRegistroState).userData;
+    _controllerTextAddress.text = data?.address ?? '';
+    _controllerTextName.text = data?.name ?? '';
+    _controllerTextLastName.text = data?.lastName ?? '';
+    _controllerTextPassword.text = data?.password ?? '';
+    _controllerTextReferenceCode.text = data?.referenceCode ?? '';
+    _controllerTextPhone.text = data?.phone ?? '';
+    _controllerTextDate = data?.date.toString();
+    sexo = data?.genero;
+    vista = data?.genero ?? 'Selecciona tu genero';
+    _email.text = data?.email ?? '';
+    setState(() {});
   }
 
   RegistroData? data;
@@ -83,14 +96,6 @@ class _RegistroFormState extends State<RegistroForm> {
         const SpaceMedium(),
         addressFormField(),
         const SpaceMedium(),
-        if (data?.type == UserType.chofer) ...[
-          placaFormField(),
-          const SpaceMedium(),
-        ],
-        if (data?.type == UserType.chofer) ...[
-          markCarField(),
-          const SpaceMedium(),
-        ],
         emailFormField(),
         const SpaceMedium(),
         passwordField(),
@@ -105,11 +110,10 @@ class _RegistroFormState extends State<RegistroForm> {
             text: 'Continuar',
             press: () async {
               _controllerTextPassword.text =
-                  _controllerTextPassword.text.replaceAll(" ", "");
-              _email.text = _email.text.replaceAll(" ", "");
+                  _controllerTextPassword.text.trim();
+              _email.text = _email.text.trim();
+              await _verifyCode();
               if (_formKey.currentState!.validate() && errors.isEmpty) {
-                //escribir datos a sincronizar
-
                 if (sexo != null && _controllerTextDate != null) {
                   if (_controllerTextReferenceCode.text.isEmpty) {
                     _controllerTextReferenceCode.text = "JoieDriver";
@@ -139,19 +143,13 @@ class _RegistroFormState extends State<RegistroForm> {
                           data.password =
                               _controllerTextPassword.text.replaceAll(" ", "");
                           data.genero = sexo!;
-                          data.code = await compute(
-                              generateCode, _email.text.replaceAll(" ", ""),
-                              debugLabel: "generateCode");
-                          if (data.type == UserType.chofer) {
-                            data.registroDataVehiculo!.placa =
-                                _controllerTextPlaca.text;
-                            data.registroDataVehiculo!.marca =
-                                _controllerTextMarca.text;
-                          }
                           Widget nextPage;
                           switch (data.type) {
                             case UserType.pasajero:
                               nextPage = const ProfilePhoto();
+                              break;
+                            case UserType.chofer:
+                              nextPage = const DatosVehiculo();
                               break;
                             default:
                               nextPage = const DatosBanco();
@@ -477,7 +475,6 @@ class _RegistroFormState extends State<RegistroForm> {
       textInputAction: TextInputAction.next,
       controller: _controllerTextReferenceCode,
       onSaved: (newValue) => codeRef = newValue,
-      autocorrect: true,
       onChanged: (value) {
         if (value.isNotEmpty && errors.contains(codeError)) {
           removeError(error: codeError);
@@ -490,7 +487,6 @@ class _RegistroFormState extends State<RegistroForm> {
           addError(error: codeError);
           return;
         }
-
         return null;
       },
       decoration: InputDecoration(
@@ -509,6 +505,31 @@ class _RegistroFormState extends State<RegistroForm> {
             ),
           )),
     );
+  }
+
+  Future<bool> _verifyCode() async {
+    if (_controllerTextReferenceCode.text.trim() == "JoieDriver") {
+      return true;
+    }
+    final parentChofer = await FirebaseFirestore.instance
+        .collection(
+          'users',
+        )
+        .where('code', isEqualTo: _controllerTextReferenceCode.text.trim())
+        .get();
+    if (parentChofer.size == 0) {
+      final parentEmprendedor = await FirebaseFirestore.instance
+          .collection(
+            'usersEmprendedor',
+          )
+          .where('code', isEqualTo: _controllerTextReferenceCode.text.trim())
+          .get();
+
+      if (parentEmprendedor.size == 0) {
+        return false;
+      }
+    }
+    return true;
   }
 
   Container generFormField() {
@@ -625,86 +646,6 @@ class _RegistroFormState extends State<RegistroForm> {
             ),
             child: Icon(
               Icons.phone,
-              size: getPropertieScreenWidth(18),
-            ),
-          )),
-    );
-  }
-
-  TextFormField placaFormField() {
-    return TextFormField(
-      textInputAction: TextInputAction.next,
-      controller: _controllerTextPlaca,
-      onSaved: (newValue) => carPlaca = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty && errors.contains(carPlacaError)) {
-          removeError(error: carPlacaError);
-          setState(() {});
-          return;
-        }
-        return;
-      },
-      validator: (value) {
-        if (value!.isEmpty && !errors.contains(carPlacaError)) {
-          addError(error: carPlacaError);
-          return;
-        }
-
-        return null;
-      },
-      autocorrect: true,
-      decoration: InputDecoration(
-          hintText: "Ingresa la placa del vehículo",
-          labelText: "Placa del vehículo",
-          suffixIcon: Padding(
-            padding: EdgeInsets.fromLTRB(
-              0,
-              getPropertieScreenWidth(18),
-              getPropertieScreenWidth(18),
-              getPropertieScreenWidth(18),
-            ),
-            child: Icon(
-              Icons.card_membership,
-              size: getPropertieScreenWidth(18),
-            ),
-          )),
-    );
-  }
-
-  TextFormField markCarField() {
-    return TextFormField(
-      textInputAction: TextInputAction.next,
-      controller: _controllerTextMarca,
-      onSaved: (newValue) => carMark = newValue,
-      onChanged: (value) {
-        if (value.isNotEmpty && errors.contains(carMarkError)) {
-          removeError(error: carMarkError);
-          setState(() {});
-          return;
-        }
-        return;
-      },
-      validator: (value) {
-        if (value!.isEmpty && !errors.contains(carMarkError)) {
-          addError(error: carMarkError);
-          return "";
-        }
-
-        return null;
-      },
-      autocorrect: true,
-      decoration: InputDecoration(
-          hintText: "Ingresa la Marca de tu Vehículo",
-          labelText: "Marca del Vehículo",
-          suffixIcon: Padding(
-            padding: EdgeInsets.fromLTRB(
-              0,
-              getPropertieScreenWidth(18),
-              getPropertieScreenWidth(18),
-              getPropertieScreenWidth(18),
-            ),
-            child: Icon(
-              Icons.car_repair,
               size: getPropertieScreenWidth(18),
             ),
           )),

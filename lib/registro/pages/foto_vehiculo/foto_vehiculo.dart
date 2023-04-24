@@ -5,10 +5,6 @@ import './components/body_card.dart';
 
 class FotoVehiculo extends StatelessWidget {
   const FotoVehiculo({Key? key}) : super(key: key);
-  @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return "fotoVehiculo";
-  }
 
   @override
   Widget build(BuildContext context) {

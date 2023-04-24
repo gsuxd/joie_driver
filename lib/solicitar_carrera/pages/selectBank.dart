@@ -238,6 +238,7 @@ class _SelectPagoScreenState extends State<SelectPagoScreen> {
                             destino: widget.data['destino'],
                             inicio: widget.data['inicio'],
                             metodoPago: _formaPago.name,
+                            tipoVehiculo: widget.data['tipoVehiculo'],
                             numeroPasajeros:
                                 int.parse(widget.data['pasajeros']),
                             pasajeroId: widget.data['pasajeroId'],

@@ -1,66 +1,62 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
+import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:joiedriver/blocs/carrera/carrera_listener.dart';
+import 'package:joiedriver/blocs/carrera/carrera_model.dart';
+import 'package:joiedriver/helpers/get_city.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
 
 class NotificationController {
-  static ReceivedAction? initialAction;
-
   ///  *********************************************
   ///     INITIALIZATIONS
   ///  *********************************************
   ///
+  @pragma("vm:entry-point")
   static Future<void> initializeLocalNotifications() async {
-    await AwesomeNotifications().initialize(
-        null, //'resource://drawable/res_app_icon',//
-        [
-          NotificationChannel(
-              channelKey: 'newTrips',
-              channelName: 'newTrips',
-              channelDescription: 'New Trips Notifications',
-              playSound: true,
-              onlyAlertOnce: true,
-              groupAlertBehavior: GroupAlertBehavior.Children,
-              importance: NotificationImportance.High,
-              defaultPrivacy: NotificationPrivacy.Private,
-              defaultColor: Colors.deepPurple,
-              ledColor: Colors.deepPurple)
-        ],
-        debug: true);
+    onBackgroundMessage();
+    final instance = FirebaseMessaging.instance;
+    await instance.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+    FirebaseMessaging.onMessageOpenedApp.listen(onActionReceivedMethod);
+    final prefs = await SharedPreferences.getInstance();
+    final user = jsonDecode(prefs.getString("user")!);
+    if (user['type'] == "chofer") {
+      final city = await getCity(await Geolocator.getCurrentPosition());
+      await FirebaseMessaging.instance
+          .subscribeToTopic('newTrips-${city.replaceAll(" ", "-")}');
+    }
+  }
 
-    // Get initial notification action is optional
-    initialAction = await AwesomeNotifications()
-        .getInitialNotificationAction(removeFromActionEvents: false);
+  @pragma("vm:entry-point")
+  static Future<void> onBackgroundMessage() async {
+    final RemoteMessage? message =
+        await FirebaseMessaging.instance.getInitialMessage();
+    if (message != null) {
+      onActionReceivedMethod(message);
+    }
   }
 
   ///  *********************************************
   ///     NOTIFICATION EVENTS LISTENER
   ///  *********************************************
-  ///  Notifications events are only delivered after call this method
-  static Future<void> startListeningNotificationEvents() async {
-    AwesomeNotifications()
-        .setListeners(onActionReceivedMethod: onActionReceivedMethod);
-  }
 
-  ///  *********************************************
-  ///     NOTIFICATION EVENTS
-  ///  *********************************************
-  ///
-  @pragma('vm:entry-point')
-  static Future<void> onActionReceivedMethod(
-      ReceivedAction receivedAction) async {
-    if (receivedAction.actionType == ActionType.SilentAction ||
-        receivedAction.actionType == ActionType.SilentBackgroundAction) {
-      // For background actions, you must hold the execution until the end
-      print(
-          'Message sent via notification input: "${receivedAction.buttonKeyInput}"');
-    } else {
-      MyApp.navigatorKey.currentState?.pushNamedAndRemoveUntil(
-          '/modal',
-          (route) =>
-              (route.settings.name != '/notification-page') || route.isFirst,
-          arguments: receivedAction);
-    }
+  /// Use this method to detect when the user taps on a notification or action button
+  @pragma("vm:entry-point")
+  static Future<void> onActionReceivedMethod(RemoteMessage message) async {
+    CarreraListener.showBackgroundModal(
+        Carrera.fromJson(jsonDecode(message.data['carrera']!)),
+        message.data['ref']!,
+        MyApp.navigatorKey);
   }
 
   ///  *********************************************
@@ -91,8 +87,7 @@ class NotificationController {
                   ],
                 ),
                 const SizedBox(height: 20),
-                const Text(
-                    'Allow Awesome Notifications to send you beautiful notifications!'),
+                const Text('Permite el acceso a las notificaciones'),
               ],
             ),
             actions: [
@@ -101,7 +96,7 @@ class NotificationController {
                     Navigator.of(ctx).pop();
                   },
                   child: Text(
-                    'Deny',
+                    'Denegar',
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge
@@ -113,7 +108,7 @@ class NotificationController {
                     Navigator.of(ctx).pop();
                   },
                   child: Text(
-                    'Allow',
+                    'Permitir',
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge
@@ -122,49 +117,6 @@ class NotificationController {
             ],
           );
         });
-    return userAuthorized &&
-        await AwesomeNotifications().requestPermissionToSendNotifications();
-  }
-
-  static Future<void> createNewNotification(Map<String, dynamic>? data) async {
-    bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
-    if (!isAllowed) isAllowed = await displayNotificationRationale();
-    if (!isAllowed) return;
-
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-          id: -1, // -1 is replaced by a random number
-          channelKey: 'newTrips',
-          title: 'Huston! The eagle has landed!',
-          body:
-              "A small step for a man, but a giant leap to Flutter's community!",
-          bigPicture: 'https://storage.googleapis.com/cms-storage-bucket/d406c736e7c4c57f5f61.png',
-          largeIcon: 'https://storage.googleapis.com/cms-storage-bucket/0dbfcc7a59cd1cf16282.png',
-          //'asset://assets/images/balloons-in-sky.jpg',
-          notificationLayout: NotificationLayout.BigPicture,
-          payload: {'notificationId': '1234567890'}),
-      actionButtons: [
-        NotificationActionButton(key: 'REDIRECT', label: 'Redirect'),
-        NotificationActionButton(
-            key: 'REPLY',
-            label: 'Reply Message',
-            requireInputText: true,
-            actionType: ActionType.SilentAction),
-        NotificationActionButton(
-          key: 'DISMISS',
-          label: 'Dismiss',
-          actionType: ActionType.DismissAction,
-          isDangerousOption: true,
-        ),
-      ],
-    );
-  }
-
-  static Future<void> resetBadgeCounter() async {
-    await AwesomeNotifications().resetGlobalBadge();
-  }
-
-  static Future<void> cancelNotifications() async {
-    await AwesomeNotifications().cancelAll();
+    return userAuthorized;
   }
 }

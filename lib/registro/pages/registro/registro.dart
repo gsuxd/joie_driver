@@ -5,10 +5,6 @@ import 'components/body.dart';
 class RegistroPage extends StatelessWidget {
   static String routeName = '/registro';
   const RegistroPage({Key? key}) : super(key: key);
-  @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return "registroPage";
-  }
 
   @override
   Widget build(BuildContext context) {

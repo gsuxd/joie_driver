@@ -4,10 +4,6 @@ import './components/body_card.dart';
 
 class Licencia extends StatelessWidget {
   const Licencia({Key? key}) : super(key: key);
-  @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return "licencia";
-  }
 
   @override
   Widget build(BuildContext context) {

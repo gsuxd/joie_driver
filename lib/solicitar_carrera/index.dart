@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:joiedriver/blocs/position/position_bloc.dart';
 import 'package:joiedriver/blocs/user/user_bloc.dart';
 import 'package:joiedriver/conts.dart';
+import 'package:joiedriver/singletons/carro_data.dart';
 import 'package:joiedriver/solicitar_carrera/components/textedit.dart';
 
 import 'pages/selectBank.dart';
@@ -22,7 +23,11 @@ class SolicitarCarreraModal extends StatefulWidget {
 class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
   final formKey = GlobalKey<FormState>();
 
-  final data = {};
+  final data = {
+    'tipoVehiculo': VehicleType.particular,
+    'inicio': '',
+    'destino': ''
+  };
 
   Future<Location> getlocationfromaddress(String v) async {
     List<Location> placemarks = await locationFromAddress(v);
@@ -73,7 +78,7 @@ class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
               },
               icon: "assets/images/A.png",
               onSaved: (value) {
-                data["partida"] = value;
+                data["partida"] = value!;
               },
             ),
             CustomTextField(
@@ -82,7 +87,7 @@ class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
               },
               hintText: "Dirección de destino",
               icon: "assets/images/B.png",
-              onSaved: (value) => data["destino"] = value,
+              onSaved: (value) => data["destino"] = value!,
             ),
             CustomTextField(
               validator: (v) {
@@ -97,7 +102,7 @@ class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
               keyboardType: TextInputType.number,
               hintText: "Monto a ofertar",
               icon: "assets/images/outline_add_a_photo_black_24dp.png",
-              onSaved: (value) => data["montoOferta"] = value,
+              onSaved: (value) => data["montoOferta"] = value!,
             ),
             CustomTextField(
               validator: (v) {
@@ -109,14 +114,27 @@ class _SolicitarCarreraModalState extends State<SolicitarCarreraModal> {
               keyboardType: TextInputType.number,
               hintText: "Número de pasajeros",
               icon: "assets/images/outline_add_a_photo_black_24dp.png",
-              onSaved: (value) => data["pasajeros"] = value,
+              onSaved: (value) => data["pasajeros"] = value!,
             ),
             CustomTextField(
               validator: (v) => null,
               hintText: "Necesidad especial",
               icon: "assets/images/outline_add_a_photo_black_24dp.png",
-              onSaved: (value) => data["necesidad"] = value,
+              onSaved: (value) => data["necesidad"] = value!,
             ),
+            DropdownButton(
+                value: data['tipoVehiculo'],
+                items: VehicleType.values
+                    .map((e) => DropdownMenuItem(
+                          child: Text(e.name),
+                          value: e,
+                        ))
+                    .toList(),
+                onChanged: (val) {
+                  setState(() {
+                    data['tipoVehiculo'] = val!;
+                  });
+                }),
             Container(
               margin: const EdgeInsets.only(top: 10),
               decoration: BoxDecoration(

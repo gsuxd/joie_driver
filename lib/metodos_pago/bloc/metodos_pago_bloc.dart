@@ -22,7 +22,7 @@ class MetodoPagoBloc extends Bloc<MetodoPagoEvent, MetodoPagoState> {
       final userData = GetIt.I<UserData>();
       final metodoPago = event.metodoPago;
       final data = await FirebaseFirestore.instance
-          .collection(userData.type)
+          .collection("users")
           .doc(userData.email)
           .get();
       data.reference.update({'metodoPago': metodoPago.toJson()});
@@ -37,7 +37,7 @@ class MetodoPagoBloc extends Bloc<MetodoPagoEvent, MetodoPagoState> {
     emit(MetodoPagoLoading());
     final UserData user = GetIt.I.get<UserData>();
     final metodoPago = await FirebaseFirestore.instance
-        .collection(user.type)
+        .collection("users")
         .doc(user.email)
         .get()
         .then((value) {
@@ -46,7 +46,6 @@ class MetodoPagoBloc extends Bloc<MetodoPagoEvent, MetodoPagoState> {
     try {
       emit(MetodoPagoLoaded(MetodoPago.fromJson(metodoPago)));
     } catch (e) {
-      print(e);
       emit(MetodoPagoInitial());
     }
   }

@@ -4,10 +4,6 @@ import 'components/body_card.dart';
 
 class ProfilePhoto extends StatelessWidget {
   const ProfilePhoto({Key? key}) : super(key: key);
-  @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return "profilePhoto";
-  }
 
   @override
   Widget build(BuildContext context) {

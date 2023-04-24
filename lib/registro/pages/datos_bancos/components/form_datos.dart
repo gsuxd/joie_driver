@@ -12,6 +12,10 @@ import '../../../bloc/registro_bloc.dart';
 
 class BancoForm extends StatefulWidget {
   const BancoForm({Key? key}) : super(key: key);
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return "datosBanco";
+  }
 
   @override
   State<BancoForm> createState() => _BancoFormState();
@@ -39,9 +43,18 @@ class _BancoFormState extends State<BancoForm> {
 
   @override
   void initState() {
+    super.initState();
     data = (context.read<RegistroBloc>().state as UpdateRegistroState).userData;
     controllerTextName.text = data!.name + " " + data!.lastName;
-    super.initState();
+    tipoCuenta2 = data!.registroDataBank?.typeBank ?? "";
+    vistaTipo =
+        data!.registroDataBank?.typeBank ?? "Seleccione su tipo de cuenta";
+    bancoChofer = data!.registroDataBank?.bank ?? "";
+    vistaCuenta = data!.registroDataBank?.bank ?? "Seleccione su banco";
+    controllerTextCedula.text = data!.registroDataBank?.numberCi ?? "";
+    controllerTextDate = data!.registroDataBank?.dateCi ?? '';
+    controllerTextNumber.text = data!.registroDataBank?.numberBank ?? '';
+    setState(() {});
   }
 
   RegistroData? data;

@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import 'package:joiedriver/registro/bloc/registro_enums.dart';
+import 'package:joiedriver/blocs/user/user_enums.dart';
+import 'package:joiedriver/singletons/carro_data.dart';
 
 class RegistroData {
   String name;
@@ -54,8 +55,8 @@ class RegistroData {
       referenceCode: data["referenceCode"],
       code: data["code"],
       phone: data["phone"],
-      cedula: File(data["cedula"]),
-      cedulaR: File(data["cedulaR"]),
+      cedula: File(data["cedula"] ?? ""),
+      cedulaR: File(data["cedulaR"] ?? ""),
       date: data["date"],
       password: data["password"],
       genero: data["genero"],
@@ -128,14 +129,21 @@ class RegistroDataVehiculo {
   File? licenciaR;
   String placa;
   String marca;
-  RegistroDataVehiculo({
-    required this.marca,
-    required this.placa,
-    this.documentTarjetaPropiedad,
-    this.documentVehicle,
-    this.licencia,
-    this.licenciaR,
-  });
+  String year;
+  VehicleType type;
+  String color;
+  int capacidad;
+  RegistroDataVehiculo(
+      {required this.marca,
+      required this.placa,
+      this.documentTarjetaPropiedad,
+      this.documentVehicle,
+      this.licencia,
+      this.licenciaR,
+      this.capacidad = 1,
+      this.color = '',
+      this.type = VehicleType.particular,
+      this.year = ''});
 
   ///Metodos para serializacion
   toJson() => {
@@ -144,17 +152,25 @@ class RegistroDataVehiculo {
         "licencia": licencia?.path,
         "licenciaR": licenciaR?.path,
         "placa": placa,
-        "marca": marca
+        "marca": marca,
+        "year": year,
+        "type": type.name,
+        "color": color,
+        "capacidad": capacidad,
       };
 
   factory RegistroDataVehiculo.fromJson(dynamic data) => RegistroDataVehiculo(
-        marca: data["marca"],
-        placa: data["placa"],
-        documentTarjetaPropiedad: File(data["documentTarjetaPropiedad"] ?? ""),
-        documentVehicle: File(data["documentVehicle"] ?? ""),
-        licencia: File(data["licencia"] ?? ""),
-        licenciaR: File(
-          data["licenciaR"] ?? "",
-        ),
-      );
+      marca: data["marca"],
+      placa: data["placa"],
+      documentTarjetaPropiedad: File(data["documentTarjetaPropiedad"] ?? ""),
+      documentVehicle: File(data["documentVehicle"] ?? ""),
+      licencia: File(data["licencia"] ?? ""),
+      licenciaR: File(
+        data["licenciaR"] ?? "",
+      ),
+      capacidad: data["capacidad"] ?? 1,
+      color: data["color"],
+      type: VehicleType.values
+          .firstWhere((element) => element.name == data["type"]),
+      year: data["year"]);
 }

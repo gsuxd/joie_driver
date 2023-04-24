@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:isolate';
+import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:joiedriver/helpers/get_polyline_points.dart';
-import 'package:joiedriver/helpers/get_user_collection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../position/position_bloc.dart';
 import 'package:joiedriver/helpers/calculate_distance.dart';
@@ -20,19 +20,20 @@ import 'widgets/nueva_carrera_modal.dart';
 
 class CarreraListener {
   BuildContext context;
-  CarreraListener(this.context,
-      {this.carrerasCercanasSubscription, this.isService = false});
-
-  late bool isService;
+  CarreraListener(this.context, {this.carrerasCercanasSubscription});
+  static ServiceInstance? _instance;
 
   ///Handle Snapshot
   ///Handles the snapshot incoming from the database
   static void handleSnapshot(QuerySnapshot<Map<String, dynamic>> val) async {
     final prefs = await SharedPreferences.getInstance();
     final u = await jsonDecode(prefs.getString('user')!);
-    final ignoreList =
-        (await getUserCollection(u["type"]).doc(u["email"]).get()).data();
-    final carreras = [];
+    final ignoreList = (await FirebaseFirestore.instance
+            .collection("users")
+            .doc(u["email"])
+            .get())
+        .data();
+    final List<QueryDocumentSnapshot<Map<String, dynamic>>?> carreras = [];
     for (var e in val.docs) {
       if (!((ignoreList!['carrerasIgnoradas'] as List).contains(e.id))) {
         carreras.add(e);
@@ -44,18 +45,46 @@ class CarreraListener {
       final pos = await Geolocator.getCurrentPosition();
       final distance =
           calculateDistance(x.inicio, LatLng(pos.latitude, pos.longitude));
-      if (distance < 5) {
+      if (distance <= 5) {
+        _carrerasCercanasCount = carreras.length;
         if (x.aceptada) {
+          if (x.choferId == u['email']) {
+            if (!(x.finalizada)) {
+              _instance?.invoke('tripAccepted', {
+                'carrera': x.toJson(),
+                'reference': carreras.last!.reference.path
+              });
+              return;
+            }
+          }
+          await FirebaseFirestore.instance
+              .collection("users")
+              .doc(u["email"])
+              .update({
+            'carrerasIgnoradas': FieldValue.arrayUnion([carreras.last!.id])
+          });
           return;
         }
-        _carrerasCercanasCount = carreras.length;
-        if (carreras.last != null) {
-          _port?.send(jsonEncode({
+        if (x.ofertas
+            .where((element) => element.choferId == u['email'])
+            .isNotEmpty) {
+          return;
+        }
+        if ((x.fecha.difference(DateTime.now())).inMinutes <= 2) {
+          _instance?.invoke('newTrip', {
             'reference': carreras.last!.reference.path,
             'carrera': carreras.last!.data()
-          }));
+          });
         }
+        return;
       }
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(u["email"])
+          .update({
+        'carrerasIgnoradas': FieldValue.arrayUnion([carreras.last!.id])
+      });
+      return;
     }
   }
 
@@ -64,24 +93,67 @@ class CarreraListener {
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
       carrerasCercanasSubscription;
 
-  static SendPort? _port;
-
   ///_handlelisten
   ///Updates the context and the carrerasCercanasSubscription
   @pragma('vm:entry-point')
-  static void handleListen(args) async {
+  static void handleListen(ServiceInstance instance) async {
     try {
+      DartPluginRegistrant.ensureInitialized();
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
-      _port = args[0];
+      _instance = instance;
       final collection =
           FirebaseFirestore.instance.collection('carreras').snapshots();
       await for (final snap in collection) {
         handleSnapshot(snap);
       }
     } catch (e) {
-      _port?.send({"error": e.toString()});
+      _instance?.invoke('tripError', {"error": e.toString()});
     }
+  }
+
+  static void showBackgroundModal(
+      Carrera carrera, String carreraRef, GlobalKey<NavigatorState> key) async {
+    final polypoints = await getPolypoints(carrera.inicio, carrera.destino);
+    final distance = calculateDistance(carrera.inicio, carrera.destino);
+    final location = await Geolocator.getCurrentPosition();
+    final iconSize = distance < 5
+        ? distance > 3
+            ? 12.0
+            : 4.0
+        : 13.0;
+    final choferIcon = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(size: Size(iconSize, iconSize)),
+        "assets/images/coches-en-el-mapa.png");
+
+    final aPoint = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(size: Size(iconSize, iconSize)),
+        "assets/images/pint-A-indicator.png");
+
+    final bPoint = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(size: Size(iconSize, iconSize)),
+        "assets/images/pint-B-indicator.png");
+
+    final iconPasajero = await FirebaseStorage.instance
+        .ref()
+        .child("${carrera.pasajeroId}/ProfilePhoto.jpg")
+        .getDownloadURL();
+
+    key.currentState!.push(
+      MaterialPageRoute(
+        builder: (_) => NuevaCarreraModal(
+          carrera: carrera,
+          carreraRef: FirebaseFirestore.instance.doc(carreraRef),
+          distance: distance,
+          choferIcon: choferIcon,
+          iconPasajero: NetworkImage(iconPasajero),
+          location: LatLng(location.latitude, location.longitude),
+          polypoints: polypoints,
+          aPoint: aPoint,
+          bPoint: bPoint,
+        ),
+      ),
+    );
   }
 
   ///Shows a modal for a new carrera

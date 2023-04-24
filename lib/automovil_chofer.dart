@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:get_it/get_it.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:joiedriver/pedidos.dart';
 import 'package:joiedriver/profile.dart';
@@ -9,6 +9,7 @@ import "package:flutter/material.dart";
 import 'package:flutter_svg/svg.dart';
 import 'package:joiedriver/singletons/carro_data.dart';
 import 'package:joiedriver/singletons/user_data.dart';
+import 'blocs/user/user_bloc.dart';
 import 'colors.dart';
 import 'estatics.dart';
 
@@ -57,13 +58,13 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
       try {
         final newImage = await FirebaseStorage.instance
             .ref()
-            .child(GetIt.I.get<UserData>().email)
+            .child(user.email)
             .child("Vehicle.jpg")
             .putFile(image);
         _newImage = await newImage.ref.getDownloadURL();
-        setState(() {});
         if (_newImage != null) {
-          GetIt.I.get<UserData>().carroData!.picture = _newImage!;
+          user.carroData!.picture = _newImage!;
+          setState(() {});
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -77,11 +78,13 @@ class _PerfilUsuarioState extends State<AutomovilChofer> {
   }
 
   bool _isLoading = false;
+  late UserData user;
 
   @override
   void initState() {
     super.initState();
-    carData = GetIt.I.get<UserData>().carroData!;
+    user = (context.watch<UserBloc>().state as UserLogged).user;
+    carData = user.carroData!;
   }
 
   @override

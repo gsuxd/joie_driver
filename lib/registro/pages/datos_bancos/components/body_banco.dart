@@ -3,14 +3,8 @@ import 'package:joiedriver/conts.dart';
 import 'package:joiedriver/size_config.dart';
 import 'form_datos.dart';
 
-class Body extends StatefulWidget {
+class Body extends StatelessWidget {
   const Body({Key? key}) : super(key: key);
-
-  @override
-  State<Body> createState() => _BodyState();
-}
-
-class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(

@@ -1,17 +1,19 @@
-import 'dart:convert';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get_it/get_it.dart';
 import 'package:joiedriver/blocs/markers/markers_bloc.dart';
 import 'package:joiedriver/blocs/position/position_bloc.dart';
 import 'package:joiedriver/blocs/user/user_bloc.dart';
+import 'package:joiedriver/blocs/user/user_enums.dart';
 import 'package:joiedriver/home/home.dart';
 import 'package:joiedriver/home_user/home.dart';
 import 'package:joiedriver/loadingScreen.dart';
 import 'package:joiedriver/registro/bloc/registro_bloc.dart';
 import 'package:joiedriver/theme.dart';
+import 'package:joiedriver/verificacion/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'blocs/carrera/carrera_bloc.dart';
 import 'generated/l10n.dart';
@@ -22,9 +24,10 @@ import 'sign_in/log_in.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   Firebase.initializeApp().then((value) async {
     final _prefs = await SharedPreferences.getInstance();
+    final service = FlutterBackgroundService();
+    GetIt.I.registerSingleton<FlutterBackgroundService>(service);
     runApp(ProviderScope(
       child: MultiBlocProvider(
         providers: [
@@ -49,24 +52,11 @@ Future<void> main() async {
   });
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    NotificationController.initializeLocalNotifications();
-    NotificationController.startListeningNotificationEvents();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -96,8 +86,8 @@ class _MyAppState extends State<MyApp> {
             )),
         inputDecorationTheme: inputDecorationTheme(),
         textTheme: const TextTheme(
-          bodyText1: TextStyle(color: Color.fromARGB(255, 6, 38, 63)),
-          bodyText2: TextStyle(color: Color.fromARGB(255, 6, 38, 63)),
+          bodyLarge: TextStyle(color: Color.fromARGB(255, 6, 38, 63)),
+          bodyMedium: TextStyle(color: Color.fromARGB(255, 6, 38, 63)),
         ),
       ),
       home: const MyHomePage(),
@@ -105,8 +95,20 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  @override
+  void initState() {
+    super.initState();
+    NotificationController.onBackgroundMessage();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<UserBloc, UserState>(
@@ -114,9 +116,12 @@ class MyHomePage extends StatelessWidget {
         if (state is UserNotLogged) {
           return const LognInScreenUser();
         }
+        if (state is UserNotVerified) {
+          return const VerificacionPage();
+        }
         if (state is UserLogged) {
           switch (state.user.type) {
-            case "chofer":
+            case UserType.chofer:
               return const HomeScreen();
             default:
               return const HomeScreenUser();
